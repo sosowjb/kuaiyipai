@@ -1,11 +1,18 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Abp.Domain.Services;
+using Kuaiyipai.KYP.Entities;
 
 namespace Kuaiyipai.KYP
 {
     public interface IAuctionManager : IDomainService
     {
-        Task CreateBid(Guid itemId, double price);
+        /// <summary>
+        /// 获取最高出价
+        /// </summary>
+        /// <param name="itemId"></param>
+        /// <returns></returns>
+        Task<Bid> GetHighestBid(long itemId);
+
+        Task OfferPrice(long itemId, double price);
     }
 }

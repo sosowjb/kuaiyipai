@@ -84,6 +84,10 @@ namespace Kuaiyipai.Authorization
             administration.CreateChildPermission(AppPermissions.Pages_Administration_Host_Maintenance, L("Maintenance"), multiTenancySides: _isMultiTenancyEnabled ? MultiTenancySides.Host : MultiTenancySides.Tenant);
             administration.CreateChildPermission(AppPermissions.Pages_Administration_HangfireDashboard, L("HangfireDashboard"), multiTenancySides: _isMultiTenancyEnabled ? MultiTenancySides.Host : MultiTenancySides.Tenant);
             administration.CreateChildPermission(AppPermissions.Pages_Administration_Host_Dashboard, L("Dashboard"), multiTenancySides: MultiTenancySides.Host);
+
+            var kyp = context.GetPermissionOrNull(AppPermissions.KYP) ?? context.CreatePermission(AppPermissions.KYP);
+            kyp.CreateChildPermission(AppPermissions.KYP_Client);
+            kyp.CreateChildPermission(AppPermissions.KYP_Host);
         }
 
         private static ILocalizableString L(string name)
