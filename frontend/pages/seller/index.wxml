@@ -10,7 +10,7 @@
     </view>
     <view class="flex-grow-0 flex-y-center">
         <navigator class="my-address flex-y-center" url="/pages/my/setting">
-            <image src="/images/arrow-right.png"/>
+            <i class="iconfont icon-fm-arrowright" />
             <text >设置</text>        
         </navigator>
     </view>
@@ -22,7 +22,7 @@
       <view class="flex-grow-1">
           <navigator class="nav-item" url="/pages/order/order?status=0">
               <view>
-                  <image src="/images/icon-order-0.png"/>
+                   <i class="iconfont icon-fm-notpaid" style="font-size:20px;" />
               </view>
               <view>待付款</view>
               <view class="num-icon" wx:if="{{count_data.status_0 && count_data.status_0 > 0}}">
@@ -33,7 +33,7 @@
       <view class="flex-grow-1">
           <navigator class="nav-item" url="/pages/order/order?status=1">
               <view>
-                  <image src="/images/icon-order-1.png"/>
+                   <i class="iconfont icon-fm-waitdelivery" style="font-size:20px;" />
               </view>
               <view>待发货</view>
               <view class="num-icon" wx:if="{{count_data.status_1 && count_data.status_1 > 0}}">
@@ -44,7 +44,7 @@
       <view class="flex-grow-1">
           <navigator class="nav-item" url="/pages/order/order?status=2">
               <view>
-                  <image src="/images/icon-order-2.png"/>
+                   <i class="iconfont icon-fm-notreceipt" style="font-size:20px;" />
               </view>
               <view>待收货</view>
               <view class="num-icon" wx:if="{{count_data.status_2 && count_data.status_2 > 0}}">
@@ -55,7 +55,7 @@
       <view class="flex-grow-1">
           <navigator class="nav-item" url="/pages/order/order?status=3">
               <view>
-                  <image src="/images/icon-order-3.png"/>
+                   <i class="iconfont icon-fm-seeorder" style="font-size:20px;" />  
               </view>
               <view>所有订单</view>
           </navigator>
@@ -68,14 +68,14 @@
       <view class="flex-row option-content">
           <view class="flex-grow-1 flex-row">
               <view class="flex-grow-0 flex-y-center">
-                  <image class="option-icon" src="/images/icon-dollar.png"/>
+                    <i class='option-icon iconfont icon-fm-balance fi-499bf7'/>
               </view>
               <view class="flex-grow-1 flex-y-center">                    
                 可用余额 {{balance}} 元
               </view>
           </view>
           <view class="flex-grow-0 flex-y-center">
-              <image class="option-jisntou" src="/images/icon-jiantou-r.png"/>
+                <i class="iconfont icon-fm-arrowright" />
           </view>
       </view>
   </navigator>
@@ -83,14 +83,14 @@
       <view class="flex-row option-content">
           <view class="flex-grow-1 flex-row">
               <view class="flex-grow-0 flex-y-center">
-                  <image class="option-icon" src="/images/icon-user-lx.png"/>
+                    <i class='option-icon iconfont icon-fm-message fi-499bf7'/>
               </view>
               <view class="flex-grow-1 flex-y-center">                    
                 消息中心
               </view>
           </view>
           <view class="flex-grow-0 flex-y-center">
-              <image class="option-jisntou" src="/images/icon-jiantou-r.png"/>
+                <i class="iconfont icon-fm-arrowright" />
           </view>
       </view>
   </navigator>
@@ -101,14 +101,14 @@
       <view class="flex-row option-content">
           <view class="flex-grow-1 flex-row">
               <view class="flex-grow-0 flex-y-center">
-                  <image class="option-icon" src="/images/ico-addr.png"/>
+                    <i class='option-icon iconfont icon-fm-address fi-499bf7'/>   
               </view>
               <view class="flex-grow-1 flex-y-center">                    
                 退货地址管理
               </view>
           </view>
           <view class="flex-grow-0 flex-y-center">
-              <image class="option-jisntou" src="/images/icon-jiantou-r.png"/>
+                <i class="iconfont icon-fm-arrowright" />
           </view>
       </view>
   </navigator>
@@ -116,14 +116,14 @@
       <view class="flex-row option-content">
           <view class="flex-grow-1 flex-row">
               <view class="flex-grow-0 flex-y-center">
-                  <image class="option-icon" src="/images/icon-huojia.png"/>
+                  <i class='option-icon iconfont icon-fm-pd fi-499bf7'/>
               </view>
               <view class="flex-grow-1 flex-y-center">                    
                 货架管理
               </view>
           </view>
           <view class="flex-grow-0 flex-y-center">
-              <image class="option-jisntou" src="/images/icon-jiantou-r.png"/>
+                <i class="iconfont icon-fm-arrowright" />
           </view>
       </view>
   </navigator>
