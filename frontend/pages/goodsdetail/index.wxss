@@ -1,0 +1,573 @@
+/* pages/details/index.wxss */
+.page
+{
+background: #eee;
+min-height: 100vh;
+ display: flex;
+flex-direction: column;
+ align-items: center;
+}
+.page_goodsetail
+{
+  width: 100%;
+}
+.mainMenu-modules
+{
+  display: flex;
+  flex-direction:row;
+  position:fixed;
+  bottom:0;
+  z-index:10; 
+}
+.page_goodsetail .head .avator
+{
+  position: absolute;
+  top: 10px;
+  right:10px;
+  height:70px;
+  border:2px solid #D5D4D4;
+}
+.head
+{
+      position: relative;
+    width: 100%;
+    display: table;
+}
+.name
+{
+    height: 60px;
+    line-height: 60px;
+    padding-left: 20px;
+    padding-right: 100px;
+    color: #fff;
+    font-size: 20px;
+    text-align: right;
+    background-color: #169ADA;
+    overflow: hidden;
+
+}
+.avator image{
+width: 70px;
+height:70px;
+}
+.tip
+{
+    height: 16px;
+    padding: 10px 100px 0px 0px;
+    color: #444;
+    text-align: right;
+    overflow: hidden;
+}
+.modules-saleMain
+{
+  position: relative;
+  margin: 0.3rem; 
+}
+.saleItem
+{
+    width: 100%;
+    padding-top: 26rpx;
+    display: flex;
+    flex-direction: row
+}
+
+.modules-saleMain .saleInfo {
+    -webkit-box-flex: 1;
+    -ms-flex: 1;
+    flex: 1;
+    -webkit-flex: 1;
+    margin-bottom: 12px;
+}
+.modules-saleMain .saleItem .avator
+{
+  margin-left: 10px;
+  margin-right: 10px;
+}
+.modules-saleMain .saleItem .avator .avatarImage
+{
+    max-width: 80px;
+    max-height: 80px;
+    border-radius: 1px;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center center;
+}
+.modules-saleMain .saleInfo .nickname
+{
+      position: relative;
+    height: 20px;
+    line-height: 20px;
+    color: #576B95;
+    font-size: 15px;
+    font-weight: bold;
+    overflow: hidden;
+    word-break: break-all;
+
+}
+.imSupportBanner-modules .imSupportBanner
+{
+      width: 100%;
+    text-align: center;
+    height: 118rpx;
+    line-height: 118rpx;
+    font-size: 28rpx;
+    border-top: 1px solid #eaeae8;
+    background-color: #F8F8F8;
+    color: #169ada;
+}
+.modules-saleMain .saleInfo .desc
+{
+  font-size: 15px;
+}
+.modules-saleMain .saleInfo .imgList
+{
+    width: 100%;
+    display: table;
+}
+.modules-saleMain .saleInfo .imgList>image
+{
+    width: 4.4rem;
+    height: 4.4rem;
+    max-width: 136px;
+    max-height: 136px;
+    margin: 1px;
+    cursor: pointer;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+.follow
+{
+border: 1px solid red;
+line-height: 20px;
+margin-bottom: 10px;
+font-size: 24rpx;
+}
+.chat
+{
+  border: 1px solid #169ADA;
+  line-height: 20px;
+  font-size: 24rpx;
+}
+.modules-saleMain .saleInfo .createTime, .modules-saleMain .saleInfo .stateInfo
+{
+      width: 100%;
+    height: 26px;
+    line-height: 26px;
+    padding-top: 4px;
+    color: #aaa;
+}
+.modules-saleMain .saleInfo .stateInfo .state
+{
+    position: relative;
+    float: left;
+    color: #FFF;
+    padding-left: 14px;
+    padding-right: 14px;
+    background-color: #780018;
+    font-size: 12px;
+}
+.modules-saleMain .saleInfo .stateInfo .state i
+{
+    position: absolute;
+    top: 5px;
+    right: -5px;
+    display: block;
+    width: 15px;
+    height: 16px;
+    background-color: #780018;
+    -webkit-transform: rotate(45deg);
+}
+.endTime
+{
+  float: right;
+  font-size: 12px;
+}
+.modules-saleMain .saleInfo .stateInfo .endTime em
+{
+      color: #780018;
+    padding: 0 2px;
+    font-size: 16px;
+}
+.bidBtns
+{
+    width: 100%;
+    display: table;
+    cursor: pointer;
+}
+.bidBtns button{
+  position: relative;
+    width: 100%;
+    height: 40px;
+    line-height: 40px;
+    margin-top: 6px;
+    color: #fff;
+    font-size: 16px;
+    text-align: center;
+    border-radius: 2px;
+    background-color: #06BC07;
+}
+ .moneyInfo
+{
+      width: 100%;
+    display: flex;
+    flex-direction: row;
+    margin-top: 7px;
+    color: #aaa;
+    font-size: 12px;
+}
+ .moneyInfo view
+{
+  float: left;
+    width: 33%;
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-pack: center;
+    -webkit-justify-content: center;
+    -ms-flex-pack: center;
+    justify-content: center;
+    line-height: 16px;
+}
+ .bidList{
+  width: 99.6%;
+  background:#F0F1F2;
+}
+.ddli:first-child
+{
+  margin-top: 8px;
+}
+.li-wrap
+{
+  width: 100%;
+  height: 100%;
+}
+.ddli
+{
+  height: 50px;
+  position: relative;
+    border-bottom: 1px solid #eaeae8;
+    width: 96%;
+    margin: 0 2%;
+    padding: 7px 0;
+    overflow: hidden;
+}
+.isgray
+{
+      -webkit-filter: grayscale(60%);
+    filter: grayscale(60%);
+    opacity: .6;
+}
+.bidTime {
+    position: absolute;
+    right: 0;
+    height: 18px;
+    line-height: 18px;
+    color: #888;
+    margin: 36px 0 0;
+    font-size: 12px;
+}
+.state {
+    float: right;
+    text-align: right;
+}
+.bidLeader {
+  width: 105px;
+    height: 28px;
+    background-size: auto 100%;
+    background-repeat: no-repeat;
+    background-position: right center;
+}
+.modules-saleMain .saleInfo .bidList .ddli .avatar image {
+    float: left;
+    width: 50px;
+    height: 50px;
+    margin-right: 7px;
+    position: relative;
+}
+.bidUser{
+      position: absolute;
+    left: 57px;
+    line-height: 25px;
+    color: #576B95;
+    font-size: 13px;
+    font-weight: bold;
+    white-space: nowrap;
+}
+
+.price {
+    margin-top: 10px;
+    line-height: 20px;
+    color: #780018;
+    font-size: 15px;
+}
+.modules-saleMain .saleInfo .userattr
+{
+    padding: 2px 0;
+    width: 100%;
+    display: table;
+}
+.modules-saleMain .saleInfo .userattr .item, .modules-saleMain .saleInfo .userattr .item span
+{
+  float: left;
+}
+.modules-saleMain .saleInfo .userattr .item
+{
+  margin-right: 5px;
+}
+.modules-saleMain .saleInfo .userattr .item .fi-stack
+{
+    width: 18px;
+    left: -2px;
+}
+.modules-saleMain .saleInfo .userattr .item .arrow, .modules-saleMain .saleInfo .userattr .item .txt {
+    height: 2em;
+    line-height: 2em;
+    display: inline-block;
+    color: #888;
+    font-size: 12px;
+}
+.modules-saleMain .saleInfo .userattr .item span i.fi-stack-1x5, .modules-saleMain .saleInfo .userattr .item span i.icon-fm-square
+{
+  font-size: 18px; 
+}
+.modules-saleMain .saleInfo .userattr .item .arrow{
+    color: #f33832;
+    margin-left: -2px;
+    font-size: 10px;
+}
+.weui-grids
+{
+  width: 100%;
+  height:600rpx;
+  max-height:700rpx;
+}
+.previewimg{  
+    float:left;  
+    width:32%;  
+    height:32%;
+    margin:2px;  
+}  
+.previewimg image{  
+    width:100%;  
+    height:100%;  
+}
+/*手机键盘控件end*/
+    .fixednumMask {
+            position: fixed;
+            opacity: 0.38;
+            top: 0;
+            bottom: 0;
+            background-color: #000;
+            z-index: 999;
+        }
+        .fixednumMain {
+            position: fixed;
+            bottom: 0px;
+            left: auto;
+            width: 100%;
+           z-index: 1199;
+            background: #F0F0F0;
+        }
+            .fixednumMain .tipBanner {
+                height: 42px;
+                width: 100%;
+                background: #F0F0F0;
+                border-top: 1px solid #cacaca;
+                font-size: 16px;
+            }
+                .fixednumMain .tipBanner span.title,
+                .fixednumMain .priceBanner span.title {
+                    line-height: 42px;
+                    float: left;
+                    text-indent: 10px;
+                    min-width: 65px;
+                }
+                .fixednumMain .tipBanner .last,
+                .fixednumMain .priceBanner .editTxt {
+                    float: left;
+                    padding-right: 0.1rem;
+                    height: 30px;
+                    line-height: 30px;
+                    margin: 6px 0;
+                    color: #7596D9;
+                    text-indent: 0.08rem;
+                    overflow: hidden;
+                    font-size: 20px;
+                    font-family: "Helvetica neue", Verdana, Geneva, sans-serif;
+                }
+
+            .fixednumMain .priceBanner .editTxt {
+                width: 60%;
+            }
+            .fixednumMain .tipBanner .close {
+                float: right;
+                width: 42px;
+                height: 42px;
+                background-image: url("//cdn.weipaitang.com//res/img/close.png");
+                background-repeat: no-repeat;
+                background-position: center center;
+                background-size: 28px;
+            }
+            .fixednumMain .tipBanner .finish {
+                float: right;
+                width: 42px;
+                height: 42px;
+                background-size: 30px;
+                line-height: 40px;
+                font-size: 16px;
+                color: #007aff;
+            }
+            .fixednumMain .priceBanner {
+                background: #fff;
+                height: 42px;
+                line-height: 42px;
+                font-size: 16px;
+                width: 100%;
+                position: relative;
+            }
+                .fixednumMain .priceBanner .editTxt .hover {
+                    border-right: 2px solid red;
+                }
+                .fixednumMain .priceBanner .tips {
+                    color: #999;
+                    font-size: 14px;
+                    margin-right: 10px;
+                    overflow: hidden;
+                    height: 42px;
+                    position: absolute;
+                    right: 0;
+                    top: 0;
+                }
+                    .fixednumMain .priceBanner .tips .clearPrice {
+                        width: 20px;
+                        height: 42px;
+                        background-image: url("//cdn.weipaitang.com//res/img/clearPrice.png");
+                        background-repeat: no-repeat;
+                        background-position: center;
+                        background-size: 16px;
+                    }
+            .fixednumMain .btnBanner {
+                margin: 0 auto;
+                width: 96%;
+                padding: 10px 0;
+                display: table;
+            }
+                .fixednumMain .btnBanner .confirmBtn,
+                .fixednumMain .btnBanner .fixedPrice,
+                .fixednumMain .btnBanner .changePrice {
+                    background: #06BE04;
+                    padding: 2.5% 0;
+                    border-radius: 4px;
+                    width: 66%;
+                    text-align: center;
+                    font-size: 18px;
+                    color: #fff;
+                    border: none;
+                    float: left;
+                    height: 24px;
+                    line-height: 24px;
+                }
+                .fixednumMain .btnBanner .fixedPrice,
+                .fixednumMain .btnBanner .changePrice {
+                    background: #01B7F0;
+                    width: 32%;
+                    float: left;
+                    margin-right: 2%;
+                    font-size: 14px;
+                    height: 24px;
+                    line-height: 24px;
+                }
+                    .fixednumMain .btnBanner .changePrice.sub {
+                        background: #06BC07;
+                        width: 15%;
+                        margin-right: 2%;
+                        margin-left: 0;
+                        background-image: url("//cdn.weipaitang.com//res/img/subIcon.png");
+                        background-size: 20px;
+                        background-position: center;
+                        background-repeat: no-repeat;
+                    }
+                    .fixednumMain .btnBanner .changePrice.add {
+                        background: #06BC07;
+                        width: 15%;
+                        margin-right: 0;
+                        margin-left: 2%;
+                        background-image: url("//cdn.weipaitang.com//res/img/addIcon.png");
+                        background-size: 20px;
+                        background-position: center;
+                        background-repeat: no-repeat;
+                    }
+                .fixednumMain .btnBanner .confirmBtn:only-child {
+                    padding: 10px 0;
+                    width: 100%;
+                }
+            .fixednumMain .agreeBanner {
+                margin: 0 auto;
+                width: 96%;
+                padding-bottom: 8px;
+                font-size: 12px;
+                text-align: right;
+                color: #878787;
+                display: table;
+            }
+            .fixednumMain .numkey {
+                width: 100%;
+                background: #fff;
+                display: table;
+            }
+                .fixednumMain .numkey ul {
+                    padding: 0;
+                    margin: 0;
+                }
+                .fixednumMain .numkey ul,
+                .fixednumMain .numkey li {
+                    text-decoration: none;
+                    list-style: none;
+                    vertical-align: middle;
+                }
+                    .fixednumMain .numkey ul li {
+                        position: relative;
+                        width: 33.1%;
+                        border-bottom: 1px solid #b3b3b3;
+                        border-right: 1px solid #b3b3b3;
+                        height: 50px;
+                        max-height: 60px;
+                        float: left;
+                        font-size: 28px;
+                        font-family: "Helvetica neue", Verdana, Geneva, sans-serif;
+                        text-align: center;
+                        background: #fff;
+                        line-height: 1;
+                    }
+                        .fixednumMain .numkey ul li:nth-child(3n) {
+                            border-right: none;
+                        }
+                        .fixednumMain .numkey ul li.delete {
+                            background-image: url("//cdn.weipaitang.com//res/img/backspace.png");
+                            background-repeat: no-repeat;
+                            background-position: center;
+                            background-size: 30px;
+                            background-color: #D1D5DA;
+                        }
+                        .fixednumMain .numkey ul li.othernum {
+                            background-color: #D1D5DA;
+                            line-height: 50px;
+                        }
+
+                        .fixednumMain .numkey ul li .number {
+                            padding-top: 7.5px;
+                            color: #000;
+                           height: 50px;
+                        }
+
+                        .fixednumMain .numkey ul li .letter {
+                            font-size: 12px;
+                            color: #000;
+                            padding-bottom: 7.5px;
+                        }
+                        .touchEffect{
+                          background:rgba(0,0,0,0.3);
+                        }
+/*手机键盘控件end*/

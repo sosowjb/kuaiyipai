@@ -1,0 +1,17 @@
+.top-info{
+    height: 218rpx;
+    position: relative;
+}
+.top-info .money{
+    font-weight: bold;
+    color:brown;
+}
+.top-info image{
+    width: 12rpx;
+    height: 22rpx;
+    margin: 16rpx;
+}
+.order-block .money{
+    font-weight: bold;
+    color:brown;
+  }

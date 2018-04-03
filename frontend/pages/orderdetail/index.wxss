@@ -1,0 +1,19 @@
+/* pages/orderdetail/index.wxss */
+.orderdetailvalue
+{
+  color:black;
+  float: left;
+  font-size: 1em
+}
+.orderdetaillabel
+{
+  width: 5em;
+}
+.iml
+{
+  margin-left: 10px;
+}
+.weui-form-preview__label
+{
+  text-align-last:left;
+}

@@ -37,7 +37,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="KYP\" />
+    <Folder Include="KYP\Category\" />
   </ItemGroup>
 
   <PropertyGroup Condition="'$(TargetFramework)'=='net461'">

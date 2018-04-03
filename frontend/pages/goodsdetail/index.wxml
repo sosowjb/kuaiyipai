@@ -1,0 +1,148 @@
+<!--pages/details/index.wxml-->
+<view class='page'>
+   <view class='page_goodsetail'>
+   <view class='contentbox'>
+       <view class='head'><!--商品详情页头部-->
+            <view class='name'>{{vendor.nickname}}</view>
+            <view class='avator'><image class="widget_arrow" src="{{vendor.hpic}}" mode="aspectFill"></image></view>
+            <view class='tip'></view>
+       </view>
+       <view><!--商品详情页内容-->
+       <view class='modules-saleMain'>
+          <view class='saleItem'>
+          <!-- <view class='flex-item avator'>
+           <image class="avatarImage" src="{{vendor.hpic}}" mode="aspectFill"></image>
+           </view>-->
+           <view class='flex-item saleInfo'>
+           <!--<view class='nickname'><view class="sellerLevel lv3"></view>{{vendor.nickname}}</view>-->
+           <!--<view class="userattr">
+            <view class="item">
+                <span class="iconfont fi-stack"><i class="iconfont icon-fm-square fi-ffb123 fi-stack-2x"></i>
+                <i class="iconfont icon-fm-star fi-color-fff fi-stack-1x5"></i>
+                </span>
+                <span class="txt">4.83分</span>
+                <span class="arrow"><i class="iconfont icon-fm-scoreArrow"></i></span>
+            </view>
+            <view class="item">
+              <span class="iconfont fi-stack">
+                  <i class="iconfont icon-fm-square fi-ffb123 fi-stack-2x"></i>
+                  <i class="iconfont icon-fm-verify fi-color-fff fi-stack-1x5"></i>
+              </span>
+              <span class="txt">已认证</span>
+            </view>
+            <view class="item">
+              <span class="iconfont fi-stack">
+              <i class="iconfont icon-fm-square fi-ffb123 fi-stack-2x"></i>
+              <i class="iconfont icon-fm-shield fi-color-fff fi-stack-1x5"></i>
+              </span>
+              <span class="txt">78,168元</span>
+              </view>
+              </view>-->
+           <view class='desc fullDesc'><text>{{goodsInfo.desc}}</text></view>
+
+        <view class="weui-grids">
+            <view wx:for="{{goodsInfo.goodsPic}}" wx:for-item="image" wx:key="*this" class="previewimg" >
+                 <image class="weui-grid__icon" src="{{image.pic}}" data-text="{{image.smallpic}}" bindtap='previewImage'/>
+            </view>
+<view wx:if='{{fixednum.is_open!=0}}' id="fixednumMain" >
+  <view class="fixednumMask" style="opacity: 0.38;"></view>
+    <view class="fixednumMain flip-up">
+      <view>
+        <view class="tipBanner">
+          <span class="title">领先价</span>
+          <view class="last"></view>
+          <view bindtap='closefixednum' class="close"></view>
+        </view>
+        <view class="priceBanner">
+          <span class="title">出价</span>
+          <view class="editTxt">
+            <span class="hover">{{fixednum.price}}</span>
+            </view>
+            <view class="tips">
+              <view bindtap='clearPrice' class="clearPrice"></view>
+            </view>
+         </view>
+         <view class="btnBanner">
+            <view bindtap='submitPrice' class="confirmBtn">出价</view>
+         </view>
+         <view class="agreeBanner">出价即表示同意
+            <span style="color: rgb(135, 135, 135);">《快易拍竞拍服务协议》</span>
+         </view>
+        </view>
+        <view class="numkey">
+        <ul>
+         <li class="num touchEffect">
+            <view bindtap='inputNum' hover-class="touchEffect" data-text="1"  class="number">1</view>
+         </li>
+         <li class="num">
+            <view bindtap='inputNum' hover-class="touchEffect"  data-text="2" class="number">2</view>
+         </li>
+         <li  class="num">
+            <view bindtap='inputNum' hover-class="touchEffect" data-text="3" class="number">3</view>
+          </li>
+          <li  class="num">
+            <view bindtap='inputNum' hover-class="touchEffect" data-text="4" class="number">4</view>
+          </li>
+          <li  class="num">
+          <view bindtap='inputNum' hover-class="touchEffect" data-text="5" class="number">5</view>
+          </li>
+          <li  class="num">
+          <view bindtap='inputNum' hover-class="touchEffect" data-text="6" class="number">6</view>
+          </li>
+          <li  class="num"><view bindtap='inputNum' hover-class="touchEffect" data-text="7" class="number">7</view></li>
+          <li  class="num"><view bindtap='inputNum' hover-class="touchEffect" data-text="8" class="number">8</view></li>
+          <li  class="num"><view bindtap='inputNum' hover-class="touchEffect" data-text="9" class="number">9</view></li>
+          <li  class="num othernum"><view bindtap='inputNum' hover-class="touchEffect" data-text="00">00</view></li>
+          <li  class="num" style="line-height: 50px;"><view bindtap='inputNum' hover-class="touchEffect" data-text="0">0</view></li>
+          <li  class="delete"><view bindtap='backspace' hover-class="touchEffect" class="number"></view></li>
+          </ul>
+    </view>
+  </view>
+</view>
+    </view>
+           <view class='stateInfo'>
+           <view class='state'>正在拍卖<i></i></view>
+                    <view class='endTime'>距离结束：
+                    {{djs.day}}<em wx:if='{{!(djs.clock=="已经结束")}}'>天</em>
+                    {{djs.h}}<em wx:if='{{!(djs.clock=="已经结束")}}'>时</em>
+                    {{djs.m}}<em wx:if='{{!(djs.clock=="已经结束")}}'>分</em>
+                    {{djs.s}}<em wx:if='{{!(djs.clock=="已经结束")}}'>秒</em>
+                    </view>
+           </view>
+             <view class='bidBtns'><button bindtap='bid'>出价</button></view>
+            <view class='moneyInfo'>
+                      <view><i class='iconfont .icon-fm-saleqi'></i>￥0元</view>
+                      <view><i class='iconfont .icon-fm-salejia'></i>￥543元</view>
+                      <view><i class='iconfont .icon-fm-salebao'></i>￥0元</view>
+                    </view>
+            <view class='bidList'>
+            <view wx:for="{{auctionInfo}}" wx:for-item="item" wx:key="*this"  class='{{item.isBid?"ddli":"ddli isgray"}}'>
+              <view class='li-wrap'>
+                <view class='state'>
+                   <view class='bidTime'>{{item.bidTime}}</view>
+                    <view class='bidState'>
+                      <view class='bidLeader'><image style='width:100%;height:100%;display:block' src='{{item.isBid?imageLink+"/application/lx.png":imageLink+"/application/cj.png"}}'></image></view>
+                    </view>
+                </view>
+                <view class='avatar'><image src="{{item.avatar}}"></image></view>
+                <view class='bidUser'>
+                  <view class='name2'>{{item.nickname}}</view>
+                  <view class='price'>￥{{item.price}}</view>
+                </view>
+              </view>
+            </view>
+            </view>
+           </view><!--正在拍卖-->
+           </view>
+          </view>
+       </view>
+   </view><!--商品详情页-->
+   <!--<view class='imSupportBanner-modules'><view class='imSupportBanner'>联系平台客服</view></view>联系客服-->
+   <!--<view class='mainMenu-modules'>
+   <view class='flex-item'>首页</view>
+   <view class='flex-item'>分类</view>
+   <view class='flex-item'>发现</view>
+   <view class='flex-item'>进店逛逛</view>
+   </view>导航条-->
+   </view><!--商品详情页-->
+</view>

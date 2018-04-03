@@ -1,0 +1,115 @@
+<view class="page">
+
+     <view class="weui-panel weui-panel_access">
+     <view class="weui-panel__hd">订单状态</view>
+      <view class="weui-panel__bd">
+        <navigator url="" class="weui-cell weui-cell_access" hover-class="weui-cell_active">
+          <view class="weui-cell__hd">
+            <i style='margin-right: 5px;vertical-align: middle;font-size:20px' class='iconfont icon-fm-receipt'></i>
+          </view>
+          <view class="weui-media-box__bd weui-media-box__bd_in-appmsg">
+            <view class="weui-media-box__title">已确认收货</view>
+            <view class="weui-media-box__desc">收货时间:2018年03月01日 13:38</view>
+          </view>
+        </navigator>
+      </view>
+      <view class="weui-panel__bd">
+        <navigator url="" class="weui-cell weui-cell_access" hover-class="weui-cell_active">
+          <view class="weui-cell__hd">
+            <i style='margin-right: 5px;vertical-align: middle;font-size:20px' class='iconfont icon-fm-delivery'></i>
+          </view>
+          <view class="weui-media-box__bd weui-media-box__bd_in-appmsg">
+            <view class="weui-media-box__title">已发货</view>
+            <view class="weui-media-box__desc">发货时间:2018年03月01日 13:38</view>
+          </view>
+        </navigator>
+      </view>
+      <view class="weui-panel__bd">
+        <navigator url="" class="weui-cell weui-cell_access" hover-class="weui-cell_active">
+          <view class="weui-cell__hd">
+            <i style='margin-right: 5px;vertical-align: middle;font-size:20px' class='iconfont icon-fm-notpaid'></i>
+          </view>
+          <view class="weui-media-box__bd weui-media-box__bd_in-appmsg">
+            <view class="weui-media-box__title">已付款</view>
+            <view class="weui-media-box__desc">付款时间:2018年03月01日 13:38</view>
+          </view>
+        </navigator>
+      </view>
+            <view class="weui-panel__bd">
+        <navigator url="" class="weui-cell weui-cell_access" hover-class="weui-cell_active">
+          <view class="weui-cell__hd">
+            <i style='margin-right: 5px;vertical-align: middle;font-size:20px' class='iconfont icon-fm-opensale'></i>
+          </view>
+          <view class="weui-media-box__bd weui-media-box__bd_in-appmsg">
+            <view class="weui-media-box__title">开始竞拍</view>
+            <view class="weui-media-box__desc">开始时间:2018年03月01日 13:38</view>
+          </view>
+        </navigator>
+      </view>
+            <view class="weui-panel__bd">
+        <navigator url="" class="weui-cell weui-cell_access" hover-class="weui-cell_active">
+          <view class="weui-cell__hd">
+            <i style='margin-right: 5px;vertical-align: middle;font-size:20px' class='iconfont icon-fm-heterodyne'></i>
+          </view>
+          <view class="weui-media-box__bd weui-media-box__bd_in-appmsg">
+            <view class="weui-media-box__title">竞拍成功</view>
+            <view class="weui-media-box__desc">成功时间:2018年03月01日 13:38</view>
+          </view>
+        </navigator>
+      </view>
+    </view>
+
+
+  <view class="weui-panel weui-panel_access">
+    <view class="weui-panel__hd">商品信息</view>
+    <view class="weui-panel__bd">
+      <navigator url="" class="weui-media-box weui-media-box_appmsg" hover-class="weui-cell_active">
+        <view class="weui-media-box__hd weui-media-box__hd_in-appmsg">
+          <image class="weui-media-box__thumb" src="{{goodspic}}" />
+          </view>
+          <view class="weui-media-box__bd weui-media-box__bd_in-appmsg">
+            <view class="weui-media-box__title">昭和时代铁壶</view>
+            <view class="weui-media-box__desc">成交金额：1000元</view>
+            <view class="weui-media-box__desc">成交时间：2018年03月03日 22:24</view>
+        </view>
+     </navigator>
+   </view>
+  </view>
+  <view class="weui-panel weui-form-preview">
+      <view class="weui-panel__hd">订单信息</view>
+            <view class="weui-form-preview__bd">
+                <view class="weui-form-preview__item">
+                    <view class="weui-form-preview__label orderdetaillabel">卖家电话</view>
+                    <view class="weui-form-preview__value orderdetailvalue">18500189360</view>
+                    <view class='weui-form-preview__value weui-cell__ft'><i class='iconfont icon-fm-telephoneimg iml'></i><i class='iconfont icon-fm-privateletter iml'></i></view>
+                </view>
+                <view class="weui-form-preview__item">
+                    <view class="weui-form-preview__label orderdetaillabel">拍品编号</view>
+                    <view class="weui-form-preview__value orderdetailvalue">412990</view>
+                    <view class='weui-form-preview__value weui-cell__ft'><i class='iconfont icon-fm-copy iml'></i></view>
+                </view>
+                <view class="weui-form-preview__item">
+                    <view class="weui-form-preview__label orderdetaillabel">货款交易号</view>
+                    <view class="weui-form-preview__value orderdetailvalue">198999er33443434</view>
+                </view>
+            </view>
+        </view>
+          <view class="weui-panel weui-form-preview">
+      <view class="weui-panel__hd">发货信息</view>
+            <view class="weui-form-preview__bd">
+                <view class="weui-form-preview__item">
+                    <view class="weui-form-preview__label orderdetaillabel">收货人</view>
+                    <view class="weui-form-preview__value orderdetailvalue">王家兵</view>
+                     <view style='color:black' class='weui-form-preview__value weui-cell__ft'>18500189360</view>
+                </view>
+                <view class="weui-form-preview__item">
+                <view class="weui-form-preview__label orderdetaillabel"></view>
+                <view style='margin-left:6em;' class='weui-form-preview__value orderdetailvalue'>北京市 北京市 昌平区 霍营华龙苑中里7-2-501</view>
+                </view>
+                <view class="weui-form-preview__item">
+                    <view class="weui-form-preview__label orderdetaillabel">发货方式</view>
+                    <view class="weui-form-preview__value orderdetailvalue">198999er33443434</view>
+                </view>
+            </view>
+        </view>
+</view>

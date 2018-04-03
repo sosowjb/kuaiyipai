@@ -1,0 +1,71 @@
+<!--pages/nav/index.wxml-->
+<view class="page">
+    <view class="page__bd">
+        <view class="weui-panel">
+            <view class="weui-panel__bd">
+                <view class="weui-media-box weui-media-box_small-appmsg">
+                    <view class="weui-cells weui-cells_in-small-appmsg">
+                        <navigator url="/pages/home/home" class="weui-cell weui-cell_access" hover-class="weui-cell_active">
+                            <view class="weui-cell__bd weui-cell_primary">
+                                <view>首页</view>
+                            </view>
+                            <view class="weui-cell__ft weui-cell__ft_in-access"></view>
+                        </navigator>
+                        <navigator url="/pages/goodsdetail/index" class="weui-cell weui-cell_access" hover-class="weui-cell_active">
+                            <view class="weui-cell__bd weui-cell_primary">
+                                <view>商品详情页</view>
+                            </view>
+                            <view class="weui-cell__ft weui-cell__ft_in-access"></view>
+                        </navigator>
+                         <navigator url="/pages/orderdetail/index" class="weui-cell weui-cell_access" hover-class="weui-cell_active">
+                            <view class="weui-cell__bd weui-cell_primary">
+                                <view>订单详情页</view>
+                            </view>
+                            <view class="weui-cell__ft weui-cell__ft_in-access"></view>
+                        </navigator>
+
+                         <navigator url="/pages/balance/index" class="weui-cell weui-cell_access" hover-class="weui-cell_active">
+                            <view class="weui-cell__bd weui-cell_primary">
+                                <view>余额</view>
+                            </view>
+                            <view class="weui-cell__ft weui-cell__ft_in-access"></view>
+                        </navigator>
+
+                         <navigator url="/pages/balance-detail/index" class="weui-cell weui-cell_access" hover-class="weui-cell_active">
+                            <view class="weui-cell__bd weui-cell_primary">
+                                <view>余额明细</view>
+                            </view>
+                            <view class="weui-cell__ft weui-cell__ft_in-access"></view>
+                        </navigator>
+
+                         <navigator url="/pages/charge/index" class="weui-cell weui-cell_access" hover-class="weui-cell_active">
+                            <view class="weui-cell__bd weui-cell_primary">
+                                <view>充值</view>
+                            </view>
+                            <view class="weui-cell__ft weui-cell__ft_in-access"></view>
+                        </navigator>
+                         <navigator url="/pages/my/index" class="weui-cell weui-cell_access" hover-class="weui-cell_active">
+                            <view class="weui-cell__bd weui-cell_primary">
+                                <view>个人中心</view>
+                            </view>
+                            <view class="weui-cell__ft weui-cell__ft_in-access"></view>
+                        </navigator>
+                         <navigator url="/pages/seller/index" class="weui-cell weui-cell_access" hover-class="weui-cell_active">
+                            <view class="weui-cell__bd weui-cell_primary">
+                                <view>卖家</view>
+                            </view>
+                            <view class="weui-cell__ft weui-cell__ft_in-access"></view>
+                        </navigator>
+
+                         <navigator url="/pages/withdraw/index" class="weui-cell weui-cell_access" hover-class="weui-cell_active">
+                            <view class="weui-cell__bd weui-cell_primary">
+                                <view>提现</view>
+                            </view>
+                            <view class="weui-cell__ft weui-cell__ft_in-access"></view>
+                        </navigator>
+                    </view>
+                </view>
+            </view>
+        </view>
+    </view>
+</view>

@@ -1,0 +1,117 @@
+<!-- index.wxml -->
+<view class="homePage">
+    <swiper indicator-dots="true" autoplay="true" interval="3000" duration="500">
+        <swiper-item>
+            <image src="/images/home/swiper-1.jpg" mode='aspectFill' />
+        </swiper-item>
+        <swiper-item>
+            <image src="/images/home/swiper-2.jpg" mode='aspectFill' />
+        </swiper-item>
+        <swiper-item>
+            <image src="/images/home/swiper-3.jpg" mode='aspectFill' />
+        </swiper-item>
+    </swiper>
+    <view class="weui-search-bar">
+        <view class="weui-search-bar__form">
+            <view class="weui-search-bar__box">
+                <icon class="weui-icon-search_in-box" type="search" size="14"></icon>
+                <input type="text" confirm-type='search' class="weui-search-bar__input" placeholder="搜索" value="{{inputVal}}" focus="{{inputShowed}}" bindinput="inputTyping" bindconfirm='confirmSearch' />
+                <view class="weui-icon-clear" wx:if="{{inputVal.length > 0}}" bindtap="clearInput">
+                    <icon type="clear" size="14"></icon>
+                </view>
+            </view>
+            <label class="weui-search-bar__label" hidden="{{inputShowed}}" bindtap="showInput">
+                <icon class="weui-icon-search" type="search" size="14"></icon>
+                <view class="weui-search-bar__text">搜索</view>
+            </label>
+        </view>
+        <view class="weui-search-bar__cancel-btn" hidden="{{!inputShowed}}" bindtap="hideInput">取消</view>
+    </view>
+    <scroll-view scroll-y="true">
+        <view style="width:100%">
+            <view class="column">
+                <navigator url='/pages/itemdetail/itemdetail'>
+                    <view class='cell cell-left'>
+                        <image src="/images/home/item-1.jpg" mode="widthFix"></image>
+                        <view class='info'>
+                            <view class='title'>
+                                <text class='label hot'>热门</text>
+                                <text class='label secondhand'>二手</text>陶都名家紫砂陶都名家紫砂陶都名家紫砂陶都名家紫砂陶都名家紫砂</view>
+                            <view class='weui-flex'>
+                                <text class='weui-flex__item bids'>3人已出价</text>
+                                <text class='weui-flex__item price'>￥1000</text>
+                            </view>
+                        </view>
+                    </view>
+                </navigator>
+                <navigator url='/pages/itemdetail/itemdetail'>
+                    <view class='cell cell-left'>
+                        <image src="/images/home/item-3.jpg" mode="widthFix"></image>
+                        <view class='info'>
+                            <view class='title'>
+                                <text class='label deadline'>即将结束</text>陶都名家紫砂陶都名家紫砂陶都名家紫砂陶都名家紫砂陶都名家紫砂</view>
+                            <view class='weui-flex'>
+                                <text class='weui-flex__item bids'>3人已出价</text>
+                                <text class='weui-flex__item price'>￥1000</text>
+                            </view>
+                        </view>
+                    </view>
+                </navigator>
+                <navigator url='/pages/itemdetail/itemdetail'>
+                    <view class='cell cell-left'>
+                        <image src="/images/home/item-5.jpg" mode="widthFix"></image>
+                        <view class='info'>
+                            <view class='title'>
+                                <text class='label hot'>热门</text>陶都名家紫砂陶都名家紫砂陶都名家紫砂陶都名家紫砂陶都名家紫砂</view>
+                            <view class='weui-flex'>
+                                <text class='weui-flex__item bids'>3人已出价</text>
+                                <text class='weui-flex__item price'>￥1000</text>
+                            </view>
+                        </view>
+                    </view>
+                </navigator>
+            </view>
+            <view class="column">
+                <navigator url='/pages/itemdetail/itemdetail'>
+                    <view class='cell cell-right'>
+                        <image src="/images/home/item-2.jpg" mode="widthFix"></image>
+                        <view class='info'>
+                            <view class='title'>
+                                <text class='label deadline'>即将结束</text>陶都名家紫砂陶都名家紫砂陶都名家紫砂陶都名家紫砂陶都名家紫砂</view>
+                            <view class='weui-flex'>
+                                <text class='weui-flex__item bids'>3人已出价</text>
+                                <text class='weui-flex__item price'>￥1000</text>
+                            </view>
+                        </view>
+                    </view>
+                </navigator>
+                <navigator url='/pages/itemdetail/itemdetail'>
+                    <view class='cell cell-right'>
+                        <image src="/images/home/item-4.jpg" mode="widthFix"></image>
+                        <view class='info'>
+                            <view class='title'>
+                                <text class='label hot'>热门</text>陶都名家紫砂陶都名家紫砂陶都名家紫砂陶都名家紫砂陶都名家紫砂</view>
+                            <view class='weui-flex'>
+                                <text class='weui-flex__item bids'>3人已出价</text>
+                                <text class='weui-flex__item price'>￥1000</text>
+                            </view>
+                        </view>
+                    </view>
+                </navigator>
+                <navigator url='/pages/itemdetail/itemdetail'>
+                    <view class='cell cell-right'>
+                        <image src="/images/home/item-6.jpg" mode="widthFix"></image>
+                        <view class='info'>
+                            <view class='title'>
+                                <text class='label hot'>热门</text>陶都名家紫砂陶都名家紫砂陶都名家紫砂陶都名家紫砂陶都名家紫砂</view>
+                            <view class='weui-flex'>
+                                <text class='weui-flex__item bids'>3人已出价</text>
+                                <text class='weui-flex__item price'>￥1000</text>
+                            </view>
+                        </view>
+                    </view>
+                </navigator>
+            </view>
+        </view>
+    </scroll-view>
+</view>

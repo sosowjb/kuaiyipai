@@ -1,0 +1,20 @@
+{
+  "pages": [
+    "pages/nav/index",
+    "pages/home/home",
+    "pages/goodsdetail/index",
+    "pages/orderdetail/index",
+    "pages/balance/index",
+    "pages/balance-detail/index", 
+    "pages/charge/index",
+    "pages/my/index",
+    "pages/seller/index",
+    "pages/withdraw/index"
+  ],
+  "window": {
+    "backgroundTextStyle": "light",
+    "navigationBarBackgroundColor": "#66666",
+    "navigationBarTitleText": "快微拍",
+    "navigationBarTextStyle": "black"
+  }
+}

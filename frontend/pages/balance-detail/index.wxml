@@ -1,0 +1,38 @@
+<view class='top flex-row' style='position: relative'>
+    <view class="flex-grow-1 flex-y-center flex-row">
+        <view class="flex-grow-0" style='padding-left:15px;' bindtap='choosetype'>
+            <text>款项选择</text>
+            <image class="amount-img" src="{{showView?'/images/icon-nav-up.png':'/images/icon-nav-down.png'}}"/>
+        </view>
+    </view>
+    <view class="flex-grow-0 flex-y-center" style='padding-right:15px;'>
+        余额(元)：<text class='amount'>{{balance}}</text>
+    </view>
+</view>
+<view class="menu {{showView?'show':'hide'}}">
+  <view class='flex-row flex-y-center' style='height:40px;margin:5px;'>
+    <view class="menu-next"><button size='mini'>全部款项</button></view>
+    <view class="menu-next"><button size='mini'>冻结中款项</button></view>
+    <view class="menu-next"><button size='mini'>已解冻款项</button></view>
+  </view>
+  <view class='flex-row flex-y-center' style='height:40px;margin:5px;'>
+    <view class="menu-next"><button size='mini'>已提现款项</button></view>
+    <view class="menu-next"><button size='mini'>保证金</button></view>
+  </view>
+</view>
+<view style="width:100%;">
+  <view class='flex-row detail-list' wx:for="{{detaillist}}">
+      <view class="flex-grow-1 flex-y-center flex-row detail-left">
+          <view class="flex-grow-0">
+              <text>{{item.type}}</text>
+              <text style='font-size:10px'>\n{{item.comment}}</text>
+          </view>
+      </view>
+      <view wx-if="{{item.status == 0}}" class="flex-grow-0 flex-y-center detail-right">
+          <text style="color:green;">+{{item.balance}}</text>
+      </view>
+      <view wx-if="{{item.status == 1}}" class="flex-grow-0 flex-y-center detail-right">
+          <text style='color:red'>-{{item.balance}}</text>
+      </view>
+  </view>
+</view>

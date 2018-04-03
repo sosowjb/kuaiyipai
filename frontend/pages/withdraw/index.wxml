@@ -1,0 +1,9 @@
+<view style="height:220rpx;">
+  <text style='margin:30rpx 20rpx;'>提现金额:</text>
+  <input type='number' class='input' name="withdrawmoney" placeholder="请输入提现金额" placeholder-style="margin-left:10px;"></input>
+  <text style='margin:30rpx 20rpx;' class='tip'>本次提现最大金额:￥{{withdrawmax}}，今日余:{{times}}次</text>
+</view>
+<view style="height:20rpx;background: #eee;width:100%;"></view>
+<view>
+  <button type="primary" bindtap="relogin">下一步</button>
+</view>

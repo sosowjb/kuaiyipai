@@ -1,0 +1,141 @@
+<view class="user-info flex-row">
+    <image class="user-info-bg" mode="aspectFill" src="/images/img-user-bg.png"/>
+    <view class="flex-grow-1 flex-y-center flex-row">
+        <view class="flex-grow-0">
+          <image wx:if="{{userInfo && userInfo.avatarUrl}}" class="avatar" src="{{userInfo.avatarUrl}}"/>
+        </view>
+        <view class="flex-grow-1">
+            <text class="user-name">Lv.{{userInfo.level}}\n{{userInfo.nickName}}\n{{userInfo.phoneNumber}}</text>
+        </view>
+    </view>
+    <view class="flex-grow-0 flex-y-center">
+        <navigator class="my-address flex-y-center" url="/pages/my/setting">
+            <image src="/images/arrow-right.png"/>
+            <text >设置</text>        
+        </navigator>
+    </view>
+  </view>
+  <view style="height:20rpx;background: #eee;width:100%;"></view>  
+  <view class="order-block">
+    <navigator class="my-order" url="/pages/order/order?status=-1">我的订单</navigator>
+    <view class="flex-row">
+        <view class="flex-grow-1">
+            <navigator class="nav-item" url="/pages/order/order?status=0">
+                <view>
+                    <image src="/images/icon-order-0.png"/>
+                </view>
+                <view>待付款</view>
+                <view class="num-icon" wx:if="{{count_data.status_0 && count_data.status_0 > 0}}">
+                    {{count_data.status_0}}
+                </view>
+            </navigator>
+        </view>
+        <view class="flex-grow-1">
+            <navigator class="nav-item" url="/pages/order/order?status=1">
+                <view>
+                    <image src="/images/icon-order-1.png"/>
+                </view>
+                <view>待发货</view>
+                <view class="num-icon" wx:if="{{count_data.status_1 && count_data.status_1 > 0}}">
+                    {{count_data.status_1}}
+                </view>
+            </navigator>
+        </view>
+        <view class="flex-grow-1">
+            <navigator class="nav-item" url="/pages/order/order?status=2">
+                <view>
+                    <image src="/images/icon-order-2.png"/>
+                </view>
+                <view>待收货</view>
+                <view class="num-icon" wx:if="{{count_data.status_2 && count_data.status_2 > 0}}">
+                    {{count_data.status_2}}
+                </view>
+            </navigator>
+        </view>
+        <view class="flex-grow-1">
+            <navigator class="nav-item" url="/pages/order/order?status=3">
+                <view>
+                    <image src="/images/icon-order-3.png"/>
+                </view>
+                <view>所有订单</view>
+            </navigator>
+        </view>
+    </view>
+  </view>
+  <view style="height:20rpx;background: #eee;width:100%;"></view>
+  <view class="my-item" style='background:none;'>
+    联系人  {{userInfo.name}} 
+  </view>
+  <view class="my-item" style='background:none;'>
+    联系买家  {{userInfo.buyName}} 
+  </view>
+  <view class="my-item" style='background:none;'>
+    地区  {{userInfo.region}} 
+  </view>
+  <view style="height:20rpx;background: #eee;width:100%;"></view>
+  <view class="option-list">
+    <navigator class="option-item" url='/pages/select-address/index'>
+        <view class="flex-row option-content">
+            <view class="flex-grow-1 flex-row">
+                <view class="flex-grow-0 flex-y-center">
+                    <image class="option-icon" src="/images/ico-addr.png"/>
+                </view>
+                <view class="flex-grow-1 flex-y-center">                    
+                  地址管理
+                </view>
+            </view>
+            <view class="flex-grow-0 flex-y-center">
+                <image class="option-jisntou" src="/images/icon-jiantou-r.png"/>
+            </view>
+        </view>
+    </navigator>
+    <navigator class="option-item" url="/pages/balance/index?utype=0">
+        <view class="flex-row option-content">
+            <view class="flex-grow-1 flex-row">
+                <view class="flex-grow-0 flex-y-center">
+                    <image class="option-icon" src="/images/icon-dollar.png"/>
+                </view>
+                <view class="flex-grow-1 flex-y-center">
+                  可用余额 {{balance}} 元
+                </view>
+            </view>
+            <view class="flex-grow-0 flex-y-center">
+                <image class="option-jisntou" src="/images/icon-jiantou-r.png"/>
+            </view>
+        </view>
+    </navigator>
+        <navigator class="option-item" url="/pages/notice/show">
+        <view class="flex-row option-content">
+            <view class="flex-grow-1 flex-row">
+                <view class="flex-grow-0 flex-y-center">
+                    <image class="option-icon" src="/images/icon-user-lx.png"/>
+                </view>
+                <view class="flex-grow-1 flex-y-center">
+                  消息中心
+                </view>
+            </view>
+            <view class="flex-grow-0 flex-y-center">
+                <image class="option-jisntou" src="/images/icon-jiantou-r.png"/>
+            </view>
+        </view>
+    </navigator>
+</view>
+<view style="height:20rpx;background: #eee;width:100%;"></view>
+<view class="option-list">
+  <navigator class="option-item" url='/pages/notice/show'>
+      <view class="flex-row option-content">
+          <view class="flex-grow-1 flex-row">
+              <view class="flex-grow-0 flex-y-center">
+                  <image class="option-icon" src="/images/icon-store.png"/>
+              </view>
+              <view class="flex-grow-1 flex-y-center">                    
+                卖家中心-邀您入驻
+              </view>
+          </view>
+      </view>
+  </navigator>
+</view>
+<view style="height:20rpx;background: #eee;width:100%;"></view>
+<view class="my-item" style="border:none;padding:0rpx;margin:0rpx;background:none;border:none;height:auto;line-height:auto;">
+  <button type="warn" bindtap="relogin">重新登录</button>
+</view>
