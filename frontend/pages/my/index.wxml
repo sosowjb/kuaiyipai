@@ -9,7 +9,7 @@
         </view>
     </view>
     <view class="flex-grow-0 flex-y-center">
-        <navigator class="my-address flex-y-center" url="/pages/my/setting">
+        <navigator class="my-address flex-y-center" url="/pages/setting/index">
             <i class="iconfont icon-fm-arrowright" />
             <text >设置</text>        
         </navigator>

@@ -1,0 +1,16 @@
+.headerAvater{
+  height: 80px;
+}
+.bottomborder{
+  height: 78px;
+  border-bottom: 1rpx solid #eee;
+}
+.avatar{
+  right: 4px;
+  top: 9px;
+  width: 64px;
+  height: 64px;
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center center;  
+}
