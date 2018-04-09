@@ -7,7 +7,7 @@
       </view>
   </view>
   <view class="flex-grow-0 flex-y-center">
-      <navigator class="flex-y-center" url="/pages/my/setting">
+      <navigator class="flex-y-center" url="/pages/balance-detail/index">
           <text>余额明细</text>
           <i class="iconfont icon-fm-arrowright" />      
       </navigator>
@@ -44,7 +44,7 @@
 </view>
 <view style="height:20rpx;background: #eee;width:100%;"></view>
 <view class="option-list">
-    <navigator class="option-item">
+    <navigator class="option-item" url="/pages/charge/index">
         <view class="flex-row option-content">
             <view class="flex-grow-1 flex-row">
                 <view class="flex-grow-0 flex-y-center">
@@ -59,7 +59,7 @@
             </view>
         </view>
     </navigator>
-    <navigator class="option-item" url="/pages/favorite/favorite">
+    <navigator class="option-item" url="/pages/withdraw/index">
         <view class="flex-row option-content">
             <view class="flex-grow-1 flex-row">
                 <view class="flex-grow-0 flex-y-center">

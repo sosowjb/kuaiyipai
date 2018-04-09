@@ -67,7 +67,7 @@
     联系人  {{userInfo.name}} 
   </view>
   <view class="my-item" style='background:none;'>
-    联系买家  {{userInfo.buyName}} 
+    联系买家  {{userInfo.buyerName}} 
   </view>
   <view class="my-item" style='background:none;'>
     地区  {{userInfo.region}} 
