@@ -1,0 +1,46 @@
+<view class="option-list">
+  <view class="option-item headerAvater" bindtap="changePic">
+      <view class="flex-row bottomborder">
+          <view class="flex-grow-1 flex-row headerAvater">
+              <view class="flex-grow-0 flex-y-center headerAvater">                    
+                头像
+              </view>
+          </view>
+          <view class="flex-grow-0 flex-y-center headerAvater">
+              <image wx:if="{{userInfo && userInfo.avatarUrl}}" class="avatar" src="{{userInfo.avatarUrl}}"/>
+              <i class="iconfont icon-fm-arrowright" />
+          </view>
+      </view>
+  </view>
+  <view class="option-item" bindtap="nikNameModal">
+      <view class="flex-row option-content">
+          <view class="flex-grow-1 flex-row">
+              <view class="flex-grow-0 flex-y-center">                    
+                昵称
+              </view>
+          </view>
+          <view class="flex-grow-0 flex-y-center">
+              <i class="iconfont icon-fm-arrowright" />
+          </view>
+      </view>
+  </view>
+  <view class="option-item" bindtap="telephoneModal">
+      <view class="flex-row option-content">
+          <view class="flex-grow-1 flex-row">
+              <view class="flex-grow-0 flex-y-center">                    
+                手机号
+              </view>
+          </view>
+          <view class="flex-grow-0 flex-y-center">
+              <i class="iconfont icon-fm-arrowright" />
+          </view>
+      </view>
+  </view>
+</view>
+
+<modal hidden="{{nameModal}}" title="修改昵称" confirm-text="提交" cancel-text="重置" bindcancel="nikCancel" bindconfirm="nikConfirm">  
+    <input type='text'placeholder="请输入昵称" auto-focus/>  
+</modal>  
+<modal hidden="{{telModal}}" title="绑定手机号" confirm-text="提交" cancel-text="重置" bindcancel="telCancel" bindconfirm="telConfirm">  
+    <input type='text'placeholder="请输入手机号" auto-focus/>  
+</modal>

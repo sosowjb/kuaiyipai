@@ -1,0 +1,44 @@
+<view wx:for="{{addressList}}" wx:key="{{index}}" style='fone-size:18px;'>  
+  <view class='flex-row margin-inner'>
+      <view class="flex-grow-1 flex-y-center flex-row">
+          <view class="flex-grow-0">
+              <text>{{item.linkMan}}</text>
+          </view>
+      </view>
+      <view class="flex-grow-0 flex-y-center">
+          <text>{{item.mobile}}</text>
+      </view>
+  </view>  
+  <view class='flex-row margin-inner'>
+      <text>{{item.address}}</text>    
+  </view>
+  <view style='border-bottom:1px #eee solid;height:2px;'></view>
+  <view class='flex-row margin-inner'>
+      <view class="flex-grow-2 flex-y-center">
+        <view class="flex-grow-0" wx:if="{{item.isdefault}}" style='color:green'>
+            <i class='iconfont icon-fm-selected' />
+            <text>默认收货地址</text>
+        </view>
+        <view class="flex-grow-0" wx:if="{{!item.isdefault}}" bindtap="setDefault" data-id="{{item.id}}">
+            <checkbox value="{{index}}" />
+            <text>设为默认</text>
+        </view>
+      </view>
+      <view class="flex-grow-1 flex-y-center" bindtap="editAddress" data-id="{{item.id}}">
+            <view class="flex-grow-0">
+                <i class='iconfont icon-fm-edit' />
+                <text>编辑</text>
+            </view>
+      </view>
+      <view class="flex-grow-0 flex-y-center" bindtap="deleteAddress" data-id="{{item.id}}">
+            <view class="flex-grow-0">
+                <i class='iconfont icon-fm-delete' />
+                <text>删除</text>
+            </view>
+      </view>   
+  </view>  
+  <view style="height:20rpx;background: #eee;width:100%;"></view>  
+</view>
+  <view>
+    <button type='primary' size='default' bindtap="addAddress">新增收货地址</button>
+  </view>
