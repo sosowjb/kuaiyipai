@@ -101,15 +101,18 @@
 </view>
     </view>
            <view class='stateInfo'>
-           <view class='state'>正在拍卖<i></i></view>
-                    <view class='endTime'>距离结束：
-                    {{djs.day}}<em wx:if='{{!(djs.clock=="已经结束")}}'>天</em>
-                    {{djs.h}}<em wx:if='{{!(djs.clock=="已经结束")}}'>时</em>
-                    {{djs.m}}<em wx:if='{{!(djs.clock=="已经结束")}}'>分</em>
-                    {{djs.s}}<em wx:if='{{!(djs.clock=="已经结束")}}'>秒</em>
+           <view wx:if='{{!(djs.clock=="已经结束" || goodsInfo.status==2)}}' class='state'>正在拍卖<i></i></view>
+                    <view wx:if='{{!(djs.clock=="已经结束" || goodsInfo.status==2)}}' class='endTime'>距离结束：
+                    {{djs.day}}<em >天</em>
+                    {{djs.h}}<em>时</em>
+                    {{djs.m}}<em>分</em>
+                    {{djs.s}}<em>秒</em>
+                    </view>
+                    <view wx:if='{{djs.clock=="已经结束" || goodsInfo.status==2}}' class='endTime'>距离结束：已经结束
                     </view>
            </view>
-             <view class='bidBtns'><button bindtap='bid'>出价</button></view>
+             <view wx:if='{{!(djs.clock=="已经结束" || goodsInfo.status==2)}}' class='bidBtns'><button bindtap='bid'>出价</button></view>
+             <view wx:if='{{djs.clock=="已经结束" || goodsInfo.status==2}}' class='bidBtns isgray'><button>结束</button></view>
             <view class='moneyInfo'>
                       <view><i class='iconfont .icon-fm-saleqi'></i>￥0元</view>
                       <view><i class='iconfont .icon-fm-salejia'></i>￥543元</view>

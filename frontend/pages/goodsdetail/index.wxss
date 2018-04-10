@@ -259,6 +259,15 @@ font-size: 24rpx;
     filter: grayscale(60%);
     opacity: .6;
 }
+.fixednumMask {
+    position: fixed;
+    width: 100%;
+    opacity: 0.38;
+    top: 0;
+    bottom: 0;
+    background-color: #000;
+    z-index: 999;
+}
 .bidTime {
     position: absolute;
     right: 0;
