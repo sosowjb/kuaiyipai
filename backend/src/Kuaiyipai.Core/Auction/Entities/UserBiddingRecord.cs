@@ -5,8 +5,8 @@ using Abp.Domain.Entities.Auditing;
 
 namespace Kuaiyipai.Auction.Entities
 {
-    [Table("AUC_BidRecords")]
-    public class UserBidRecord : CreationAuditedEntity<Guid>
+    [Table("AUC_BiddingRecords")]
+    public class UserBiddingRecord : CreationAuditedEntity<Guid>
     {
         [Required]
         public Guid ItemId { get; set; }

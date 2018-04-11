@@ -1427,7 +1427,7 @@ namespace Kuaiyipai.Migrations
                     b.ToTable("AUC_BalanceRecords");
                 });
 
-            modelBuilder.Entity("Kuaiyipai.Auction.Entities.UserBidRecord", b =>
+            modelBuilder.Entity("Kuaiyipai.Auction.Entities.UserBiddingRecord", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd();
@@ -1444,7 +1444,7 @@ namespace Kuaiyipai.Migrations
 
                     b.HasIndex("ItemId");
 
-                    b.ToTable("AUC_BidRecords");
+                    b.ToTable("AUC_BiddingRecords");
                 });
 
             modelBuilder.Entity("Kuaiyipai.Authorization.Roles.Role", b =>
@@ -2103,7 +2103,7 @@ namespace Kuaiyipai.Migrations
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
-            modelBuilder.Entity("Kuaiyipai.Auction.Entities.UserBidRecord", b =>
+            modelBuilder.Entity("Kuaiyipai.Auction.Entities.UserBiddingRecord", b =>
                 {
                     b.HasOne("Kuaiyipai.Auction.Entities.ItemAuctioning", "Item")
                         .WithMany()

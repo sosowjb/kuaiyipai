@@ -1291,7 +1291,7 @@ namespace Kuaiyipai.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "AUC_BidRecords",
+                name: "AUC_BiddingRecords",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(nullable: false),
@@ -1302,9 +1302,9 @@ namespace Kuaiyipai.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_AUC_BidRecords", x => x.Id);
+                    table.PrimaryKey("PK_AUC_BiddingRecords", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_AUC_BidRecords_AUC_Items_Auctioning_ItemId",
+                        name: "FK_AUC_BiddingRecords_AUC_Items_Auctioning_ItemId",
                         column: x => x.ItemId,
                         principalTable: "AUC_Items_Auctioning",
                         principalColumn: "Id",
@@ -1707,8 +1707,8 @@ namespace Kuaiyipai.Migrations
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_AUC_BidRecords_ItemId",
-                table: "AUC_BidRecords",
+                name: "IX_AUC_BiddingRecords_ItemId",
+                table: "AUC_BiddingRecords",
                 column: "ItemId");
 
             migrationBuilder.CreateIndex(
@@ -1873,7 +1873,7 @@ namespace Kuaiyipai.Migrations
                 name: "AUC_BalanceRecords");
 
             migrationBuilder.DropTable(
-                name: "AUC_BidRecords");
+                name: "AUC_BiddingRecords");
 
             migrationBuilder.DropTable(
                 name: "AUC_ItemPictures");

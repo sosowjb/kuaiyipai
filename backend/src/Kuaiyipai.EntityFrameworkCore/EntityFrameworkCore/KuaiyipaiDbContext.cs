@@ -65,7 +65,7 @@ namespace Kuaiyipai.EntityFrameworkCore
 
         public virtual DbSet<UserBalanceRecord> UserBalanceRecords { get; set; }
 
-        public virtual DbSet<UserBidRecord> UserBidRecords { get; set; }
+        public virtual DbSet<UserBiddingRecord> UserBidRecords { get; set; }
 
 
         public KuaiyipaiDbContext(DbContextOptions<KuaiyipaiDbContext> options)
