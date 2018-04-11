@@ -2,58 +2,58 @@
 
      <view class="weui-panel weui-panel_access">
      <view class="weui-panel__hd">订单状态</view>
-      <view class="weui-panel__bd">
+      <view wx:if="{{orderStatus==4}}" class="weui-panel__bd">
         <navigator url="" class="weui-cell weui-cell_access" hover-class="weui-cell_active">
           <view class="weui-cell__hd">
             <i style='margin-right: 5px;vertical-align: middle;font-size:20px' class='iconfont icon-fm-receipt'></i>
           </view>
           <view class="weui-media-box__bd weui-media-box__bd_in-appmsg">
             <view class="weui-media-box__title">已确认收货</view>
-            <view class="weui-media-box__desc">收货时间:2018年03月01日 13:38</view>
+            <view class="weui-media-box__desc">收货时间:{{statusTime}}</view>
           </view>
         </navigator>
       </view>
-      <view class="weui-panel__bd">
+      <view wx:if="{{orderStatus==3}}" class="weui-panel__bd">
         <navigator url="" class="weui-cell weui-cell_access" hover-class="weui-cell_active">
           <view class="weui-cell__hd">
             <i style='margin-right: 5px;vertical-align: middle;font-size:20px' class='iconfont icon-fm-delivery'></i>
           </view>
           <view class="weui-media-box__bd weui-media-box__bd_in-appmsg">
             <view class="weui-media-box__title">已发货</view>
-            <view class="weui-media-box__desc">发货时间:2018年03月01日 13:38</view>
+            <view class="weui-media-box__desc">发货时间:{{statusTime}}</view>
           </view>
         </navigator>
       </view>
-      <view class="weui-panel__bd">
+      <view wx:if="{{orderStatus==2}}" class="weui-panel__bd">
         <navigator url="" class="weui-cell weui-cell_access" hover-class="weui-cell_active">
           <view class="weui-cell__hd">
             <i style='margin-right: 5px;vertical-align: middle;font-size:20px' class='iconfont icon-fm-notpaid'></i>
           </view>
           <view class="weui-media-box__bd weui-media-box__bd_in-appmsg">
             <view class="weui-media-box__title">已付款</view>
-            <view class="weui-media-box__desc">付款时间:2018年03月01日 13:38</view>
+            <view class="weui-media-box__desc">付款时间:{{statusTime}}</view>
           </view>
         </navigator>
       </view>
-            <view class="weui-panel__bd">
+      <view  wx:if="{{orderStatus==0}}"  class="weui-panel__bd">
         <navigator url="" class="weui-cell weui-cell_access" hover-class="weui-cell_active">
           <view class="weui-cell__hd">
             <i style='margin-right: 5px;vertical-align: middle;font-size:20px' class='iconfont icon-fm-opensale'></i>
           </view>
           <view class="weui-media-box__bd weui-media-box__bd_in-appmsg">
             <view class="weui-media-box__title">开始竞拍</view>
-            <view class="weui-media-box__desc">开始时间:2018年03月01日 13:38</view>
+            <view class="weui-media-box__desc">开始时间:{{statusTime}}</view>
           </view>
         </navigator>
       </view>
-            <view class="weui-panel__bd">
-        <navigator url="" class="weui-cell weui-cell_access" hover-class="weui-cell_active">
+      <view wx:if="{{orderStatus==1}}"  class="weui-panel__bd">
+        <navigator class="weui-cell weui-cell_access" hover-class="weui-cell_active">
           <view class="weui-cell__hd">
             <i style='margin-right: 5px;vertical-align: middle;font-size:20px' class='iconfont icon-fm-heterodyne'></i>
           </view>
           <view class="weui-media-box__bd weui-media-box__bd_in-appmsg">
-            <view class="weui-media-box__title">竞拍成功</view>
-            <view class="weui-media-box__desc">成功时间:2018年03月01日 13:38</view>
+            <view  class="weui-media-box__title">竞拍成功</view>
+            <view class="weui-media-box__desc">成功时间:{{statusTime}}</view>
           </view>
         </navigator>
       </view>
@@ -68,9 +68,9 @@
           <image class="weui-media-box__thumb" src="{{goodspic}}" />
           </view>
           <view class="weui-media-box__bd weui-media-box__bd_in-appmsg">
-            <view class="weui-media-box__title">昭和时代铁壶</view>
-            <view class="weui-media-box__desc">成交金额：1000元</view>
-            <view class="weui-media-box__desc">成交时间：2018年03月03日 22:24</view>
+            <view class="weui-media-box__title">{{goodsName}}</view>
+            <view class="weui-media-box__desc">成交金额：{{dealPrice}}元</view>
+            <view class="weui-media-box__desc">成交时间：{{dealTime}}</view>
         </view>
      </navigator>
    </view>
@@ -80,17 +80,17 @@
             <view class="weui-form-preview__bd">
                 <view class="weui-form-preview__item">
                     <view class="weui-form-preview__label orderdetaillabel">卖家电话</view>
-                    <view class="weui-form-preview__value orderdetailvalue">18500189360</view>
-                    <view class='weui-form-preview__value weui-cell__ft'><i class='iconfont icon-fm-telephoneimg iml'></i><i class='iconfont icon-fm-privateletter iml'></i></view>
+                    <view class="weui-form-preview__value orderdetailvalue">{{sellerTel}}</view>
+                    <view class='weui-form-preview__value weui-cell__ft'><text bindtap='call' data-text="{{sellerTel}}" class='iconfont icon-fm-telephoneimg iml'></text></view>
                 </view>
                 <view class="weui-form-preview__item">
                     <view class="weui-form-preview__label orderdetaillabel">拍品编号</view>
-                    <view class="weui-form-preview__value orderdetailvalue">412990</view>
-                    <view class='weui-form-preview__value weui-cell__ft'><i class='iconfont icon-fm-copy iml'></i></view>
+                    <view class="weui-form-preview__value orderdetailvalue">{{auctionNum}}</view>
+                    <view bindtap='copyNum' data-text="{{auctionNum}}" class='weui-form-preview__value weui-cell__ft'><i class='iconfont icon-fm-copy iml'></i></view>
                 </view>
                 <view class="weui-form-preview__item">
                     <view class="weui-form-preview__label orderdetaillabel">货款交易号</view>
-                    <view class="weui-form-preview__value orderdetailvalue">198999er33443434</view>
+                    <view class="weui-form-preview__value orderdetailvalue">{{goodsPriceNum}}</view>
                 </view>
             </view>
         </view>
@@ -99,16 +99,16 @@
             <view class="weui-form-preview__bd">
                 <view class="weui-form-preview__item">
                     <view class="weui-form-preview__label orderdetaillabel">收货人</view>
-                    <view class="weui-form-preview__value orderdetailvalue">王家兵</view>
-                     <view style='color:black' class='weui-form-preview__value weui-cell__ft'>18500189360</view>
+                    <view class="weui-form-preview__value orderdetailvalue">{{consigneeName}}</view>
+                     <view style='color:black' class='weui-form-preview__value weui-cell__ft'>{{consigneeTel}}</view>
                 </view>
                 <view class="weui-form-preview__item">
                 <view class="weui-form-preview__label orderdetaillabel"></view>
-                <view style='margin-left:6em;' class='weui-form-preview__value orderdetailvalue'>北京市 北京市 昌平区 霍营华龙苑中里7-2-501</view>
+                <view style='margin-left:6em;' class='weui-form-preview__value orderdetailvalue'>{{address}}</view>
                 </view>
                 <view class="weui-form-preview__item">
                     <view class="weui-form-preview__label orderdetaillabel">发货方式</view>
-                    <view class="weui-form-preview__value orderdetailvalue">198999er33443434</view>
+                    <view class="weui-form-preview__value orderdetailvalue">{{deliveryType}}</view>
                 </view>
             </view>
         </view>
