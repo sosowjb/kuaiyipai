@@ -36,10 +36,6 @@
     <Reference Include="System.Transactions" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="KYP\Category\" />
-  </ItemGroup>
-
   <PropertyGroup Condition="'$(TargetFramework)'=='net461'">
     <DefineConstants>FEATURE_LDAP;FEATURE_SIGNALR</DefineConstants>
   </PropertyGroup>

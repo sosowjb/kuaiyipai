@@ -1,5 +1,6 @@
 ﻿using Abp.IdentityServer4;
 using Abp.Zero.EntityFrameworkCore;
+using Kuaiyipai.Auction.Entities;
 using Kuaiyipai.Authorization.Roles;
 using Kuaiyipai.Authorization.Users;
 using Kuaiyipai.Chat;
@@ -30,6 +31,42 @@ namespace Kuaiyipai.EntityFrameworkCore
         public virtual DbSet<Invoice> Invoices { get; set; }
 
         public virtual DbSet<PersistedGrantEntity> PersistedGrants { get; set; }
+
+
+        public virtual DbSet<Address> Addresses { get; set; }
+
+        public virtual DbSet<Area> Areas { get; set; }
+
+        public virtual DbSet<Category> Categories { get; set; }
+
+        public virtual DbSet<Pillar> Pillars { get; set; }
+
+        public virtual DbSet<ItemDrafting> ItemsDrafting { get; set; }
+
+        public virtual DbSet<ItemAuctioning> ItemsAuctioning { get; set; }
+
+        public virtual DbSet<ItemCompleted> ItemsCompleted { get; set; }
+
+        public virtual DbSet<ItemTerminated> ItemsTerminated { get; set; }
+
+        public virtual DbSet<ItemPic> ItemPictures { get; set; }
+
+        public virtual DbSet<OrderWaitingForPayment> OrdersWaitingForPayment { get; set; }
+
+        public virtual DbSet<OrderWaitingForSending> OrdersWaitingForSending { get; set; }
+
+        public virtual DbSet<OrderWaitingForReceiving> OrdersWaitingForReceiving { get; set; }
+
+        public virtual DbSet<OrderWaitingForEvaluating> OrdersWaitingForEvaluating { get; set; }
+
+        public virtual DbSet<OrderCompleted> OrdersCompleted { get; set; }
+
+        public virtual DbSet<UserBalance> UserBalances { get; set; }
+
+        public virtual DbSet<UserBalanceRecord> UserBalanceRecords { get; set; }
+
+        public virtual DbSet<UserBiddingRecord> UserBidRecords { get; set; }
+
 
         public KuaiyipaiDbContext(DbContextOptions<KuaiyipaiDbContext> options)
             : base(options)

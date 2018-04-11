@@ -74,5 +74,7 @@ namespace Kuaiyipai.Authorization.Users
             SignInToken = Guid.NewGuid().ToString();
             SignInTokenExpireTimeUtc = Clock.Now.AddMinutes(1).ToUniversalTime();
         }
+
+        public string WeChatId { get; set; }
     }
 }

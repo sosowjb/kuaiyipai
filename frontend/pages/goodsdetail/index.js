@@ -82,7 +82,7 @@ Page({
         }
       ],
       status:1,//拍卖状态【1，正在拍卖，0是还未开始,2结束】
-      endTime:'2018-4-02 15:30'
+      endTime:'2018-4-01 15:30'
     },
 
     auctionInfo:[//拍卖情况
@@ -100,7 +100,7 @@ Page({
         nickname: "xiaoMing",
         price: 100,
         isBid: false,//是否中标
-        bidTime: "2018/04/01 15:44"//投标时间
+        bidTime: "2018/04/05 15:44"//投标时间
       }
       ]
   },
@@ -215,13 +215,21 @@ function countdown(that) {
   var total_micro_second = EndTime - NowTime || [];
   // 渲染倒计时时钟
   var second = Math.floor(total_micro_second / 1000);
-  if(second==0)
+  console.log(second);
+  if(second<=0)
   {
+    if (that.data.goodsInfo.status==1)//说明后台状态还未结束，需要修改状态
+    {
+
+    }
+
     that.setData({
     "djs.clock":"已经结束"
     });
-    clearTimeout(this.data.djs.t);
+    clearTimeout(that.data.djs.t);
   }
+  else
+  {
   that.setData({
     "djs.day": Math.floor(second / 3600 / 24),
     "djs.h": Math.floor(second / 3600 % 24),
@@ -234,7 +242,7 @@ function countdown(that) {
       countdown(that);
     }, 1000)
   });
-  
+  }
 }
 
 // 时间格式化输出，如11:03 25:19 每1s都会调用一次
