@@ -22,10 +22,6 @@ namespace Kuaiyipai.Auction.Entities
         public long SellerId { get; set; }
 
         [Required]
-        [StringLength(15)]
-        public string ContactPhoneNumber { get; set; }
-
-        [Required]
         public Guid AddressId { get; set; }
 
         [ForeignKey("AddressId")]

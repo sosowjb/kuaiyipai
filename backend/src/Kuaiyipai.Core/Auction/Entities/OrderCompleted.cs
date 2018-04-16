@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Kuaiyipai.Auction.Entities
@@ -8,5 +9,8 @@ namespace Kuaiyipai.Auction.Entities
     {
         [Range(1, 5)]
         public int? EvaluationLevel { get; set; }
+
+        [Required]
+        public DateTime CompletedTime { get; set; }
     }
 }
