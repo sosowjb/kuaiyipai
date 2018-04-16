@@ -13,6 +13,10 @@ namespace Kuaiyipai.Auction.Address.Dto
 
         public string Street { get; set; }
 
+        public string Receiver { get; set; }
+
+        public string ContactPhoneNumber { get; set; }
+
         public bool IsDefault { get; set; }
     }
 }

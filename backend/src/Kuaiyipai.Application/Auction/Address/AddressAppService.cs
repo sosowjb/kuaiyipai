@@ -32,7 +32,7 @@ namespace Kuaiyipai.Auction.Address
             {
                 if (input.IsDefault)
                 {
-                    var addresses = await _addressRepository.GetAll().Where(a => a.UserId == AbpSession.UserId.Value).ToListAsync();
+                    var addresses = await _addressRepository.GetAll().Where(a => a.CreatorUserId == AbpSession.UserId).ToListAsync();
                     foreach (var address in addresses)
                     {
                         address.IsDefault = false;
@@ -46,8 +46,9 @@ namespace Kuaiyipai.Auction.Address
                     CityId = input.CityId,
                     DistrictId = input.DistrictId,
                     Street = input.Street,
-                    IsDefault = input.IsDefault,
-                    UserId = AbpSession.UserId.Value
+                    Receiver = input.Receiver,
+                    ContactPhoneNumber = input.ContactPhoneNumber,
+                    IsDefault = input.IsDefault
                 });
             }
             throw new UserFriendlyException("用户ID不存在");
@@ -60,13 +61,15 @@ namespace Kuaiyipai.Auction.Address
             address.CityId = input.CityId;
             address.DistrictId = input.DistrictId;
             address.Street = input.Street;
+            address.Receiver = input.Receiver;
+            address.ContactPhoneNumber = input.ContactPhoneNumber;
             await _addressRepository.UpdateAsync(address);
         }
 
         [UnitOfWork]
         public async Task SetDefault(EntityDto<Guid> input)
         {
-            var addresses = await _addressRepository.GetAll().Where(a => a.UserId == AbpSession.UserId.Value).ToListAsync();
+            var addresses = await _addressRepository.GetAll().Where(a => a.CreatorUserId == AbpSession.UserId).ToListAsync();
             foreach (var address in addresses)
             {
                 address.IsDefault = address.Id == input.Id;
@@ -92,7 +95,7 @@ namespace Kuaiyipai.Auction.Address
 
         public async Task<PagedResultDto<GetAddressesOutputDto>> GetAddress(GetAddressesInputDto input)
         {
-            var query = _addressRepository.GetAll().Where(a => a.UserId == AbpSession.UserId.Value);
+            var query = _addressRepository.GetAll().Where(a => a.CreatorUserId == AbpSession.UserId);
             if (!input.Sorting.IsNullOrEmpty())
             {
                 query = query.OrderBy(input.Sorting);
@@ -112,7 +115,9 @@ namespace Kuaiyipai.Auction.Address
                     address.IsDefault,
                     Province = province.Name,
                     address.CityId,
-                    address.DistrictId
+                    address.DistrictId,
+                    address.Receiver,
+                    address.ContactPhoneNumber
                 }).Join(cityQuery, address => address.CityId, city => city.Id, (address, city) => new
                 {
                     address.Id,
@@ -120,7 +125,9 @@ namespace Kuaiyipai.Auction.Address
                     address.IsDefault,
                     address.Province,
                     City = city.Name,
-                    address.DistrictId
+                    address.DistrictId,
+                    address.Receiver,
+                    address.ContactPhoneNumber
                 }).Join(districtQuery, address => address.DistrictId, district => district.Id, (address, district) => new GetAddressesOutputDto
                 {
                     Id = address.Id,
@@ -128,7 +135,9 @@ namespace Kuaiyipai.Auction.Address
                     IsDefault = address.IsDefault,
                     Province = address.Province,
                     City = address.City,
-                    District = district.Name
+                    District = district.Name,
+                    Receiver = address.Receiver,
+                    ContactPhoneNumber = address.ContactPhoneNumber
                 }).ToListAsync();
 
             return new PagedResultDto<GetAddressesOutputDto>(count, list);

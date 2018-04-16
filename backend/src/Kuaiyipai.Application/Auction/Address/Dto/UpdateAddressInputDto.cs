@@ -18,5 +18,13 @@ namespace Kuaiyipai.Auction.Address.Dto
         [Required]
         [StringLength(500)]
         public string Street { get; set; }
+
+        [Required]
+        [StringLength(50)]
+        public string Receiver { get; set; }
+
+        [Required]
+        [StringLength(50)]
+        public string ContactPhoneNumber { get; set; }
     }
 }
