@@ -1,28 +1,33 @@
 const app = getApp()
+const APP_ID = 'wxbf4f4e48ba291877';
+const APP_SECRET = 'ff172c069aaccbe4fa1d5743c4e89eba';
 
 Page({
 	data: {
     balance:0,
     freeze:0,
     score:0,
-    score_sign_continuous:0
+    score_sign_continuous:0,
+    waitPay: 0,
+    waitSend: 0,
+    waitRevice: 0
   },
 	onLoad() {
     
 	},	
   onShow() {
     this.getUserInfo();
-    this.setData({
-      version: app.globalData.version
-    });
-    this.getUserApiInfo();
+    this.getUserOrder();
     this.getUserAmount();
-    this.checkScoreSign();
   },	
   getUserInfo: function (cb) {
       var that = this
       wx.login({
-        success: function () {
+        success: function (res) {
+          console.info(res);
+          // 访问后台进行登陆操作
+
+          // 获取用户基础信息
           wx.getUserInfo({
             success: function (res) {
               that.setData({
@@ -33,66 +38,7 @@ Page({
         }
       })
   },
-  aboutUs : function () {
-    wx.showModal({
-      title: '关于我们',
-      content: '欢迎使用快易拍，当前版本号V1.0！',
-      showCancel:false
-    })
-  },
-  getPhoneNumber: function(e) {
-    if (!e.detail.errMsg || e.detail.errMsg != "getPhoneNumber:ok") {
-      wx.showModal({
-        title: '提示',
-        content: '无法获取手机号码',
-        showCancel: false
-      })
-      return;
-    }
-    var that = this;
-    wx.request({
-      url: 'https://api.it120.cc/' + app.globalData.subDomain + '/user/wxapp/bindMobile',
-      data: {
-        token: app.globalData.token,
-        encryptedData: e.detail.encryptedData,
-        iv: e.detail.iv
-      },
-      success: function (res) {
-        if (res.data.code == 0) {
-          wx.showToast({
-            title: '绑定成功',
-            icon: 'success',
-            duration: 2000
-          })
-          that.getUserApiInfo();
-        } else {
-          wx.showModal({
-            title: '提示',
-            content: '绑定失败',
-            showCancel: false
-          })
-        }
-      }
-    })
-  },
-  getUserApiInfo: function () {
-    var that = this;
-    wx.request({
-      url: 'https://api.it120.cc/' + app.globalData.subDomain + '/user/detail',
-      data: {
-        token: app.globalData.token
-      },
-      success: function (res) {
-        if (res.data.code == 0) {
-          that.setData({
-            apiUserInfoMap: res.data.data,
-            userMobile: res.data.data.base.mobile
-          });
-        }
-      }
-    })
-
-  },
+  // 获取用户账户信息
   getUserAmount: function () {
     var that = this;
     wx.request({
@@ -110,44 +56,29 @@ Page({
         }
       }
     })
-
   },
-  checkScoreSign: function () {
+  // 获取用户订单情况
+  getUserOrder:function(){
     var that = this;
     wx.request({
-      url: 'https://api.it120.cc/' + app.globalData.subDomain + '/score/today-signed',
+      url: 'http://localhost:22742/api/services/app/Order/GetEachTypeOrderCount',
       data: {
-        token: app.globalData.token
+        token: app.globalData.token,
+        userId:0,
+        userType:0
       },
       success: function (res) {
-        if (res.data.code == 0) {
+        if (res.data.success) {
           that.setData({
-            score_sign_continuous: res.data.data.continuous
+            waitPay: res.data.result.waitPay,
+            waitSend:res.data.result.waitSend,
+            waitReceive:res.data.result.waitReceive
           });
+          //console.info(count_data);
         }
       }
     })
-  },
-  scoresign: function () {
-    var that = this;
-    wx.request({
-      url: 'https://api.it120.cc/' + app.globalData.subDomain + '/score/sign',
-      data: {
-        token: app.globalData.token
-      },
-      success: function (res) {
-        if (res.data.code == 0) {
-          that.getUserAmount();
-          that.checkScoreSign();
-        } else {
-          wx.showModal({
-            title: '错误',
-            content: res.data.msg,
-            showCancel: false
-          })
-        }
-      }
-    })
+
   },
   relogin:function(){
     var that = this;

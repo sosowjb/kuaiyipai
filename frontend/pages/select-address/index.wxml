@@ -2,24 +2,24 @@
   <view class='flex-row margin-inner'>
       <view class="flex-grow-1 flex-y-center flex-row">
           <view class="flex-grow-0">
-              <text>{{item.linkMan}}</text>
+              <text>{{item.receiver}}</text>
           </view>
       </view>
       <view class="flex-grow-0 flex-y-center">
-          <text>{{item.mobile}}</text>
+          <text>{{item.contactPhoneNumber}}</text>
       </view>
   </view>  
   <view class='flex-row margin-inner'>
-      <text>{{item.address}}</text>    
+      <text>{{item.province}}{{item.city}}{{item.district}}{{item.street}}</text>    
   </view>
   <view style='border-bottom:1px #eee solid;height:2px;'></view>
   <view class='flex-row margin-inner'>
       <view class="flex-grow-2 flex-y-center">
-        <view class="flex-grow-0" wx:if="{{item.isdefault}}" style='color:green'>
+        <view class="flex-grow-0" wx:if="{{item.isDefault}}" style='color:green'>
             <i class='iconfont icon-fm-selected' />
             <text>默认收货地址</text>
         </view>
-        <view class="flex-grow-0" wx:if="{{!item.isdefault}}" bindtap="setDefault" data-id="{{item.id}}">
+        <view class="flex-grow-0" wx:if="{{!item.isDefault}}" bindtap="setDefault" data-id="{{item.id}}">
             <checkbox value="{{index}}" />
             <text>设为默认</text>
         </view>

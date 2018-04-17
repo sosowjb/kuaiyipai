@@ -25,8 +25,8 @@
                    <i class="iconfont icon-fm-notpaid" style="font-size:20px;" />
                 </view>
                 <view>待付款</view>
-                <view class="num-icon" wx:if="{{count_data.status_0 && count_data.status_0 > 0}}">
-                    {{count_data.status_0}}
+                <view class="num-icon" wx:if="{{waitPay > 0}}">
+                    {{waitPay}}
                 </view>
             </navigator>
         </view>
@@ -36,8 +36,8 @@
                    <i class="iconfont icon-fm-waitdelivery" style="font-size:20px;" />
                 </view>
                 <view>待发货</view>
-                <view class="num-icon" wx:if="{{count_data.status_1 && count_data.status_1 > 0}}">
-                    {{count_data.status_1}}
+                <view class="num-icon" wx:if="{{waitSend > 0}}">
+                    {{waitSend}}
                 </view>
             </navigator>
         </view>
@@ -47,8 +47,8 @@
                    <i class="iconfont icon-fm-notreceipt" style="font-size:20px;" />
                 </view>
                 <view>待收货</view>
-                <view class="num-icon" wx:if="{{count_data.status_2 && count_data.status_2 > 0}}">
-                    {{count_data.status_2}}
+                <view class="num-icon" wx:if="{{waitReceive > 0}}">
+                    {{waitReceive}}
                 </view>
             </navigator>
         </view>

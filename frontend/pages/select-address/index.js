@@ -3,42 +3,7 @@
 var app = getApp()
 Page({
   data: {
-    addressList:[{
-      id:'1',
-      linkMan:"yets",
-      mobile:'123333',
-      address:'123123123123213213',
-      isdefault:true
-    },
-    {
-      id: '2',
-      linkMan: "eee",
-      mobile: '123333',
-      address: '123123123123213213',
-      isdefault: false
-    },
-    {
-      id: '3',
-      linkMan: "rrrr",
-      mobile: '123333',
-      address: '123123123123213213',
-      isdefault: false
-    },
-    {
-      id: '4',
-      linkMan: "www",
-      mobile: '6666666',
-      address: 'dfsdfsfsd',
-      isdefault: false
-    },
-    {
-      id: '5',
-      linkMan: "ggg",
-      mobile: '55555',
-      address: 'sadadsadassf',
-      isdefault: false
-    }
-    ]
+    addressList:[]
   },
   addAddress : function () {
     wx.navigateTo({
@@ -59,7 +24,7 @@ Page({
       success: function (res) {
         if (res.confirm) {
           wx.request({
-            url: 'https://api.it120.cc/' + app.globalData.subDomain + '/user/shipping-address/delete',
+            url: 'http://localhost:22742/api/services/app/Address/DeleteAddress',
             data: {
               token: app.globalData.token,
               id: id
@@ -76,11 +41,45 @@ Page({
     console.info(e.currentTarget.dataset.id);
   },
   setDefault:function(e){
-    console.info(e.currentTarget.dataset.id);
+    //console.info(e.currentTarget.dataset.id);
+    wx.request({
+      url: 'http://localhost:22742/api/services/app/Address/SetDefault',
+      data: {
+        token: app.globalData.token,
+        id: e.currentTarget.dataset.id
+      },
+      success: function (res) {
+        if (res.data.success) {
+          that.setData({
+            addressList: res.data.result
+          });
+        }
+      }
+    })
   } ,
   onLoad: function () {
     console.log('onLoad')   
   },
   onShow : function () {
+    this.getUserAddressList();
+  },
+  // 获取用户地址列表
+  getUserAddressList:function(){
+    var that = this;
+    wx.request({
+      url: 'http://localhost:22742/api/services/app/Address/GetAddress',
+      data: {
+        token: app.globalData.token,
+        userId: 0,
+        userType: 0
+      },
+      success: function (res) {
+        if (res.data.success) {
+          that.setData({
+            addressList: res.data.result
+          });
+        }
+      }
+    })
   }
 })
