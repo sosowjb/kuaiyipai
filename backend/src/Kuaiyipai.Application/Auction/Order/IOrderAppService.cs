@@ -25,5 +25,7 @@ namespace Kuaiyipai.Auction.Order
         Task<PagedResultDto<GetWaitingForEvaluatingOrdersOutputDto>> GetWaitingForEvaluatingOrdersAsSeller(GetWaitingForEvaluatingOrdersInputDto input);
 
         Task<PagedResultDto<GetCompletedOrdersOutputDto>> GetCompletedOrdersAsSeller(GetCompletedOrdersInputDto input);
+
+        Task<GetEachTypeOrderCountOutputDto> GetEachTypeOrderCount(GetEachTypeOrderCountInputDto inputDto);
     }
 }

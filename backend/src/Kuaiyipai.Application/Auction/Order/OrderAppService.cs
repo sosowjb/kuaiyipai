@@ -84,5 +84,23 @@ namespace Kuaiyipai.Auction.Order
         {
             throw new NotImplementedException();
         }
+
+        public async Task<GetEachTypeOrderCountOutputDto> GetEachTypeOrderCount(GetEachTypeOrderCountInputDto inputDto)
+        {
+            try
+            {
+                var output = new GetEachTypeOrderCountOutputDto();
+
+                output.WaitPay = await _paymentRepository.CountAsync(t => inputDto.UserType == 0 ? t.SellerId == inputDto.UserId : t.BuyerId == inputDto.UserId);
+                output.WaitReceive = await _receivingRepository.CountAsync(t => inputDto.UserType == 0 ? t.SellerId == inputDto.UserId : t.BuyerId == inputDto.UserId);
+                output.WaitSend = await _sendingRepository.CountAsync(t => inputDto.UserType == 0 ? t.SellerId == inputDto.UserId : t.BuyerId == inputDto.UserId);
+
+                return output;
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
+        }
     }
 }
