@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using Abp.Authorization;
 using Abp.Configuration;
+using Abp.Domain.Uow;
 using Abp.Extensions;
 using Abp.Runtime.Session;
 using Abp.UI;
@@ -65,7 +66,7 @@ namespace Kuaiyipai.Authorization.Accounts
 
             return new IsTenantAvailableOutput(TenantAvailabilityState.Available, tenant.Id, _webUrlService.GetServerRootAddress(input.TenancyName));
         }
-
+        
         public async Task<RegisterOutput> Register(RegisterInput input)
         {
             if (UseCaptchaOnRegistration())
@@ -79,7 +80,7 @@ namespace Kuaiyipai.Authorization.Accounts
                 input.EmailAddress,
                 input.UserName,
                 input.Password,
-                false,
+                true,
                 AppUrlService.CreateEmailActivationUrlFormat(AbpSession.TenantId)
             );
 

@@ -3,214 +3,140 @@ using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Security.Claims;
-using System.Text;
 using System.Threading.Tasks;
-using Abp;
-using Abp.AspNetCore.Mvc.Authorization;
-using Abp.AspNetZeroCore.Web.Authentication.External;
 using Abp.Authorization;
 using Abp.Authorization.Users;
-using Abp.Configuration;
-using Abp.Extensions;
+using Abp.Domain.Repositories;
+using Abp.Domain.Uow;
 using Abp.MultiTenancy;
-using Abp.Net.Mail;
-using Abp.Notifications;
-using Abp.Runtime.Caching;
 using Abp.Runtime.Security;
-using Abp.Runtime.Session;
-using Abp.Timing;
-using Abp.UI;
-using Abp.Zero.Configuration;
-using Kuaiyipai.Authentication.TwoFactor.Google;
 using Kuaiyipai.Authorization;
 using Kuaiyipai.Authorization.Impersonation;
 using Kuaiyipai.Authorization.Users;
-using Kuaiyipai.Identity;
-using Kuaiyipai.MultiTenancy;
-using Kuaiyipai.Notifications;
 using Kuaiyipai.Web.Authentication.JwtBearer;
-using Kuaiyipai.Web.Authentication.TwoFactor;
 using Kuaiyipai.Web.Models.TokenAuth;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
-using Microsoft.IdentityModel.Tokens;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace Kuaiyipai.Web.Controllers
 {
     [Route("api/[controller]/[action]")]
     public class TokenAuthController : KuaiyipaiControllerBase
     {
-        private const string UserIdentifierClaimType = "http://aspnetzero.com/claims/useridentifier";
+        private const string WeChatApi = "https://api.weixin.qq.com/sns/jscode2session?appid=APPID&secret=SECRET&js_code=JSCODE&grant_type=authorization_code";
 
         private readonly LogInManager _logInManager;
         private readonly ITenantCache _tenantCache;
-        private readonly AbpLoginResultTypeHelper _abpLoginResultTypeHelper;
         private readonly TokenAuthConfiguration _configuration;
-        private readonly UserManager _userManager;
-        private readonly ICacheManager _cacheManager;
-        private readonly IOptions<JwtBearerOptions> _jwtOptions;
-        private readonly IExternalAuthConfiguration _externalAuthConfiguration;
-        private readonly IExternalAuthManager _externalAuthManager;
-        private readonly UserRegistrationManager _userRegistrationManager;
         private readonly IImpersonationManager _impersonationManager;
         private readonly IUserLinkManager _userLinkManager;
-        private readonly IAppNotifier _appNotifier;
-        private readonly ISmsSender _smsSender;
-        private readonly IEmailSender _emailSender;
         private readonly IdentityOptions _identityOptions;
-        private readonly GoogleAuthenticatorProvider _googleAuthenticatorProvider;
+        private readonly IRepository<User, long> _userRepository;
+        private readonly IPasswordHasher<User> _passwordHasher;
 
         public TokenAuthController(
             LogInManager logInManager,
             ITenantCache tenantCache,
-            AbpLoginResultTypeHelper abpLoginResultTypeHelper,
             TokenAuthConfiguration configuration,
-            UserManager userManager,
-            ICacheManager cacheManager,
-            IOptions<JwtBearerOptions> jwtOptions,
-            IExternalAuthConfiguration externalAuthConfiguration,
-            IExternalAuthManager externalAuthManager,
-            UserRegistrationManager userRegistrationManager,
             IImpersonationManager impersonationManager,
             IUserLinkManager userLinkManager,
-            IAppNotifier appNotifier,
-            ISmsSender smsSender,
-            IEmailSender emailSender,
             IOptions<IdentityOptions> identityOptions,
-            GoogleAuthenticatorProvider googleAuthenticatorProvider)
+            IRepository<User, long> userRepository,
+            IPasswordHasher<User> passwordHasher)
         {
             _logInManager = logInManager;
             _tenantCache = tenantCache;
-            _abpLoginResultTypeHelper = abpLoginResultTypeHelper;
             _configuration = configuration;
-            _userManager = userManager;
-            _cacheManager = cacheManager;
-            _jwtOptions = jwtOptions;
-            _externalAuthConfiguration = externalAuthConfiguration;
-            _externalAuthManager = externalAuthManager;
-            _userRegistrationManager = userRegistrationManager;
             _impersonationManager = impersonationManager;
             _userLinkManager = userLinkManager;
-            _appNotifier = appNotifier;
-            _smsSender = smsSender;
-            _emailSender = emailSender;
-            _googleAuthenticatorProvider = googleAuthenticatorProvider;
+            _userRepository = userRepository;
+            _passwordHasher = passwordHasher;
             _identityOptions = identityOptions.Value;
         }
 
         [HttpPost]
+        [UnitOfWork(IsDisabled = true)]
         public async Task<AuthenticateResultModel> Authenticate([FromBody] AuthenticateModel model)
         {
-            var loginResult = await GetLoginResultAsync(
-                model.UserNameOrEmailAddress,
-                model.Password,
-                GetTenancyNameOrNull()
-            );
+            // get open id
+            var api = WeChatApi
+                .Replace("APPID", KuaiyipaiWebCoreModule.AppId)
+                .Replace("SECRET", KuaiyipaiWebCoreModule.AppSecret)
+                .Replace("JSCODE", model.Code);
+            var s = await HttpHelper.Get(api, string.Empty);
+            var jo = (JObject)JsonConvert.DeserializeObject(s);
+            var openId = jo["openid"].ToString();
 
-            var returnUrl = model.ReturnUrl;
-
-            if (model.SingleSignIn.HasValue && model.SingleSignIn.Value && loginResult.Result == AbpLoginResultType.Success)
+            // login
+            var loginResult = await _logInManager.LoginAsync(openId, openId, GetTenancyNameOrNull());
+            if (loginResult.Result == AbpLoginResultType.Success)
             {
-                loginResult.User.SetSignInToken();
-                returnUrl = AddSingleSignInParametersToReturnUrl(model.ReturnUrl, loginResult.User.SignInToken, loginResult.User.Id, loginResult.User.TenantId);
-            }
+                await UpdateUser(loginResult.User, model.Name);
 
-            //Password reset
-            if (loginResult.User.ShouldChangePasswordOnNextLogin)
-            {
-                loginResult.User.SetNewPasswordResetCode();
+                //get access code
+                var accessToken = CreateAccessToken(CreateJwtClaims(loginResult.Identity));
                 return new AuthenticateResultModel
                 {
-                    ShouldResetPassword = true,
-                    PasswordResetCode = loginResult.User.PasswordResetCode,
-                    UserId = loginResult.User.Id,
-                    ReturnUrl = returnUrl
+                    AccessToken = accessToken,
+                    EncryptedAccessToken = GetEncrpyedAccessToken(accessToken),
+                    ExpireInSeconds = (int)_configuration.Expiration.TotalSeconds,
+                    UserId = loginResult.User.Id
                 };
             }
 
-            //Two factor auth
-            await _userManager.InitializeOptionsAsync(loginResult.Tenant?.Id);
-            string twoFactorRememberClientToken = null;
-            if (await IsTwoFactorAuthRequiredAsync(loginResult, model))
-            {
-                if (model.TwoFactorVerificationCode.IsNullOrEmpty())
-                {
-                    //Add a cache item which will be checked in SendTwoFactorAuthCode to prevent sending unwanted two factor code to users.
-                    _cacheManager
-                        .GetTwoFactorCodeCache()
-                        .Set(
-                            loginResult.User.ToUserIdentifier().ToString(),
-                            new TwoFactorCodeCacheItem()
-                        );
-
-                    return new AuthenticateResultModel
-                    {
-                        RequiresTwoFactorVerification = true,
-                        UserId = loginResult.User.Id,
-                        TwoFactorAuthProviders = await _userManager.GetValidTwoFactorProvidersAsync(loginResult.User),
-                        ReturnUrl = returnUrl
-                    };
-                }
-
-                twoFactorRememberClientToken = await TwoFactorAuthenticateAsync(loginResult.User, model);
-            }
-
-            //Login!
-            var accessToken = CreateAccessToken(CreateJwtClaims(loginResult.Identity));
-            return new AuthenticateResultModel
-            {
-                AccessToken = accessToken,
-                EncryptedAccessToken = GetEncrpyedAccessToken(accessToken),
-                ExpireInSeconds = (int)_configuration.Expiration.TotalSeconds,
-                TwoFactorRememberClientToken = twoFactorRememberClientToken,
-                UserId = loginResult.User.Id,
-                ReturnUrl = returnUrl
-            };
+            // login failed then register
+            await CreateUser(model.Name, openId);
+            return await ReAuthenticate(model.Name, openId);
         }
 
-        [HttpPost]
-        public async Task SendTwoFactorAuthCode([FromBody] SendTwoFactorAuthCodeModel model)
+        [UnitOfWork(IsDisabled = true)]
+        private async Task<AuthenticateResultModel> ReAuthenticate(string name, string openId)
         {
-            var cacheKey = new UserIdentifier(AbpSession.TenantId, model.UserId).ToString();
-
-            var cacheItem = await _cacheManager
-                .GetTwoFactorCodeCache()
-                .GetOrDefaultAsync(cacheKey);
-
-            if (cacheItem == null)
+            var loginResult = await _logInManager.LoginAsync(openId, openId, GetTenancyNameOrNull());
+            if (loginResult.Result == AbpLoginResultType.Success)
             {
-                //There should be a cache item added in Authenticate method! This check is needed to prevent sending unwanted two factor code to users.
-                throw new UserFriendlyException(L("SendSecurityCodeErrorMessage"));
+                //get access code
+                var accessToken = CreateAccessToken(CreateJwtClaims(loginResult.Identity));
+                return new AuthenticateResultModel
+                {
+                    AccessToken = accessToken,
+                    EncryptedAccessToken = GetEncrpyedAccessToken(accessToken),
+                    ExpireInSeconds = (int)_configuration.Expiration.TotalSeconds,
+                    UserId = loginResult.User.Id
+                };
             }
 
-            var user = await _userManager.FindByIdAsync(model.UserId.ToString());
+            // login failed then register
+            await CreateUser(name, openId);
+            return await ReAuthenticate(name, openId);
+        }
 
-            if (model.Provider != GoogleAuthenticatorProvider.Name)
+        private async Task CreateUser(string name, string openId)
+        {
+            var user = new User
             {
-                cacheItem.Code = await _userManager.GenerateTwoFactorTokenAsync(user, model.Provider);
-                var message = L("EmailSecurityCodeBody", cacheItem.Code);
+                TenantId = AbpSession.TenantId,
+                Name = name,
+                Surname = name,
+                EmailAddress = openId + "@kuaiyipai.net",
+                IsActive = true,
+                UserName = openId,
+                IsEmailConfirmed = true,
+                Roles = new List<UserRole>()
+            };
+            user.SetNormalizedNames();
+            user.Password = _passwordHasher.HashPassword(user, openId);
+            await _userRepository.InsertAsync(user);
+        }
 
-                if (model.Provider == "Email")
-                {
-                    await _emailSender.SendAsync(await _userManager.GetEmailAsync(user), L("EmailSecurityCodeSubject"),
-                        message);
-                }
-                else if (model.Provider == "Phone")
-                {
-                    await _smsSender.SendAsync(await _userManager.GetPhoneNumberAsync(user), message);
-                }
-            }
-
-            _cacheManager.GetTwoFactorCodeCache().Set(
-                    cacheKey,
-                    cacheItem
-                );
-            _cacheManager.GetCache("ProviderCache").Set(
-                "Provider",
-                model.Provider
-            );
+        private async Task UpdateUser(User user, string name)
+        {
+            user.Name = name;
+            user.Surname = name;
+            await _userRepository.UpdateAsync(user);
         }
 
         [HttpPost]
@@ -241,258 +167,6 @@ namespace Kuaiyipai.Web.Controllers
             };
         }
 
-        [HttpGet]
-        public List<ExternalLoginProviderInfoModel> GetExternalAuthenticationProviders()
-        {
-            return ObjectMapper.Map<List<ExternalLoginProviderInfoModel>>(_externalAuthConfiguration.Providers);
-        }
-
-        [HttpPost]
-        public async Task<ExternalAuthenticateResultModel> ExternalAuthenticate([FromBody] ExternalAuthenticateModel model)
-        {
-            var externalUser = await GetExternalUserInfo(model);
-
-            var loginResult = await _logInManager.LoginAsync(new UserLoginInfo(model.AuthProvider, model.ProviderKey, model.AuthProvider), GetTenancyNameOrNull());
-
-            switch (loginResult.Result)
-            {
-                case AbpLoginResultType.Success:
-                    {
-                        var accessToken = CreateAccessToken(CreateJwtClaims(loginResult.Identity));
-
-                        var returnUrl = model.ReturnUrl;
-
-                        if (model.SingleSignIn.HasValue && model.SingleSignIn.Value && loginResult.Result == AbpLoginResultType.Success)
-                        {
-                            loginResult.User.SetSignInToken();
-                            returnUrl = AddSingleSignInParametersToReturnUrl(model.ReturnUrl, loginResult.User.SignInToken, loginResult.User.Id, loginResult.User.TenantId);
-                        }
-
-                        return new ExternalAuthenticateResultModel
-                        {
-                            AccessToken = accessToken,
-                            EncryptedAccessToken = GetEncrpyedAccessToken(accessToken),
-                            ExpireInSeconds = (int)_configuration.Expiration.TotalSeconds,
-                            ReturnUrl = returnUrl
-                        };
-                    }
-                case AbpLoginResultType.UnknownExternalLogin:
-                    {
-                        var newUser = await RegisterExternalUserAsync(externalUser);
-                        if (!newUser.IsActive)
-                        {
-                            return new ExternalAuthenticateResultModel
-                            {
-                                WaitingForActivation = true
-                            };
-                        }
-
-                        //Try to login again with newly registered user!
-                        loginResult = await _logInManager.LoginAsync(new UserLoginInfo(model.AuthProvider, model.ProviderKey, model.AuthProvider), GetTenancyNameOrNull());
-                        if (loginResult.Result != AbpLoginResultType.Success)
-                        {
-                            throw _abpLoginResultTypeHelper.CreateExceptionForFailedLoginAttempt(
-                                loginResult.Result,
-                                model.ProviderKey,
-                                GetTenancyNameOrNull()
-                            );
-                        }
-
-                        var accessToken = CreateAccessToken(CreateJwtClaims(loginResult.Identity));
-                        return new ExternalAuthenticateResultModel
-                        {
-                            AccessToken = accessToken,
-                            EncryptedAccessToken = GetEncrpyedAccessToken(accessToken),
-                            ExpireInSeconds = (int)_configuration.Expiration.TotalSeconds
-                        };
-                    }
-                default:
-                    {
-                        throw _abpLoginResultTypeHelper.CreateExceptionForFailedLoginAttempt(
-                            loginResult.Result,
-                            model.ProviderKey,
-                            GetTenancyNameOrNull()
-                        );
-                    }
-            }
-        }
-
-        #region Etc
-
-        [AbpMvcAuthorize]
-        [HttpGet]
-        public async Task<ActionResult> TestNotification(string message = "", string severity = "info")
-        {
-            if (message.IsNullOrEmpty())
-            {
-                message = "This is a test notification, created at " + Clock.Now;
-            }
-
-            await _appNotifier.SendMessageAsync(
-                AbpSession.ToUserIdentifier(),
-                message,
-                severity.ToPascalCase().ToEnum<NotificationSeverity>()
-                );
-
-            return Content("Sent notification: " + message);
-        }
-
-        #endregion
-
-        private async Task<User> RegisterExternalUserAsync(ExternalAuthUserInfo externalLoginInfo)
-        {
-            var user = await _userRegistrationManager.RegisterAsync(
-                externalLoginInfo.Name,
-                externalLoginInfo.Surname,
-                externalLoginInfo.EmailAddress,
-                externalLoginInfo.EmailAddress.ToMd5(),
-                Authorization.Users.User.CreateRandomPassword(),
-                true,
-                null
-            );
-
-            user.Logins = new List<UserLogin>
-            {
-                new UserLogin
-                {
-                    LoginProvider = externalLoginInfo.Provider,
-                    ProviderKey = externalLoginInfo.ProviderKey,
-                    TenantId = user.TenantId
-                }
-            };
-
-            await CurrentUnitOfWork.SaveChangesAsync();
-
-            return user;
-        }
-
-        private async Task<ExternalAuthUserInfo> GetExternalUserInfo(ExternalAuthenticateModel model)
-        {
-            var userInfo = await _externalAuthManager.GetUserInfo(model.AuthProvider, model.ProviderAccessCode);
-            if (userInfo.ProviderKey != model.ProviderKey)
-            {
-                throw new UserFriendlyException(L("CouldNotValidateExternalUser"));
-            }
-
-            return userInfo;
-        }
-
-        private async Task<bool> IsTwoFactorAuthRequiredAsync(AbpLoginResult<Tenant, User> loginResult, AuthenticateModel authenticateModel)
-        {
-            if (!await SettingManager.GetSettingValueAsync<bool>(AbpZeroSettingNames.UserManagement.TwoFactorLogin.IsEnabled))
-            {
-                return false;
-            }
-
-            if (!loginResult.User.IsTwoFactorEnabled)
-            {
-                return false;
-            }
-
-            if ((await _userManager.GetValidTwoFactorProvidersAsync(loginResult.User)).Count <= 0)
-            {
-                return false;
-            }
-
-            if (await TwoFactorClientRememberedAsync(loginResult.User.ToUserIdentifier(), authenticateModel))
-            {
-                return false;
-            }
-
-            return true;
-        }
-
-        private async Task<bool> TwoFactorClientRememberedAsync(UserIdentifier userIdentifier, AuthenticateModel authenticateModel)
-        {
-            if (!await SettingManager.GetSettingValueAsync<bool>(AbpZeroSettingNames.UserManagement.TwoFactorLogin.IsRememberBrowserEnabled))
-            {
-                return false;
-            }
-
-            if (string.IsNullOrWhiteSpace(authenticateModel.TwoFactorRememberClientToken))
-            {
-                return false;
-            }
-
-            try
-            {
-                var validationParameters = new TokenValidationParameters
-                {
-                    ValidAudience = _configuration.Audience,
-                    ValidIssuer = _configuration.Issuer,
-                    IssuerSigningKey = _configuration.SecurityKey
-                };
-
-                foreach (var validator in _jwtOptions.Value.SecurityTokenValidators)
-                {
-                    if (validator.CanReadToken(authenticateModel.TwoFactorRememberClientToken))
-                    {
-                        try
-                        {
-                            SecurityToken validatedToken;
-                            var principal = validator.ValidateToken(authenticateModel.TwoFactorRememberClientToken, validationParameters, out validatedToken);
-                            var useridentifierClaim = principal.FindFirst(c => c.Type == UserIdentifierClaimType);
-                            if (useridentifierClaim == null)
-                            {
-                                return false;
-                            }
-
-                            return useridentifierClaim.Value == userIdentifier.ToString();
-                        }
-                        catch (Exception ex)
-                        {
-                            Logger.Debug(ex.ToString(), ex);
-                        }
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                Logger.Debug(ex.ToString(), ex);
-            }
-
-            return false;
-        }
-
-        /* Checkes two factor code and returns a token to remember the client (browser) if needed */
-        private async Task<string> TwoFactorAuthenticateAsync(User user, AuthenticateModel authenticateModel)
-        {
-            var twoFactorCodeCache = _cacheManager.GetTwoFactorCodeCache();
-            var userIdentifier = user.ToUserIdentifier().ToString();
-            var cachedCode = await twoFactorCodeCache.GetOrDefaultAsync(userIdentifier);
-            var provider = _cacheManager.GetCache("ProviderCache").Get("Provider", cache => cache).ToString();
-
-            if (provider == GoogleAuthenticatorProvider.Name)
-            {
-                if (!await _googleAuthenticatorProvider.ValidateAsync("TwoFactor", authenticateModel.TwoFactorVerificationCode, _userManager, user))
-                {
-                    throw new UserFriendlyException(L("InvalidSecurityCode"));
-                }
-            }
-            else if (cachedCode?.Code == null || cachedCode.Code != authenticateModel.TwoFactorVerificationCode)
-            {
-                throw new UserFriendlyException(L("InvalidSecurityCode"));
-            }
-
-            //Delete from the cache since it was a single usage code
-            await twoFactorCodeCache.RemoveAsync(userIdentifier);
-
-            if (authenticateModel.RememberClient)
-            {
-                if (await SettingManager.GetSettingValueAsync<bool>(AbpZeroSettingNames.UserManagement.TwoFactorLogin.IsRememberBrowserEnabled))
-                {
-                    return CreateAccessToken(new[]
-                        {
-                            new Claim(UserIdentifierClaimType, user.ToUserIdentifier().ToString())
-                        },
-                        TimeSpan.FromDays(365)
-                    );
-                }
-            }
-
-            return null;
-        }
-
         private string GetTenancyNameOrNull()
         {
             if (!AbpSession.TenantId.HasValue)
@@ -501,19 +175,6 @@ namespace Kuaiyipai.Web.Controllers
             }
 
             return _tenantCache.GetOrNull(AbpSession.TenantId.Value)?.TenancyName;
-        }
-
-        private async Task<AbpLoginResult<Tenant, User>> GetLoginResultAsync(string usernameOrEmailAddress, string password, string tenancyName)
-        {
-            var loginResult = await _logInManager.LoginAsync(usernameOrEmailAddress, password, tenancyName);
-
-            switch (loginResult.Result)
-            {
-                case AbpLoginResultType.Success:
-                    return loginResult;
-                default:
-                    throw _abpLoginResultTypeHelper.CreateExceptionForFailedLoginAttempt(loginResult.Result, usernameOrEmailAddress, tenancyName);
-            }
         }
 
         private string CreateAccessToken(IEnumerable<Claim> claims, TimeSpan? expiration = null)
@@ -554,19 +215,6 @@ namespace Kuaiyipai.Web.Controllers
             });
 
             return claims;
-        }
-
-        private string AddSingleSignInParametersToReturnUrl(string returnUrl, string signInToken, long userId, int? tenantId)
-        {
-            returnUrl += (returnUrl.Contains("?") ? "&" : "?") +
-                         "accessToken=" + signInToken +
-                         "&userId=" + Convert.ToBase64String(Encoding.UTF8.GetBytes(userId.ToString()));
-            if (tenantId.HasValue)
-            {
-                returnUrl += "&tenantId=" + Convert.ToBase64String(Encoding.UTF8.GetBytes(tenantId.Value.ToString()));
-            }
-
-            return returnUrl;
         }
     }
 }

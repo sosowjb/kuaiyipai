@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Abp.Authorization.Users;
 using Abp.Configuration;
+using Abp.Domain.Uow;
 using Abp.IdentityFramework;
 using Abp.Notifications;
 using Abp.Runtime.Session;
@@ -52,7 +53,8 @@ namespace Kuaiyipai.Authorization.Users
 
             AbpSession = NullAbpSession.Instance;
         }
-
+        
+        [UnitOfWork]
         public async Task<User> RegisterAsync(string name, string surname, string emailAddress, string userName, string plainPassword, bool isEmailConfirmed, string emailActivationLink)
         {
             CheckForTenant();
@@ -69,9 +71,9 @@ namespace Kuaiyipai.Authorization.Users
                 Name = name,
                 Surname = surname,
                 EmailAddress = emailAddress,
-                IsActive = isNewRegisteredUserActiveByDefault,
+                IsActive = true,
                 UserName = userName,
-                IsEmailConfirmed = isEmailConfirmed,
+                IsEmailConfirmed = true,
                 Roles = new List<UserRole>()
             };
 

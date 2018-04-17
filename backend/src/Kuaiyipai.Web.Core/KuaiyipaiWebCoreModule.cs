@@ -40,6 +40,10 @@ namespace Kuaiyipai.Web
         private readonly IHostingEnvironment _env;
         private readonly IConfigurationRoot _appConfiguration;
 
+        public static string AppId { get; set; }
+
+        public static string AppSecret { get; set; }
+
         public KuaiyipaiWebCoreModule(IHostingEnvironment env)
         {
             _env = env;
@@ -105,6 +109,9 @@ namespace Kuaiyipai.Web
         public override void PostInitialize()
         {
             SetAppFolders();
+
+            AppId = _appConfiguration["WeChat:AppId"];
+            AppSecret = _appConfiguration["WeChat:AppSecret"];
         }
 
         private void SetAppFolders()
