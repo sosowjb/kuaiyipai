@@ -5,6 +5,7 @@ using Abp.AspNetZeroCore.Web.Authentication.External.Google;
 using Abp.AspNetZeroCore.Web.Authentication.External.Microsoft;
 using Abp.Configuration.Startup;
 using Abp.Modules;
+using Abp.Quartz;
 using Abp.Quartz.Configuration;
 using Abp.Reflection.Extensions;
 using Abp.Threading.BackgroundWorkers;
@@ -18,7 +19,8 @@ using Quartz;
 namespace Kuaiyipai.Web.Startup
 {
     [DependsOn(
-        typeof(KuaiyipaiWebCoreModule)
+        typeof(KuaiyipaiWebCoreModule),
+        typeof(AbpQuartzModule)
     )]
     public class KuaiyipaiWebHostModule : AbpModule
     {
