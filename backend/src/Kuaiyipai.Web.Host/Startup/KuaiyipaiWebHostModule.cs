@@ -5,6 +5,7 @@ using Abp.AspNetZeroCore.Web.Authentication.External.Google;
 using Abp.AspNetZeroCore.Web.Authentication.External.Microsoft;
 using Abp.Configuration.Startup;
 using Abp.Modules;
+using Abp.Quartz.Configuration;
 using Abp.Reflection.Extensions;
 using Abp.Threading.BackgroundWorkers;
 using Kuaiyipai.Configuration;
@@ -12,6 +13,7 @@ using Kuaiyipai.EntityFrameworkCore;
 using Kuaiyipai.MultiTenancy;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
+using Quartz;
 
 namespace Kuaiyipai.Web.Startup
 {
@@ -54,49 +56,30 @@ namespace Kuaiyipai.Web.Startup
                 workManager.Add(IocManager.Resolve<SubscriptionExpirationCheckWorker>());
                 workManager.Add(IocManager.Resolve<SubscriptionExpireEmailNotifierWorker>());
             }
-            
-            ConfigureExternalAuthProviders();
-        }
 
-        private void ConfigureExternalAuthProviders()
-        {
-            var externalAuthConfiguration = IocManager.Resolve<ExternalAuthConfiguration>();
-
-            if (bool.Parse(_appConfiguration["Authentication:Facebook:IsEnabled"]))
+            // create job
+            IScheduler scheduler = Configuration.Modules.AbpQuartz().Scheduler;
+            var job = scheduler.GetJobDetail(new JobKey("OrderGenerator", "Order")).GetAwaiter().GetResult();
+            if (job == null)
             {
-                externalAuthConfiguration.Providers.Add(
-                    new ExternalLoginProviderInfo(
-                        FacebookAuthProviderApi.Name,
-                        _appConfiguration["Authentication:Facebook:AppId"],
-                        _appConfiguration["Authentication:Facebook:AppSecret"],
-                        typeof(FacebookAuthProviderApi)
-                    )
-                );
-            }
+                job = JobBuilder.Create<OrderGenerator>()
+                    .WithIdentity("OrderGeneratorJob", "Order")
+                    .WithDescription("OrderGenerator")
+                    .StoreDurably(true)
+                    .Build();
 
-            if (bool.Parse(_appConfiguration["Authentication:Google:IsEnabled"]))
-            {
-                externalAuthConfiguration.Providers.Add(
-                    new ExternalLoginProviderInfo(
-                        GoogleAuthProviderApi.Name,
-                        _appConfiguration["Authentication:Google:ClientId"],
-                        _appConfiguration["Authentication:Google:ClientSecret"],
-                        typeof(GoogleAuthProviderApi)
-                    )
-                );
-            }
+                scheduler.AddJob(job, true);
 
-            //not implemented yet. Will be implemented with https://github.com/aspnetzero/aspnet-zero-angular/issues/5
-            if (bool.Parse(_appConfiguration["Authentication:Microsoft:IsEnabled"]))
-            {
-                externalAuthConfiguration.Providers.Add(
-                    new ExternalLoginProviderInfo(
-                        MicrosoftAuthProviderApi.Name,
-                        _appConfiguration["Authentication:Microsoft:ConsumerKey"],
-                        _appConfiguration["Authentication:Microsoft:ConsumerSecret"],
-                        typeof(MicrosoftAuthProviderApi)
-                    )
-                );
+                var trigger = TriggerBuilder.Create()
+                    .WithIdentity("OrderGeneratorTrigger", "Order")
+                    .StartNow()
+                    .WithSimpleSchedule(x => x
+                        .WithIntervalInSeconds(60)
+                        .RepeatForever())
+                    .ForJob(job)
+                    .Build();
+
+                scheduler.ScheduleJob(trigger);
             }
         }
     }
