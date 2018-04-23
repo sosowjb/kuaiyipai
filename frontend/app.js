@@ -1,41 +1,59 @@
 //app.js
 App({
   onLaunch: function () {
-    // 展示本地存储能力
-    var logs = wx.getStorageSync('logs') || []
-    logs.unshift(Date.now())
-    wx.setStorageSync('logs', logs)
-
     // 登录
-    wx.login({
-      success: res => {
-        // 发送 res.code 到后台换取 openId, sessionKey, unionId
-      }
-    })
     // 获取用户信息
     wx.getSetting({
       success: res => {
-        if (res.authSetting['scope.userInfo']) {
           // 已经授权，可以直接调用 getUserInfo 获取头像昵称，不会弹框
           wx.getUserInfo({
+            withCredentials:true,
             success: res => {
               // 可以将 res 发送给后台解码出 unionId
               this.globalData.userInfo = res.userInfo
-
-              // 由于 getUserInfo 是网络请求，可能会在 Page.onLoad 之后才返回
-              // 所以此处加入 callback 以防止这种情况
+              if (!wx.getStorageSync("accessToken"))
+              {
+              wx.login({
+                success: res => {
+                 this.Logins(res.code)
+                }
+              })
+              }
               if (this.userInfoReadyCallback) {
                 this.userInfoReadyCallback(res)
               }
             }
           })
-        }
+        
       }
+    })
+  },
+  Logins:function(code){
+    wx.request({
+      url: this.globalData.apiLink + '/api/TokenAuth/Authenticate',
+      data: { name: this.globalData.userInfo.nickName, code: code },
+      header: { 'Abp.TenantId': '1', 'Content-Type': 'application/json' },
+      method: 'POST',
+      dataType: 'json',
+      responseType: 'text',
+      success: function (res) {
+        console.log(res.data.result.userId)
+        wx.setStorage({
+          key: "accessToken",
+          data: res.data.result.accessToken
+        }),
+          wx.setStorage({
+            key: "userId",
+            data: res.data.result.userId
+          })
+      },
+      fail: function (res) { },
+      complete: function (res) { },
     })
   },
   globalData: {
     userInfo: null,
-    apiLink: "http://api.kypwp.com",//api链接
+    apiLink: "http://localhost:5000",//api链接
     imageLink: "http://images.kypwp.com"//图片链接
   }
 })
