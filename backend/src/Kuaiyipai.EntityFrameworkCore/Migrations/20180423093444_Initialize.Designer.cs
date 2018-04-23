@@ -19,7 +19,7 @@ using System;
 namespace Kuaiyipai.Migrations
 {
     [DbContext(typeof(KuaiyipaiDbContext))]
-    [Migration("20180411082753_Initialize")]
+    [Migration("20180423093444_Initialize")]
     partial class Initialize
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -881,21 +881,29 @@ namespace Kuaiyipai.Migrations
 
                     b.Property<int>("CityId");
 
+                    b.Property<string>("ContactPhoneNumber")
+                        .IsRequired()
+                        .HasMaxLength(50);
+
+                    b.Property<DateTime>("CreationTime");
+
+                    b.Property<long?>("CreatorUserId");
+
                     b.Property<int>("DistrictId");
 
                     b.Property<bool>("IsDefault");
 
                     b.Property<int>("ProvinceId");
 
+                    b.Property<string>("Receiver")
+                        .IsRequired()
+                        .HasMaxLength(50);
+
                     b.Property<string>("Street")
                         .IsRequired()
                         .HasMaxLength(500);
 
-                    b.Property<long>("UserId");
-
                     b.HasKey("Id");
-
-                    b.HasIndex("UserId");
 
                     b.ToTable("AUC_Addresses");
                 });
@@ -1111,6 +1119,8 @@ namespace Kuaiyipai.Migrations
 
                     b.Property<int>("Height");
 
+                    b.Property<bool>("IsCover");
+
                     b.Property<Guid>("ItemId");
 
                     b.Property<string>("Path")
@@ -1193,11 +1203,11 @@ namespace Kuaiyipai.Migrations
                         .IsRequired()
                         .HasMaxLength(50);
 
-                    b.Property<string>("ContactPhoneNumber")
-                        .IsRequired()
-                        .HasMaxLength(15);
+                    b.Property<DateTime>("CompletedTime");
 
                     b.Property<string>("DeliveryId");
+
+                    b.Property<int?>("EvaluationLevel");
 
                     b.Property<double>("ExpressCostAmount");
 
@@ -1229,21 +1239,13 @@ namespace Kuaiyipai.Migrations
                         .IsRequired()
                         .HasMaxLength(50);
 
-                    b.Property<string>("ContactPhoneNumber")
-                        .IsRequired()
-                        .HasMaxLength(15);
-
                     b.Property<string>("DeliveryId");
 
-                    b.Property<bool>("Evaluated");
-
-                    b.Property<DateTime?>("EvaluatedTime");
+                    b.Property<DateTime>("EvaluatedTime");
 
                     b.Property<double>("ExpressCostAmount");
 
                     b.Property<double>("ItemPriceAmount");
-
-                    b.Property<int?>("Level");
 
                     b.Property<DateTime>("OrderTime");
 
@@ -1271,10 +1273,6 @@ namespace Kuaiyipai.Migrations
                         .IsRequired()
                         .HasMaxLength(50);
 
-                    b.Property<string>("ContactPhoneNumber")
-                        .IsRequired()
-                        .HasMaxLength(15);
-
                     b.Property<string>("DeliveryId");
 
                     b.Property<double>("ExpressCostAmount");
@@ -1283,9 +1281,7 @@ namespace Kuaiyipai.Migrations
 
                     b.Property<DateTime>("OrderTime");
 
-                    b.Property<bool>("Paid");
-
-                    b.Property<DateTime?>("PaidTime");
+                    b.Property<DateTime>("PaidTime");
 
                     b.Property<long>("SellerId");
 
@@ -1311,10 +1307,6 @@ namespace Kuaiyipai.Migrations
                         .IsRequired()
                         .HasMaxLength(50);
 
-                    b.Property<string>("ContactPhoneNumber")
-                        .IsRequired()
-                        .HasMaxLength(15);
-
                     b.Property<string>("DeliveryId");
 
                     b.Property<double>("ExpressCostAmount");
@@ -1323,9 +1315,7 @@ namespace Kuaiyipai.Migrations
 
                     b.Property<DateTime>("OrderTime");
 
-                    b.Property<bool>("Received");
-
-                    b.Property<DateTime?>("ReceivedTime");
+                    b.Property<DateTime>("ReceivedTime");
 
                     b.Property<long>("SellerId");
 
@@ -1351,10 +1341,6 @@ namespace Kuaiyipai.Migrations
                         .IsRequired()
                         .HasMaxLength(50);
 
-                    b.Property<string>("ContactPhoneNumber")
-                        .IsRequired()
-                        .HasMaxLength(15);
-
                     b.Property<string>("DeliveryId");
 
                     b.Property<double>("ExpressCostAmount");
@@ -1365,9 +1351,7 @@ namespace Kuaiyipai.Migrations
 
                     b.Property<long>("SellerId");
 
-                    b.Property<bool>("Sent");
-
-                    b.Property<DateTime?>("SentTime");
+                    b.Property<DateTime>("SentTime");
 
                     b.HasKey("Id");
 
@@ -1399,7 +1383,9 @@ namespace Kuaiyipai.Migrations
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<double>("Balance");
+                    b.Property<double>("FrozenBalance");
+
+                    b.Property<double>("TotalBalance");
 
                     b.Property<long>("UserId");
 
@@ -1418,6 +1404,8 @@ namespace Kuaiyipai.Migrations
                     b.Property<double>("Amount");
 
                     b.Property<DateTime>("RecordTime");
+
+                    b.Property<string>("Remarks");
 
                     b.Property<long>("UserId");
 
@@ -1978,14 +1966,6 @@ namespace Kuaiyipai.Migrations
                     b.HasOne("Abp.Organizations.OrganizationUnit", "Parent")
                         .WithMany("Children")
                         .HasForeignKey("ParentId");
-                });
-
-            modelBuilder.Entity("Kuaiyipai.Auction.Entities.Address", b =>
-                {
-                    b.HasOne("Kuaiyipai.Authorization.Users.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("Kuaiyipai.Auction.Entities.Category", b =>

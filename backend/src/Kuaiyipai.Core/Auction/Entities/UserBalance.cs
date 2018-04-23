@@ -14,6 +14,8 @@ namespace Kuaiyipai.Auction.Entities
         [ForeignKey("UserId")]
         public User User { get; set; }
 
-        public double Balance { get; set; }
+        public double TotalBalance { get; set; }
+
+        public double FrozenBalance { get; set; }
     }
 }

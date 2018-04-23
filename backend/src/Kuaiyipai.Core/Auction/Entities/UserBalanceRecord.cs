@@ -14,9 +14,13 @@ namespace Kuaiyipai.Auction.Entities
 
         [ForeignKey("UserId")]
         public User User { get; set; }
-
+        
+        [Required]
         public double Amount { get; set; }
 
+        [Required]
         public DateTime RecordTime { get; set; }
+
+        public string Remarks { get; set; }
     }
 }
