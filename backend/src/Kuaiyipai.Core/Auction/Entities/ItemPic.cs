@@ -28,5 +28,8 @@ namespace Kuaiyipai.Auction.Entities
 
         [Required]
         public int Width { get; set; }
+        
+        [Required]
+        public bool IsCover { get; set; }
     }
 }
