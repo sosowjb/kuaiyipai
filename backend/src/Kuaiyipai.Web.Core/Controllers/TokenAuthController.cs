@@ -8,8 +8,10 @@ using Abp.Authorization;
 using Abp.Authorization.Users;
 using Abp.Domain.Repositories;
 using Abp.Domain.Uow;
+using Abp.Extensions;
 using Abp.MultiTenancy;
 using Abp.Runtime.Security;
+using Abp.UI;
 using Kuaiyipai.Authorization;
 using Kuaiyipai.Authorization.Impersonation;
 using Kuaiyipai.Authorization.Users;
@@ -68,7 +70,15 @@ namespace Kuaiyipai.Web.Controllers
                 .Replace("JSCODE", model.Code);
             var s = await HttpHelper.Get(api, string.Empty);
             var jo = (JObject)JsonConvert.DeserializeObject(s);
-            var openId = jo["openid"].ToString();
+            string openId;
+            try
+            {
+                openId = jo["openid"].ToString();
+            }
+            catch
+            {
+                throw new UserFriendlyException("获取OpenID失败，可能是Code已过期");
+            }
 
             // login
             var loginResult = await _logInManager.LoginAsync(openId, openId, GetTenancyNameOrNull());
