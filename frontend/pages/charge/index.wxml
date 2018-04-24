@@ -4,5 +4,5 @@
 </view>
 <view style="height:20rpx;background: #eee;width:100%;"></view>
 <view>
-  <button type="primary" bindtap="relogin">下一步</button>
+  <button type="primary" bindtap="charge">下一步</button>
 </view>
