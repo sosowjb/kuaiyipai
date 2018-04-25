@@ -1,4 +1,7 @@
 ﻿using System;
+using System.Drawing;
+using System.Drawing.Imaging;
+using System.IO;
 using System.Linq;
 using System.Linq.Dynamic.Core;
 using System.Threading.Tasks;
@@ -10,7 +13,10 @@ using Abp.UI;
 using Castle.Core.Internal;
 using Kuaiyipai.Auction.Entities;
 using Kuaiyipai.Auction.Item.Dto;
+using Kuaiyipai.Configuration;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 
 namespace Kuaiyipai.Auction.Item
 {
@@ -22,8 +28,10 @@ namespace Kuaiyipai.Auction.Item
         private readonly IRepository<ItemTerminated, Guid> _itemTerminatedRepository;
         private readonly IRepository<Entities.Pillar> _pillarRepository;
         private readonly IRepository<Entities.Category> _categoryRepository;
+        private readonly IRepository<ItemPic, Guid> _itemPicRepository;
+        private readonly IConfigurationRoot _appConfiguration;
 
-        public ItemAppService(IRepository<ItemDrafting, Guid> itemDraftingRepository, IRepository<ItemAuctioning, Guid> itemAuctioningRepository, IRepository<ItemCompleted, Guid> itemCompletedRepository, IRepository<ItemTerminated, Guid> itemTerminatedRepository, IRepository<Entities.Pillar> pillarRepository, IRepository<Entities.Category> categoryRepository)
+        public ItemAppService(IHostingEnvironment env, IRepository<ItemDrafting, Guid> itemDraftingRepository, IRepository<ItemAuctioning, Guid> itemAuctioningRepository, IRepository<ItemCompleted, Guid> itemCompletedRepository, IRepository<ItemTerminated, Guid> itemTerminatedRepository, IRepository<Entities.Pillar> pillarRepository, IRepository<Entities.Category> categoryRepository, IRepository<ItemPic, Guid> itemPicRepository)
         {
             _itemDraftingRepository = itemDraftingRepository;
             _itemAuctioningRepository = itemAuctioningRepository;
@@ -31,6 +39,8 @@ namespace Kuaiyipai.Auction.Item
             _itemTerminatedRepository = itemTerminatedRepository;
             _pillarRepository = pillarRepository;
             _categoryRepository = categoryRepository;
+            _itemPicRepository = itemPicRepository;
+            _appConfiguration = env.GetAppConfiguration();
         }
 
         public async Task<Guid> CreateItem(CreateItemInputDto input)
@@ -51,7 +61,18 @@ namespace Kuaiyipai.Auction.Item
                 Description = input.Description
             };
 
-            return await _itemDraftingRepository.InsertAndGetIdAsync(item);
+            var itemId = await _itemDraftingRepository.InsertAndGetIdAsync(item);
+
+            for (int i = 0; i < input.PictureList.Count; i++)
+            {
+                var p = await _itemPicRepository.GetAsync(input.PictureList[i].Id);
+                p.IsCover = input.PictureList[i].IsCover;
+                p.ItemId = itemId;
+                p.Index = i + 1;
+                await _itemPicRepository.UpdateAsync(p);
+            }
+
+            return itemId;
         }
 
         [UnitOfWork]
@@ -330,6 +351,99 @@ namespace Kuaiyipai.Auction.Item
                 }).ToListAsync();
 
             return new PagedResultDto<GetMyTerminatedItemsOutputDto>(count, list);
+        }
+
+        public async Task<UploadPictureOutputDto> UploadPicture(UploadPictureInputDto input)
+        {
+            try
+            {
+                var now = DateTime.Now;
+                var relativePath = Path.Combine(now.Year.ToString(), now.Month.ToString(), now.Day.ToString(), now.Hour.ToString());
+                var filePath = Path.Combine(_appConfiguration["App:ImagePhysicalPath"], relativePath);
+                var fileName = now.ToString("yyyyMMddhhmmssffff") + "_" + AbpSession.UserId;
+                var ext = ".jpg";
+
+                var base64 = (input.Base64.IndexOf(',') == -1 ? input.Base64 : input.Base64.Substring(input.Base64.IndexOf(',') + 1)).Trim('\0');
+                byte[] arr = Convert.FromBase64String(base64);
+                long length = arr.Length;
+                int height;
+                int width;
+                using (MemoryStream ms = new MemoryStream(arr))
+                {
+                    Bitmap bmp = new Bitmap(ms);
+                    height = bmp.Height;
+                    width = bmp.Width;
+                    Bitmap bmp2 = new Bitmap(bmp, bmp.Width, bmp.Height);
+                    Graphics draw = Graphics.FromImage(bmp2);
+                    draw.DrawImage(bmp, 0, 0);
+                    draw.Dispose();
+                    if (!Directory.Exists(filePath))
+                    {
+                        Directory.CreateDirectory(filePath);
+                    }
+                    bmp2.Save(Path.Combine(filePath, fileName + ext), ImageFormat.Jpeg);
+                    ms.Close();
+                }
+
+                var pic = new ItemPic
+                {
+                    Path = relativePath,
+                    FileName = fileName,
+                    Size = length,
+                    Extension = ext,
+                    Height = height,
+                    Width = width
+                };
+                var id = await _itemPicRepository.InsertAndGetIdAsync(pic);
+                return new UploadPictureOutputDto { Id = id };
+            }
+            catch
+            {
+                throw new UserFriendlyException("图片上传失败");
+            }
+        }
+
+        public async Task<ListResultDto<GetItemPicturesOutputDto>> GetItemPictures(GetItemPicturesInputDto input)
+        {
+            var list = await _itemPicRepository.GetAll().Where(p => p.ItemId == input.Id).OrderBy(p => p.Index).Select(p => new GetItemPicturesOutputDto
+            {
+                Id = p.Id,
+                Height = p.Height,
+                Width = p.Width,
+                IsCover = p.IsCover,
+                Url = new Uri(new Uri(_appConfiguration["App:ImageUrlPrefix"]), Path.Combine(p.Path, p.FileName + p.Extension)).ToString()
+            }).ToListAsync();
+            return new ListResultDto<GetItemPicturesOutputDto>(list);
+        }
+
+        public async Task<GetItemPicturesOutputDto> GetCoverPicture(GetItemPicturesInputDto input)
+        {
+            var pic = await _itemPicRepository.FirstOrDefaultAsync(p => p.ItemId == input.Id && p.IsCover);
+            return new GetItemPicturesOutputDto
+            {
+                Id = pic.Id,
+                Height = pic.Height,
+                Width = pic.Width,
+                IsCover = pic.IsCover,
+                Url = new Uri(new Uri(_appConfiguration["App:ImageUrlPrefix"]), Path.Combine(pic.Path, pic.FileName + pic.Extension)).ToString()
+            };
+        }
+
+        public async Task DeleteItemPicture(EntityDto<Guid> input)
+        {
+            var pic = await _itemPicRepository.GetAsync(input.Id);
+            if (pic == null)
+            {
+                throw new UserFriendlyException("图片不存在");
+            }
+
+            var path = Path.Combine(_appConfiguration["App:ImagePhysicalPath"], pic.Path, pic.FileName + pic.Extension);
+            if (File.Exists(path))
+            {
+                File.Delete(path);
+            }
+
+            await _itemPicRepository.DeleteAsync(input.Id);
         }
     }
 }

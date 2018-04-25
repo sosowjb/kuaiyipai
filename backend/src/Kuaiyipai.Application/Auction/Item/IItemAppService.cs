@@ -27,5 +27,13 @@ namespace Kuaiyipai.Auction.Item
         Task<PagedResultDto<GetMyCompletedItemsOutputDto>> GetMyCompletedItems(GetMyCompletedItemsInputDto input);
 
         Task<PagedResultDto<GetMyTerminatedItemsOutputDto>> GetMyTerminatedItems(GetMyTerminatedItemsInputDto input);
+
+        Task<UploadPictureOutputDto> UploadPicture(UploadPictureInputDto input);
+
+        Task<ListResultDto<GetItemPicturesOutputDto>> GetItemPictures(GetItemPicturesInputDto input);
+
+        Task<GetItemPicturesOutputDto> GetCoverPicture(GetItemPicturesInputDto input);
+
+        Task DeleteItemPicture(EntityDto<Guid> input);
     }
 }
