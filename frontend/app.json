@@ -9,7 +9,11 @@
     "pages/charge/index",
     "pages/my/index",
     "pages/seller/index",
-    "pages/withdraw/index"
+    "pages/withdraw/index",
+    "pages/notice/show",
+    "pages/setting/index",
+    "pages/select-address/index",
+    "pages/address-add/index"
   ],
   "window": {
     "backgroundTextStyle": "light",

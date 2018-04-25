@@ -26,6 +26,6 @@ namespace Kuaiyipai.Auction.Order
 
         Task<PagedResultDto<GetCompletedOrdersOutputDto>> GetCompletedOrdersAsSeller(GetCompletedOrdersInputDto input);
 
-        Task<GetEachTypeOrderCountOutputDto> GetEachTypeOrderCount(GetEachTypeOrderCountInputDto inputDto);
+        Task<GetEachTypeOrderCountOutputDto> GetEachTypeOrderCount();
     }
 }

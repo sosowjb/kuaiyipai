@@ -26,9 +26,9 @@ namespace Kuaiyipai.Auction.Item
         private readonly IRepository<ItemAuctioning, Guid> _itemAuctioningRepository;
         private readonly IRepository<ItemCompleted, Guid> _itemCompletedRepository;
         private readonly IRepository<ItemTerminated, Guid> _itemTerminatedRepository;
+        private readonly IRepository<ItemPic, Guid> _itemPicRepository;
         private readonly IRepository<Entities.Pillar> _pillarRepository;
         private readonly IRepository<Entities.Category> _categoryRepository;
-        private readonly IRepository<ItemPic, Guid> _itemPicRepository;
         private readonly IConfigurationRoot _appConfiguration;
 
         public ItemAppService(IHostingEnvironment env, IRepository<ItemDrafting, Guid> itemDraftingRepository, IRepository<ItemAuctioning, Guid> itemAuctioningRepository, IRepository<ItemCompleted, Guid> itemCompletedRepository, IRepository<ItemTerminated, Guid> itemTerminatedRepository, IRepository<Entities.Pillar> pillarRepository, IRepository<Entities.Category> categoryRepository, IRepository<ItemPic, Guid> itemPicRepository)
@@ -37,9 +37,9 @@ namespace Kuaiyipai.Auction.Item
             _itemAuctioningRepository = itemAuctioningRepository;
             _itemCompletedRepository = itemCompletedRepository;
             _itemTerminatedRepository = itemTerminatedRepository;
+            _itemPicRepository = itemPicRepository;
             _pillarRepository = pillarRepository;
             _categoryRepository = categoryRepository;
-            _itemPicRepository = itemPicRepository;
             _appConfiguration = env.GetAppConfiguration();
         }
 
@@ -337,7 +337,8 @@ namespace Kuaiyipai.Auction.Item
                     item.StepPrice,
                     item.StartTime,
                     item.Deadline
-                }).Join(categoryQuery, item => item.CategoryId, category => category.Id, (item, category) => new GetMyTerminatedItemsOutputDto
+                })
+                .Join(categoryQuery, item => item.CategoryId, category => category.Id, (item, category) => new GetMyTerminatedItemsOutputDto
                 {
                     Id = item.Id,
                     Pillar = item.Pillar,
@@ -444,6 +445,49 @@ namespace Kuaiyipai.Auction.Item
             }
 
             await _itemPicRepository.DeleteAsync(input.Id);
+        }
+
+        public async Task<PagedResultDto<GetAuctionItemsOutputDto>> GetAuctionItems(GetAuctionItemsInputDto input)
+        {
+            var query = _itemAuctioningRepository.GetAll();
+            var pillarQuery = _pillarRepository.GetAll();
+            var categoryQuery = _categoryRepository.GetAll();
+            var itempicQuery = _itemPicRepository.GetAll();
+            if (!input.Sorting.IsNullOrEmpty())
+            {
+                query = query.OrderBy(input.Sorting);
+            }
+            var count1 = await categoryQuery.CountAsync();
+            var count2 = await pillarQuery.CountAsync();
+            var count = await query.CountAsync();
+            var list = await query.PageBy(input).Join(pillarQuery, item => item.PillarId, pillar => pillar.Id, (item, pillar) => new
+            {
+                item.Id,
+                Pillar = pillar.Name,
+                fengmian = itempicQuery.Where(i => i.ItemId == item.Id).First(),
+                item.CategoryId,
+                item.Title,
+                item.StartPrice,
+                item.StepPrice,
+                item.StartTime,
+                item.Deadline
+            })
+                .Join(categoryQuery, item => item.CategoryId, category => category.Id, (item, category) => new GetAuctionItemsOutputDto
+                {
+                    Id = item.Id,
+                    Pillar = item.Pillar,
+                    Category = category.Name,
+                    Title = item.Title,
+                    StartPrice = item.StartPrice,
+                    StepPrice = item.StepPrice,
+                    StartTime = item.StartTime,
+                    Deadline = item.Deadline,
+                    CoverPic = item.fengmian==null?"":item.fengmian.Path,
+                    CoverPicWidth = item.fengmian == null ? 0 : item.fengmian.Width,
+                    CoverPicHeight = item.fengmian == null ? 0 : item.fengmian.Height
+                }).ToListAsync();
+
+            return new PagedResultDto<GetAuctionItemsOutputDto>(count, list);
         }
     }
 }

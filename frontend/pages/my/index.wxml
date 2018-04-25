@@ -63,16 +63,6 @@
     </view>
   </view>
   <view style="height:20rpx;background: #eee;width:100%;"></view>
-  <view class="my-item" style='background:none;'>
-    联系人  {{userInfo.name}} 
-  </view>
-  <view class="my-item" style='background:none;'>
-    联系买家  {{userInfo.buyerName}} 
-  </view>
-  <view class="my-item" style='background:none;'>
-    地区  {{userInfo.region}} 
-  </view>
-  <view style="height:20rpx;background: #eee;width:100%;"></view>
   <view class="option-list">
     <navigator class="option-item" url='/pages/select-address/index'>
         <view class="flex-row option-content">

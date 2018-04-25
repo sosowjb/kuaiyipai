@@ -1,33 +1,43 @@
 const app = getApp()
 
 Page({
-  data: {
-    balance: 0,
-    freeze: 0,
-    obligation: 0,
-    waitsend: 0,
-    waitget: 0
-  },
   onLoad() {
 
   },
   onShow() {
-    this.getUserInfo();
-    this.setData({
-      version: app.globalData.version
-    });
   },
-  getUserInfo: function (cb) {
-    var that = this
-    wx.login({
-      success: function () {
-        wx.getUserInfo({
-          success: function (res) {
-            that.setData({
-              userInfo: res.userInfo
-            });
-          }
-        })
+  charge:function(e){
+    
+    var money = e.detail.value.chargemoney;
+
+    if(money <= 0){
+      wx.showModal({
+        title: '提示',
+        content: '充值金额需大于0',
+        showCancel: false
+      })
+      return
+    }
+    var that = this;
+    wx.request({
+      url: app.globalData.apiLink + '/api/services/app/Balance/Charge', 
+      method: "POST",
+      header: {
+        "Authorization": wx.getStorageSync("accessToken"),
+        "Content-Type": "application/json"
+      },
+      data: {
+        amount: e.detail.value.chargemoney
+      },
+      success: function (res) {
+        if (res.data.success) {
+          wx.showModal({
+            title: '提示',
+            content: '充值成功！',
+            showCancel: false
+          })
+          wx.navigateBack;
+        }
       }
     })
   }

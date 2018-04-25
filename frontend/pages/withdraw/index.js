@@ -9,22 +9,38 @@ Page({
 
   },
   onShow() {
-    this.getUserInfo();
-    this.setData({
-      version: app.globalData.version
-    });
   },
-  getUserInfo: function (cb) {
-    var that = this
-    wx.login({
-      success: function () {
-        wx.getUserInfo({
-          success: function (res) {
-            that.setData({
-              userInfo: res.userInfo
-            });
-          }
-        })
+  widthdraw: function (cb) {
+    var money = e.detail.value.withdrawmoney;
+
+    if (money <= 0) {
+      wx.showModal({
+        title: '提示',
+        content: '体现金额需大于0',
+        showCancel: false
+      })
+      return
+    }
+    var that = this;
+    wx.request({
+      url: app.globalData.apiLink + '/api/services/app/Balance/Withdraw',
+      method: "POST",
+      header: {
+        "Authorization": wx.getStorageSync("accessToken"),
+        "Content-Type": "application/json"
+      },
+      data: {
+        amount: money
+      },
+      success: function (res) {
+        if (res.data.success) {
+          wx.showModal({
+            title: '提示',
+            content: '提现成功！',
+            showCancel: false
+          })
+          wx.navigateBack;
+        }
       }
     })
   }

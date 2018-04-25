@@ -1,12 +1,21 @@
 // pages/home/home.js
+const app = getApp()
+var util =  require("../../content/utils/util.js");
 Page({
 
     /**
      * 页面的初始数据
      */
+
     data: {
+        imageLink: app.globalData.imageLink,
         inputShowed: false,
-        inputVal: ""
+        inputVal: "",
+        banner:[
+          { title: "", link: "", picurl:"/goods/swiper-1.jpg"},
+          { title: "", link: "", picurl:"/goods/swiper-2.jpg"},
+          { title: "", link: "", picurl: "/goods/swiper-3.jpg" }
+          ]
     },
     showInput: function () {
         this.setData({
@@ -89,5 +98,19 @@ Page({
      */
     onShareAppMessage: function () {
 
+    },
+    getBannerData:function(){
+        wx.request({
+          url: app.globalData.apiLink+'/api/services/app/Item/GetAuctionItems?SkipCount=1&MaxResultCount=1&Sorting=Id',
+          header: { 'Abp.TenantId': '1', 'Content-Type': 'application/json' },
+          method: 'GET',
+          dataType: 'json',
+          responseType: 'text',
+          success: function(res) {
+            console.log(res)
+          },
+          fail: function(res) {},
+          complete: function(res) {},
+        })
     }
 })

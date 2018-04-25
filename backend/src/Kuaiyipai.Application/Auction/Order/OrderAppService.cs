@@ -6,6 +6,7 @@ using Abp.Application.Services.Dto;
 using Abp.Domain.Repositories;
 using Abp.Linq.Extensions;
 using Abp.Runtime.Session;
+using Abp.UI;
 using Castle.Core.Internal;
 using Kuaiyipai.Auction.Entities;
 using Kuaiyipai.Auction.Order.Dto;
@@ -85,15 +86,20 @@ namespace Kuaiyipai.Auction.Order
             throw new NotImplementedException();
         }
 
-        public async Task<GetEachTypeOrderCountOutputDto> GetEachTypeOrderCount(GetEachTypeOrderCountInputDto inputDto)
+        public async Task<GetEachTypeOrderCountOutputDto> GetEachTypeOrderCount()
         {
             try
             {
-                var output = new GetEachTypeOrderCountOutputDto();
+                if (!AbpSession.UserId.HasValue)
+                {
+                    throw new UserFriendlyException("用户未登录");
+                }
 
-                output.WaitPay = await _paymentRepository.CountAsync(t => inputDto.UserType == 0 ? t.SellerId == inputDto.UserId : t.BuyerId == inputDto.UserId);
-                output.WaitReceive = await _receivingRepository.CountAsync(t => inputDto.UserType == 0 ? t.SellerId == inputDto.UserId : t.BuyerId == inputDto.UserId);
-                output.WaitSend = await _sendingRepository.CountAsync(t => inputDto.UserType == 0 ? t.SellerId == inputDto.UserId : t.BuyerId == inputDto.UserId);
+                var output = new GetEachTypeOrderCountOutputDto();                
+
+                output.WaitPay = await _paymentRepository.CountAsync(t => t.SellerId == AbpSession.UserId.Value || t.BuyerId == AbpSession.UserId.Value);
+                output.WaitReceive = await _receivingRepository.CountAsync(t => t.SellerId == AbpSession.UserId.Value || t.BuyerId == AbpSession.UserId.Value);
+                output.WaitSend = await _sendingRepository.CountAsync(t => t.SellerId == AbpSession.UserId.Value || t.BuyerId == AbpSession.UserId.Value);
 
                 return output;
             }
