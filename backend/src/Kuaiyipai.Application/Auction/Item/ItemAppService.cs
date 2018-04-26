@@ -354,6 +354,98 @@ namespace Kuaiyipai.Auction.Item
             return new PagedResultDto<GetMyTerminatedItemsOutputDto>(count, list);
         }
 
+        public async Task<GetDraftingItemOutputDto> GetDraftingItem(EntityDto<Guid> input)
+        {
+            var item = await _itemDraftingRepository.FirstOrDefaultAsync(input.Id);
+            if (item == null)
+            {
+                throw new UserFriendlyException("商品不存在");
+            }
+            return new GetDraftingItemOutputDto
+            {
+                Id = item.Id,
+                Code = item.Code,
+                PillarId = item.PillarId,
+                CategoryId = item.CategoryId,
+                StartPrice = item.StartPrice,
+                StartTime = item.StartTime,
+                StepPrice = item.StepPrice,
+                PriceLimit = item.PriceLimit,
+                Deadline = item.Deadline,
+                Title = item.Title,
+                Description = item.Description
+            };
+        }
+
+        public async Task<GetAuctionItemOutputDto> GetAuctionItem(EntityDto<Guid> input)
+        {
+            var item = await _itemAuctioningRepository.FirstOrDefaultAsync(input.Id);
+            if (item == null)
+            {
+                throw new UserFriendlyException("商品不存在");
+            }
+            return new GetAuctionItemOutputDto
+            {
+                Id = item.Id,
+                Code = item.Code,
+                PillarId = item.PillarId,
+                CategoryId = item.CategoryId,
+                StartPrice = item.StartPrice,
+                StartTime = item.StartTime,
+                StepPrice = item.StepPrice,
+                PriceLimit = item.PriceLimit,
+                Deadline = item.Deadline,
+                Title = item.Title,
+                Description = item.Description
+            };
+        }
+
+        public async Task<GetCompletedItemOutputDto> GetCompletedItem(EntityDto<Guid> input)
+        {
+            var item = await _itemCompletedRepository.FirstOrDefaultAsync(input.Id);
+            if (item == null)
+            {
+                throw new UserFriendlyException("商品不存在");
+            }
+            return new GetCompletedItemOutputDto
+            {
+                Id = item.Id,
+                Code = item.Code,
+                PillarId = item.PillarId,
+                CategoryId = item.CategoryId,
+                StartPrice = item.StartPrice,
+                StartTime = item.StartTime,
+                StepPrice = item.StepPrice,
+                PriceLimit = item.PriceLimit,
+                Deadline = item.Deadline,
+                Title = item.Title,
+                Description = item.Description
+            };
+        }
+
+        public async Task<GetTerminatedItemOutputDto> GetTerminatedItem(EntityDto<Guid> input)
+        {
+            var item = await _itemTerminatedRepository.FirstOrDefaultAsync(input.Id);
+            if (item == null)
+            {
+                throw new UserFriendlyException("商品不存在");
+            }
+            return new GetTerminatedItemOutputDto
+            {
+                Id = item.Id,
+                Code = item.Code,
+                PillarId = item.PillarId,
+                CategoryId = item.CategoryId,
+                StartPrice = item.StartPrice,
+                StartTime = item.StartTime,
+                StepPrice = item.StepPrice,
+                PriceLimit = item.PriceLimit,
+                Deadline = item.Deadline,
+                Title = item.Title,
+                Description = item.Description
+            };
+        }
+
         public async Task<UploadPictureOutputDto> UploadPicture(UploadPictureInputDto input)
         {
             try
@@ -482,7 +574,7 @@ namespace Kuaiyipai.Auction.Item
                     StepPrice = item.StepPrice,
                     StartTime = item.StartTime,
                     Deadline = item.Deadline,
-                    CoverPic = item.fengmian==null?"":item.fengmian.Path,
+                    CoverPic = item.fengmian == null ? "" : item.fengmian.Path,
                     CoverPicWidth = item.fengmian == null ? 0 : item.fengmian.Width,
                     CoverPicHeight = item.fengmian == null ? 0 : item.fengmian.Height
                 }).ToListAsync();
