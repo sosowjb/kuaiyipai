@@ -446,6 +446,91 @@ namespace Kuaiyipai.Auction.Item
             };
         }
 
+        public async Task<GetItemOutputDto> GetItem(EntityDto<Guid> input)
+        {
+            var item1 = await _itemDraftingRepository.FirstOrDefaultAsync(input.Id);
+            if (item1 == null)
+            {
+                var item2 = await _itemAuctioningRepository.FirstOrDefaultAsync(input.Id);
+                if (item2 == null)
+                {
+                    var item3 = await _itemCompletedRepository.FirstOrDefaultAsync(input.Id);
+                    if (item3 == null)
+                    {
+                        var item4 = await _itemTerminatedRepository.FirstOrDefaultAsync(input.Id);
+                        if (item4 == null)
+                        {
+                            throw new UserFriendlyException("商品不存在");
+                        }
+
+                        return new GetItemOutputDto
+                        {
+                            Id = item4.Id,
+                            Code = item4.Code,
+                            PillarId = item4.PillarId,
+                            CategoryId = item4.CategoryId,
+                            StartPrice = item4.StartPrice,
+                            StartTime = item4.StartTime,
+                            StepPrice = item4.StepPrice,
+                            PriceLimit = item4.PriceLimit,
+                            Deadline = item4.Deadline,
+                            Title = item4.Title,
+                            Description = item4.Description,
+                            Status = "Terminated"
+                        };
+                    }
+
+                    return new GetItemOutputDto
+                    {
+                        Id = item3.Id,
+                        Code = item3.Code,
+                        PillarId = item3.PillarId,
+                        CategoryId = item3.CategoryId,
+                        StartPrice = item3.StartPrice,
+                        StartTime = item3.StartTime,
+                        StepPrice = item3.StepPrice,
+                        PriceLimit = item3.PriceLimit,
+                        Deadline = item3.Deadline,
+                        Title = item3.Title,
+                        Description = item3.Description,
+                        Status = "Completed"
+                    };
+                }
+
+                return new GetItemOutputDto
+                {
+                    Id = item2.Id,
+                    Code = item2.Code,
+                    PillarId = item2.PillarId,
+                    CategoryId = item2.CategoryId,
+                    StartPrice = item2.StartPrice,
+                    StartTime = item2.StartTime,
+                    StepPrice = item2.StepPrice,
+                    PriceLimit = item2.PriceLimit,
+                    Deadline = item2.Deadline,
+                    Title = item2.Title,
+                    Description = item2.Description,
+                    Status = "Auctioning"
+                };
+            }
+
+            return new GetItemOutputDto
+            {
+                Id = item1.Id,
+                Code = item1.Code,
+                PillarId = item1.PillarId,
+                CategoryId = item1.CategoryId,
+                StartPrice = item1.StartPrice,
+                StartTime = item1.StartTime,
+                StepPrice = item1.StepPrice,
+                PriceLimit = item1.PriceLimit,
+                Deadline = item1.Deadline,
+                Title = item1.Title,
+                Description = item1.Description,
+                Status = "Drafting"
+            };
+        }
+
         public async Task<UploadPictureOutputDto> UploadPicture(UploadPictureInputDto input)
         {
             try

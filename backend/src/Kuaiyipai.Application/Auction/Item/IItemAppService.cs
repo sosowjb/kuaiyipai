@@ -36,6 +36,8 @@ namespace Kuaiyipai.Auction.Item
 
         Task<GetTerminatedItemOutputDto> GetTerminatedItem(EntityDto<Guid> input);
 
+        Task<GetItemOutputDto> GetItem(EntityDto<Guid> input);
+
         /// <summary>
         /// 获取正在拍卖的商品
         /// </summary>
