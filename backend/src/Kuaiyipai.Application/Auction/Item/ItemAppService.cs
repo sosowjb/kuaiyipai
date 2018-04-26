@@ -342,7 +342,6 @@ namespace Kuaiyipai.Auction.Item
             var query = _itemAuctioningRepository.GetAll();
             var pillarQuery = _pillarRepository.GetAll();
             var categoryQuery = _categoryRepository.GetAll();
-            var itempicQuery = _itemPicRepository.GetAll();
             var itempicQuery = _itemPicRepository.GetAll().Where(o=>o.IsCover==true);
             if (!input.Sorting.IsNullOrEmpty())
             {
@@ -351,32 +350,6 @@ namespace Kuaiyipai.Auction.Item
             var count1 = await categoryQuery.CountAsync();
             var count2 = await pillarQuery.CountAsync();
             var count = await query.CountAsync();
-            var list = await query.PageBy(input).Join(pillarQuery, item => item.PillarId, pillar => pillar.Id, (item, pillar) => new
-            {
-                item.Id,
-                Pillar = pillar.Name,
-                fengmian = itempicQuery.Where(i => i.ItemId == item.Id).First(),
-                item.CategoryId,
-                item.Title,
-                item.StartPrice,
-                item.StepPrice,
-                item.StartTime,
-                item.Deadline
-            })
-                .Join(categoryQuery, item => item.CategoryId, category => category.Id, (item, category) => new GetAuctionItemsOutputDto
-                {
-                    Id = item.Id,
-                    Pillar = item.Pillar,
-                    Category = category.Name,
-                    Title = item.Title,
-                    StartPrice = item.StartPrice,
-                    StepPrice = item.StepPrice,
-                    StartTime = item.StartTime,
-                    Deadline = item.Deadline,
-                    CoverPic = item.fengmian==null?"":item.fengmian.Path,
-                    CoverPicWidth = item.fengmian == null ? 0 : item.fengmian.Width,
-                    CoverPicHeight = item.fengmian == null ? 0 : item.fengmian.Height
-                }).ToListAsync();
             var list = await query.PageBy(input)
                          .Join(pillarQuery, item => item.PillarId, pillar => pillar.Id, (item, pillar) => new { item, pillar })
                          .Join(categoryQuery, items => items.item.CategoryId, category => category.Id, (items, category) => new { items, category })
