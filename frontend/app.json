@@ -10,7 +10,14 @@
     "pages/my/index",
     "pages/seller/index",
     "pages/withdraw/index",
+<<<<<<< HEAD
     "pages/publish/index"
+=======
+    "pages/notice/show",
+    "pages/setting/index",
+    "pages/select-address/index",
+    "pages/address-add/index"
+>>>>>>> b18db38cc8637b4920cd4773ba1e3f4e71fbb681
   ],
   "window": {
     "backgroundTextStyle": "light",

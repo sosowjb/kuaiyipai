@@ -19,9 +19,10 @@ using System;
 namespace Kuaiyipai.Migrations
 {
     [DbContext(typeof(KuaiyipaiDbContext))]
-    partial class KuaiyipaiDbContextModelSnapshot : ModelSnapshot
+    [Migration("20180425083802_FieldChange")]
+    partial class FieldChange
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

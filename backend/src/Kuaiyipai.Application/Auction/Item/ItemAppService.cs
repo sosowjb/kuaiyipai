@@ -1,4 +1,7 @@
 ﻿using System;
+using System.Drawing;
+using System.Drawing.Imaging;
+using System.IO;
 using System.Linq;
 using System.Linq.Dynamic.Core;
 using System.Threading.Tasks;
@@ -10,7 +13,10 @@ using Abp.UI;
 using Castle.Core.Internal;
 using Kuaiyipai.Auction.Entities;
 using Kuaiyipai.Auction.Item.Dto;
+using Kuaiyipai.Configuration;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 
 namespace Kuaiyipai.Auction.Item
 {
@@ -23,8 +29,9 @@ namespace Kuaiyipai.Auction.Item
         private readonly IRepository<ItemPic, Guid> _itemPicRepository;
         private readonly IRepository<Entities.Pillar> _pillarRepository;
         private readonly IRepository<Entities.Category> _categoryRepository;
+        private readonly IConfigurationRoot _appConfiguration;
 
-        public ItemAppService(IRepository<ItemDrafting, Guid> itemDraftingRepository, IRepository<ItemAuctioning, Guid> itemAuctioningRepository, IRepository<ItemCompleted, Guid> itemCompletedRepository, IRepository<ItemTerminated, Guid> itemTerminatedRepository, IRepository<ItemPic, Guid> itemPicRepository, IRepository<Entities.Pillar> pillarRepository, IRepository<Entities.Category> categoryRepository)
+        public ItemAppService(IHostingEnvironment env, IRepository<ItemDrafting, Guid> itemDraftingRepository, IRepository<ItemAuctioning, Guid> itemAuctioningRepository, IRepository<ItemCompleted, Guid> itemCompletedRepository, IRepository<ItemTerminated, Guid> itemTerminatedRepository, IRepository<Entities.Pillar> pillarRepository, IRepository<Entities.Category> categoryRepository, IRepository<ItemPic, Guid> itemPicRepository)
         {
             _itemDraftingRepository = itemDraftingRepository;
             _itemAuctioningRepository = itemAuctioningRepository;
@@ -33,6 +40,7 @@ namespace Kuaiyipai.Auction.Item
             _itemPicRepository = itemPicRepository;
             _pillarRepository = pillarRepository;
             _categoryRepository = categoryRepository;
+            _appConfiguration = env.GetAppConfiguration();
         }
 
         public async Task<Guid> CreateItem(CreateItemInputDto input)
@@ -53,7 +61,18 @@ namespace Kuaiyipai.Auction.Item
                 Description = input.Description
             };
 
-            return await _itemDraftingRepository.InsertAndGetIdAsync(item);
+            var itemId = await _itemDraftingRepository.InsertAndGetIdAsync(item);
+
+            for (int i = 0; i < input.PictureList.Count; i++)
+            {
+                var p = await _itemPicRepository.GetAsync(input.PictureList[i].Id);
+                p.IsCover = input.PictureList[i].IsCover;
+                p.ItemId = itemId;
+                p.Index = i + 1;
+                await _itemPicRepository.UpdateAsync(p);
+            }
+
+            return itemId;
         }
 
         [UnitOfWork]
@@ -335,7 +354,279 @@ namespace Kuaiyipai.Auction.Item
             return new PagedResultDto<GetMyTerminatedItemsOutputDto>(count, list);
         }
 
+<<<<<<< HEAD
 
+=======
+        public async Task<GetDraftingItemOutputDto> GetDraftingItem(EntityDto<Guid> input)
+        {
+            var item = await _itemDraftingRepository.FirstOrDefaultAsync(input.Id);
+            if (item == null)
+            {
+                throw new UserFriendlyException("商品不存在");
+            }
+            return new GetDraftingItemOutputDto
+            {
+                Id = item.Id,
+                Code = item.Code,
+                PillarId = item.PillarId,
+                CategoryId = item.CategoryId,
+                StartPrice = item.StartPrice,
+                StartTime = item.StartTime,
+                StepPrice = item.StepPrice,
+                PriceLimit = item.PriceLimit,
+                Deadline = item.Deadline,
+                Title = item.Title,
+                Description = item.Description
+            };
+        }
+
+        public async Task<GetAuctionItemOutputDto> GetAuctionItem(EntityDto<Guid> input)
+        {
+            var item = await _itemAuctioningRepository.FirstOrDefaultAsync(input.Id);
+            if (item == null)
+            {
+                throw new UserFriendlyException("商品不存在");
+            }
+            return new GetAuctionItemOutputDto
+            {
+                Id = item.Id,
+                Code = item.Code,
+                PillarId = item.PillarId,
+                CategoryId = item.CategoryId,
+                StartPrice = item.StartPrice,
+                StartTime = item.StartTime,
+                StepPrice = item.StepPrice,
+                PriceLimit = item.PriceLimit,
+                Deadline = item.Deadline,
+                Title = item.Title,
+                Description = item.Description
+            };
+        }
+
+        public async Task<GetCompletedItemOutputDto> GetCompletedItem(EntityDto<Guid> input)
+        {
+            var item = await _itemCompletedRepository.FirstOrDefaultAsync(input.Id);
+            if (item == null)
+            {
+                throw new UserFriendlyException("商品不存在");
+            }
+            return new GetCompletedItemOutputDto
+            {
+                Id = item.Id,
+                Code = item.Code,
+                PillarId = item.PillarId,
+                CategoryId = item.CategoryId,
+                StartPrice = item.StartPrice,
+                StartTime = item.StartTime,
+                StepPrice = item.StepPrice,
+                PriceLimit = item.PriceLimit,
+                Deadline = item.Deadline,
+                Title = item.Title,
+                Description = item.Description
+            };
+        }
+
+        public async Task<GetTerminatedItemOutputDto> GetTerminatedItem(EntityDto<Guid> input)
+        {
+            var item = await _itemTerminatedRepository.FirstOrDefaultAsync(input.Id);
+            if (item == null)
+            {
+                throw new UserFriendlyException("商品不存在");
+            }
+            return new GetTerminatedItemOutputDto
+            {
+                Id = item.Id,
+                Code = item.Code,
+                PillarId = item.PillarId,
+                CategoryId = item.CategoryId,
+                StartPrice = item.StartPrice,
+                StartTime = item.StartTime,
+                StepPrice = item.StepPrice,
+                PriceLimit = item.PriceLimit,
+                Deadline = item.Deadline,
+                Title = item.Title,
+                Description = item.Description
+            };
+        }
+
+        public async Task<GetItemOutputDto> GetItem(EntityDto<Guid> input)
+        {
+            var item1 = await _itemDraftingRepository.FirstOrDefaultAsync(input.Id);
+            if (item1 == null)
+            {
+                var item2 = await _itemAuctioningRepository.FirstOrDefaultAsync(input.Id);
+                if (item2 == null)
+                {
+                    var item3 = await _itemCompletedRepository.FirstOrDefaultAsync(input.Id);
+                    if (item3 == null)
+                    {
+                        var item4 = await _itemTerminatedRepository.FirstOrDefaultAsync(input.Id);
+                        if (item4 == null)
+                        {
+                            throw new UserFriendlyException("商品不存在");
+                        }
+
+                        return new GetItemOutputDto
+                        {
+                            Id = item4.Id,
+                            Code = item4.Code,
+                            PillarId = item4.PillarId,
+                            CategoryId = item4.CategoryId,
+                            StartPrice = item4.StartPrice,
+                            StartTime = item4.StartTime,
+                            StepPrice = item4.StepPrice,
+                            PriceLimit = item4.PriceLimit,
+                            Deadline = item4.Deadline,
+                            Title = item4.Title,
+                            Description = item4.Description,
+                            Status = "Terminated"
+                        };
+                    }
+
+                    return new GetItemOutputDto
+                    {
+                        Id = item3.Id,
+                        Code = item3.Code,
+                        PillarId = item3.PillarId,
+                        CategoryId = item3.CategoryId,
+                        StartPrice = item3.StartPrice,
+                        StartTime = item3.StartTime,
+                        StepPrice = item3.StepPrice,
+                        PriceLimit = item3.PriceLimit,
+                        Deadline = item3.Deadline,
+                        Title = item3.Title,
+                        Description = item3.Description,
+                        Status = "Completed"
+                    };
+                }
+
+                return new GetItemOutputDto
+                {
+                    Id = item2.Id,
+                    Code = item2.Code,
+                    PillarId = item2.PillarId,
+                    CategoryId = item2.CategoryId,
+                    StartPrice = item2.StartPrice,
+                    StartTime = item2.StartTime,
+                    StepPrice = item2.StepPrice,
+                    PriceLimit = item2.PriceLimit,
+                    Deadline = item2.Deadline,
+                    Title = item2.Title,
+                    Description = item2.Description,
+                    Status = "Auctioning"
+                };
+            }
+
+            return new GetItemOutputDto
+            {
+                Id = item1.Id,
+                Code = item1.Code,
+                PillarId = item1.PillarId,
+                CategoryId = item1.CategoryId,
+                StartPrice = item1.StartPrice,
+                StartTime = item1.StartTime,
+                StepPrice = item1.StepPrice,
+                PriceLimit = item1.PriceLimit,
+                Deadline = item1.Deadline,
+                Title = item1.Title,
+                Description = item1.Description,
+                Status = "Drafting"
+            };
+        }
+
+        public async Task<UploadPictureOutputDto> UploadPicture(UploadPictureInputDto input)
+        {
+            try
+            {
+                var now = DateTime.Now;
+                var relativePath = Path.Combine(now.Year.ToString(), now.Month.ToString(), now.Day.ToString(), now.Hour.ToString());
+                var filePath = Path.Combine(_appConfiguration["App:ImagePhysicalPath"], relativePath);
+                var fileName = now.ToString("yyyyMMddhhmmssffff") + "_" + AbpSession.UserId;
+                var ext = ".jpg";
+
+                var base64 = (input.Base64.IndexOf(',') == -1 ? input.Base64 : input.Base64.Substring(input.Base64.IndexOf(',') + 1)).Trim('\0');
+                byte[] arr = Convert.FromBase64String(base64);
+                long length = arr.Length;
+                int height;
+                int width;
+                using (MemoryStream ms = new MemoryStream(arr))
+                {
+                    Bitmap bmp = new Bitmap(ms);
+                    height = bmp.Height;
+                    width = bmp.Width;
+                    Bitmap bmp2 = new Bitmap(bmp, bmp.Width, bmp.Height);
+                    Graphics draw = Graphics.FromImage(bmp2);
+                    draw.DrawImage(bmp, 0, 0);
+                    draw.Dispose();
+                    if (!Directory.Exists(filePath))
+                    {
+                        Directory.CreateDirectory(filePath);
+                    }
+                    bmp2.Save(Path.Combine(filePath, fileName + ext), ImageFormat.Jpeg);
+                    ms.Close();
+                }
+
+                var pic = new ItemPic
+                {
+                    Path = relativePath,
+                    FileName = fileName,
+                    Size = length,
+                    Extension = ext,
+                    Height = height,
+                    Width = width
+                };
+                var id = await _itemPicRepository.InsertAndGetIdAsync(pic);
+                return new UploadPictureOutputDto { Id = id };
+            }
+            catch
+            {
+                throw new UserFriendlyException("图片上传失败");
+            }
+        }
+
+        public async Task<ListResultDto<GetItemPicturesOutputDto>> GetItemPictures(GetItemPicturesInputDto input)
+        {
+            var list = await _itemPicRepository.GetAll().Where(p => p.ItemId == input.Id).OrderBy(p => p.Index).Select(p => new GetItemPicturesOutputDto
+            {
+                Id = p.Id,
+                Height = p.Height,
+                Width = p.Width,
+                IsCover = p.IsCover,
+                Url = new Uri(new Uri(_appConfiguration["App:ImageUrlPrefix"]), Path.Combine(p.Path, p.FileName + p.Extension)).ToString()
+            }).ToListAsync();
+            return new ListResultDto<GetItemPicturesOutputDto>(list);
+        }
+
+        public async Task<GetItemPicturesOutputDto> GetCoverPicture(GetItemPicturesInputDto input)
+        {
+            var pic = await _itemPicRepository.FirstOrDefaultAsync(p => p.ItemId == input.Id && p.IsCover);
+            return new GetItemPicturesOutputDto
+            {
+                Id = pic.Id,
+                Height = pic.Height,
+                Width = pic.Width,
+                IsCover = pic.IsCover,
+                Url = new Uri(new Uri(_appConfiguration["App:ImageUrlPrefix"]), Path.Combine(pic.Path, pic.FileName + pic.Extension)).ToString()
+            };
+        }
+
+        public async Task DeleteItemPicture(EntityDto<Guid> input)
+        {
+            var pic = await _itemPicRepository.GetAsync(input.Id);
+            if (pic == null)
+            {
+                throw new UserFriendlyException("图片不存在");
+            }
+
+            var path = Path.Combine(_appConfiguration["App:ImagePhysicalPath"], pic.Path, pic.FileName + pic.Extension);
+            if (File.Exists(path))
+            {
+                File.Delete(path);
+            }
+
+            await _itemPicRepository.DeleteAsync(input.Id);
+        }
+>>>>>>> b18db38cc8637b4920cd4773ba1e3f4e71fbb681
 
         public async Task<PagedResultDto<GetAuctionItemsOutputDto>> GetAuctionItems(GetAuctionItemsInputDto input)
         {
@@ -350,6 +641,7 @@ namespace Kuaiyipai.Auction.Item
             var count1 = await categoryQuery.CountAsync();
             var count2 = await pillarQuery.CountAsync();
             var count = await query.CountAsync();
+<<<<<<< HEAD
             var list = await query.PageBy(input)
                          .Join(pillarQuery, item => item.PillarId, pillar => pillar.Id, (item, pillar) => new { item, pillar })
                          .Join(categoryQuery, items => items.item.CategoryId, category => category.Id, (items, category) => new { items, category })
@@ -368,6 +660,34 @@ namespace Kuaiyipai.Auction.Item
                              CoverPicHeight=itempic.Height,
                              CoverPicWidth=itempic.Width
                          }).ToListAsync();
+=======
+            var list = await query.PageBy(input).Join(pillarQuery, item => item.PillarId, pillar => pillar.Id, (item, pillar) => new
+            {
+                item.Id,
+                Pillar = pillar.Name,
+                fengmian = itempicQuery.Where(i => i.ItemId == item.Id).First(),
+                item.CategoryId,
+                item.Title,
+                item.StartPrice,
+                item.StepPrice,
+                item.StartTime,
+                item.Deadline
+            })
+                .Join(categoryQuery, item => item.CategoryId, category => category.Id, (item, category) => new GetAuctionItemsOutputDto
+                {
+                    Id = item.Id,
+                    Pillar = item.Pillar,
+                    Category = category.Name,
+                    Title = item.Title,
+                    StartPrice = item.StartPrice,
+                    StepPrice = item.StepPrice,
+                    StartTime = item.StartTime,
+                    Deadline = item.Deadline,
+                    CoverPic = item.fengmian == null ? "" : item.fengmian.Path,
+                    CoverPicWidth = item.fengmian == null ? 0 : item.fengmian.Width,
+                    CoverPicHeight = item.fengmian == null ? 0 : item.fengmian.Height
+                }).ToListAsync();
+>>>>>>> b18db38cc8637b4920cd4773ba1e3f4e71fbb681
 
             return new PagedResultDto<GetAuctionItemsOutputDto>(count, list);
         }

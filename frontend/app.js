@@ -13,11 +13,11 @@ App({
               this.globalData.userInfo = res.userInfo
               if (!wx.getStorageSync("accessToken"))
               {
-              wx.login({
-                success: res => {
-                 this.Logins(res.code)
-                }
-              })
+                wx.login({
+                  success: res => {
+                  this.Logins(res.code)
+                  }
+                })
               }
               if (this.userInfoReadyCallback) {
                 this.userInfoReadyCallback(res)
@@ -37,7 +37,7 @@ App({
       dataType: 'json',
       responseType: 'text',
       success: function (res) {
-        console.log(res.data.result.userId)
+        console.log("用户ID"+res.data.result.userId)
         wx.setStorage({
           key: "accessToken",
           data: res.data.result.accessToken
@@ -53,7 +53,7 @@ App({
   },
   globalData: {
     userInfo: null,
-    apiLink: "http://localhost:5000",//api链接
+    apiLink: "http://localhost:22742",//api链接
     imageLink: "http://images.kypwp.com"//图片链接
   }
 })

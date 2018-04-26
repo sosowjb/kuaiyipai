@@ -28,11 +28,29 @@ namespace Kuaiyipai.Auction.Item
 
         Task<PagedResultDto<GetMyTerminatedItemsOutputDto>> GetMyTerminatedItems(GetMyTerminatedItemsInputDto input);
 
+        Task<GetDraftingItemOutputDto> GetDraftingItem(EntityDto<Guid> input);
+
+        Task<GetAuctionItemOutputDto> GetAuctionItem(EntityDto<Guid> input);
+
+        Task<GetCompletedItemOutputDto> GetCompletedItem(EntityDto<Guid> input);
+
+        Task<GetTerminatedItemOutputDto> GetTerminatedItem(EntityDto<Guid> input);
+
+        Task<GetItemOutputDto> GetItem(EntityDto<Guid> input);
+
         /// <summary>
         /// 获取正在拍卖的商品
         /// </summary>
         /// <param name="input"></param>
         /// <returns></returns>
         Task<PagedResultDto<GetAuctionItemsOutputDto>> GetAuctionItems(GetAuctionItemsInputDto input);
+
+        Task<UploadPictureOutputDto> UploadPicture(UploadPictureInputDto input);
+
+        Task<ListResultDto<GetItemPicturesOutputDto>> GetItemPictures(GetItemPicturesInputDto input);
+
+        Task<GetItemPicturesOutputDto> GetCoverPicture(GetItemPicturesInputDto input);
+
+        Task DeleteItemPicture(EntityDto<Guid> input);
     }
 }

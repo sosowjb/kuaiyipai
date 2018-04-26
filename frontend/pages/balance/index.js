@@ -12,22 +12,55 @@ Page({
 
   },
   onShow() {
-    this.getUserInfo();
-    this.setData({
-      version: app.globalData.version
-    });
+    this.getUserAmount();
+    this.getUserOrder();
   },
-  getUserInfo: function (cb) {
-    var that = this
-    wx.login({
-      success: function () {
-        wx.getUserInfo({
-          success: function (res) {
-            that.setData({
-              userInfo: res.userInfo
-            });
-          }
-        })
+  // 获取用户账户信息
+  getUserAmount: function () {
+    var that = this;
+    wx.request({
+      url: app.globalData.apiLink + '/api/services/app/Balance/GetMyBalance',
+      method: "POST",
+      header: {
+        "Authorization": wx.getStorageSync("accessToken"),
+        "Content-Type": "application/json"
+      },
+      data:{
+
+      },
+      success: function (res) {
+        console.info(res);
+        if (res.data.code == 0) {
+          that.setData({
+            balance: res.available,
+            freeze: res.frozen
+          });
+        }
+      }
+    })
+  },
+  // 获取用户订单情况
+  getUserOrder: function () {
+    var that = this;
+    wx.request({
+      url: app.globalData.apiLink + '/api/services/app/Order/GetEachTypeOrderCount', 
+      method: "POST",
+      header: {
+        "Authorization": wx.getStorageSync("accessToken"),
+        "Content-Type": "application/json"
+      },
+      data: {
+        userType: 0
+      },
+      success: function (res) {
+        console.info(res);
+        if (res.data.success) {
+          that.setData({
+            waitPay: res.data.result.waitPay,
+            waitSend: res.data.result.waitSend,
+            waitReceive: res.data.result.waitReceive
+          });
+        }
       }
     })
   }

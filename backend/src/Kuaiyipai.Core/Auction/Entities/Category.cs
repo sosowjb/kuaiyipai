@@ -12,7 +12,7 @@ namespace Kuaiyipai.Auction.Entities
         public string Name { get; set; }
 
         [Required]
-        [StringLength(3)]
+        [StringLength(5)]
         public string Code { get; set; }
 
         [Required]
