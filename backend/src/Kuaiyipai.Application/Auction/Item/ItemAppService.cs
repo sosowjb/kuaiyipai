@@ -335,6 +335,8 @@ namespace Kuaiyipai.Auction.Item
             return new PagedResultDto<GetMyTerminatedItemsOutputDto>(count, list);
         }
 
+
+
         public async Task<PagedResultDto<GetAuctionItemsOutputDto>> GetAuctionItems(GetAuctionItemsInputDto input)
         {
             var query = _itemAuctioningRepository.GetAll();

@@ -9,7 +9,8 @@
     "pages/charge/index",
     "pages/my/index",
     "pages/seller/index",
-    "pages/withdraw/index"
+    "pages/withdraw/index",
+    "pages/publish/index"
   ],
   "window": {
     "backgroundTextStyle": "light",
