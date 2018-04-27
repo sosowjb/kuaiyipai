@@ -26,5 +26,9 @@ namespace Kuaiyipai.Auction.Item.Dto
         public string Description { get; set; }
 
         public string Status { get; set; }
+
+        public int BiddingCount { get; set; }
+
+        public double HighestBiddingPrice { get; set; }
     }
 }

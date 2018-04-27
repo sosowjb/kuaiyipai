@@ -60,5 +60,9 @@ namespace Kuaiyipai.Auction.Entities
 
         [Required]
         public string Description { get; set; }
+
+        public int BiddingCount { get; set; }
+
+        public double HighestBiddingPrice { get; set; }
     }
 }
