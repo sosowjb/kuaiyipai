@@ -375,10 +375,6 @@ namespace Kuaiyipai.Auction.Item
 
             return new PagedResultDto<GetMyTerminatedItemsOutputDto>(count, list);
         }
-
-<<<<<<< HEAD
-
-=======
         public async Task<GetDraftingItemOutputDto> GetDraftingItem(EntityDto<Guid> input)
         {
             var item = await _itemDraftingRepository.FirstOrDefaultAsync(input.Id);
@@ -662,7 +658,6 @@ namespace Kuaiyipai.Auction.Item
 
             await _itemPicRepository.DeleteAsync(input.Id);
         }
->>>>>>> b18db38cc8637b4920cd4773ba1e3f4e71fbb681
 
         public async Task<PagedResultDto<GetAuctionItemsOutputDto>> GetAuctionItems(GetAuctionItemsInputDto input)
         {
@@ -677,26 +672,7 @@ namespace Kuaiyipai.Auction.Item
             var count1 = await categoryQuery.CountAsync();
             var count2 = await pillarQuery.CountAsync();
             var count = await query.CountAsync();
-<<<<<<< HEAD
-            var list = await query.PageBy(input)
-                         .Join(pillarQuery, item => item.PillarId, pillar => pillar.Id, (item, pillar) => new { item, pillar })
-                         .Join(categoryQuery, items => items.item.CategoryId, category => category.Id, (items, category) => new { items, category })
-                         .Join(itempicQuery, items => items.items.item.Id, itempic => itempic.ItemId,(items, itempic) => new GetAuctionItemsOutputDto
-                         {
-
-                             Id = items.items.item.Id,
-                             Pillar = items.items.pillar.Name,
-                             Category = items.category.Name,
-                             Title = items.items.item.Title,
-                             StartPrice = items.items.item.StartPrice,
-                             StepPrice = items.items.item.StepPrice,
-                             StartTime = items.items.item.StartTime,
-                             Deadline = items.items.item.Deadline,
-                             CoverPic=itempic.Path,
-                             CoverPicHeight=itempic.Height,
-                             CoverPicWidth=itempic.Width
-                         }).ToListAsync();
-=======
+            
             var list = await query.PageBy(input).Join(pillarQuery, item => item.PillarId, pillar => pillar.Id, (item, pillar) => new
             {
                 item.Id,
@@ -723,7 +699,6 @@ namespace Kuaiyipai.Auction.Item
                     CoverPicWidth = item.fengmian == null ? 0 : item.fengmian.Width,
                     CoverPicHeight = item.fengmian == null ? 0 : item.fengmian.Height
                 }).ToListAsync();
->>>>>>> b18db38cc8637b4920cd4773ba1e3f4e71fbb681
 
             return new PagedResultDto<GetAuctionItemsOutputDto>(count, list);
         }
