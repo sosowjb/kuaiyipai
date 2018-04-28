@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Abp.Application.Services.Dto;
 using Abp.Domain.Repositories;
 using Abp.Linq.Extensions;
+using Abp.UI;
 using Castle.Core.Internal;
 using Kuaiyipai.Auction.Bidding.Dto;
 using Kuaiyipai.Auction.Entities;
@@ -17,15 +18,30 @@ namespace Kuaiyipai.Auction.Bidding
     {
         private readonly IRepository<UserBiddingRecord, Guid> _biddingRepository;
         private readonly IRepository<User, long> _userRepository;
+        private readonly IRepository<ItemAuctioning, Guid> _itemAuctioningRepository;
 
-        public BiddingAppService(IRepository<UserBiddingRecord, Guid> biddingRepository, IRepository<User, long> userRepository)
+        public BiddingAppService(IRepository<UserBiddingRecord, Guid> biddingRepository, IRepository<User, long> userRepository, IRepository<ItemAuctioning, Guid> itemAuctioningRepository)
         {
             _biddingRepository = biddingRepository;
             _userRepository = userRepository;
+            _itemAuctioningRepository = itemAuctioningRepository;
         }
 
         public async Task<Guid> Bid(BidInputDto input)
         {
+            var item = await _itemAuctioningRepository.GetAsync(input.ItemId);
+            item.BiddingCount++;
+            if (input.Price < item.HighestBiddingPrice + item.StepPrice)
+            {
+                throw new UserFriendlyException("出价必需大于或等于" + (item.HighestBiddingPrice + item.StepPrice));
+            }
+
+            if (input.Price % item.StepPrice > 0)
+            {
+                throw new UserFriendlyException("出价必需是加价幅度的整数倍");
+            }
+            item.HighestBiddingPrice = input.Price;
+            await _itemAuctioningRepository.UpdateAsync(item);
             return await _biddingRepository.InsertAndGetIdAsync(new UserBiddingRecord
             {
                 ItemId = input.ItemId,
@@ -47,6 +63,7 @@ namespace Kuaiyipai.Auction.Bidding
             var list = await query.PageBy(input)
                 .Join(userQuery, bidding => bidding.CreatorUserId, user => user.Id, (bidding, user) => new GetBiddingsOutputDto
                 {
+                    Id = bidding.Id,
                     ItemId = bidding.ItemId,
                     BidTime = DateTime.Now,
                     Price = bidding.Price,

@@ -20,5 +20,9 @@ namespace Kuaiyipai.Auction.Item.Dto
         public DateTime? StartTime { get; set; }
 
         public DateTime Deadline { get; set; }
+
+        public int BiddingCount { get; set; }
+
+        public double HighestBiddingPrice { get; set; }
     }
 }

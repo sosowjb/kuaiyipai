@@ -60,7 +60,9 @@ namespace Kuaiyipai.Auction.Item
                 StartTime = input.StartTime,
                 Deadline = input.Deadline,
                 Title = input.Title,
-                Description = input.Description
+                Description = input.Description,
+                BiddingCount = 0,
+                HighestBiddingPrice = 0
             };
 
             var itemId = await _itemDraftingRepository.InsertAndGetIdAsync(item);
@@ -97,7 +99,9 @@ namespace Kuaiyipai.Auction.Item
                 StartTime = item.StartTime,
                 Deadline = item.Deadline,
                 Title = item.Title,
-                Description = item.Description
+                Description = item.Description,
+                BiddingCount = item.BiddingCount,
+                HighestBiddingPrice = item.HighestBiddingPrice
             };
             await _itemDraftingRepository.DeleteAsync(input.Id);
             await _itemAuctioningRepository.InsertAsync(itemAuctioning);
@@ -122,7 +126,9 @@ namespace Kuaiyipai.Auction.Item
                 StartTime = item.StartTime,
                 Deadline = item.Deadline,
                 Title = item.Title,
-                Description = item.Description
+                Description = item.Description,
+                BiddingCount = item.BiddingCount,
+                HighestBiddingPrice = item.HighestBiddingPrice
             };
             await _itemAuctioningRepository.DeleteAsync(input.Id);
             await _itemCompletedRepository.InsertAsync(itemCompleted);
@@ -147,7 +153,9 @@ namespace Kuaiyipai.Auction.Item
                 StartTime = item.StartTime,
                 Deadline = item.Deadline,
                 Title = item.Title,
-                Description = item.Description
+                Description = item.Description,
+                BiddingCount = item.BiddingCount,
+                HighestBiddingPrice = item.HighestBiddingPrice
             };
             await _itemAuctioningRepository.DeleteAsync(input.Id);
             await _itemTerminatedRepository.InsertAsync(itemTerminated);
@@ -174,7 +182,9 @@ namespace Kuaiyipai.Auction.Item
                 StartTime = item.StartTime,
                 Deadline = item.Deadline,
                 Title = item.Title,
-                Description = item.Description
+                Description = item.Description,
+                BiddingCount = 0,
+                HighestBiddingPrice = 0
             };
             await _itemTerminatedRepository.DeleteAsync(input.Id);
             await _itemDraftingRepository.InsertAsync(itemDrafting);
@@ -258,7 +268,9 @@ namespace Kuaiyipai.Auction.Item
                     item.StartPrice,
                     item.StepPrice,
                     item.StartTime,
-                    item.Deadline
+                    item.Deadline,
+                    item.BiddingCount,
+                    item.HighestBiddingPrice
                 }).Join(categoryQuery, item => item.CategoryId, category => category.Id, (item, category) => new GetMyAuctionItemsOutputDto
                 {
                     Id = item.Id,
@@ -269,7 +281,9 @@ namespace Kuaiyipai.Auction.Item
                     StartPrice = item.StartPrice,
                     StepPrice = item.StepPrice,
                     StartTime = item.StartTime,
-                    Deadline = item.Deadline
+                    Deadline = item.Deadline,
+                    BiddingCount = item.BiddingCount,
+                    HighestBiddingPrice = item.HighestBiddingPrice
                 }).ToListAsync();
 
             return new PagedResultDto<GetMyAuctionItemsOutputDto>(count, list);
@@ -298,7 +312,9 @@ namespace Kuaiyipai.Auction.Item
                     item.StartPrice,
                     item.StepPrice,
                     item.StartTime,
-                    item.Deadline
+                    item.Deadline,
+                    item.BiddingCount,
+                    item.HighestBiddingPrice
                 }).Join(categoryQuery, item => item.CategoryId, category => category.Id, (item, category) => new GetMyCompletedItemsOutputDto
                 {
                     Id = item.Id,
@@ -309,7 +325,9 @@ namespace Kuaiyipai.Auction.Item
                     StartPrice = item.StartPrice,
                     StepPrice = item.StepPrice,
                     StartTime = item.StartTime,
-                    Deadline = item.Deadline
+                    Deadline = item.Deadline,
+                    BiddingCount = item.BiddingCount,
+                    HighestBiddingPrice = item.HighestBiddingPrice
                 }).ToListAsync();
 
             return new PagedResultDto<GetMyCompletedItemsOutputDto>(count, list);
@@ -338,7 +356,9 @@ namespace Kuaiyipai.Auction.Item
                     item.StartPrice,
                     item.StepPrice,
                     item.StartTime,
-                    item.Deadline
+                    item.Deadline,
+                    item.BiddingCount,
+                    item.HighestBiddingPrice
                 })
                 .Join(categoryQuery, item => item.CategoryId, category => category.Id, (item, category) => new GetMyTerminatedItemsOutputDto
                 {
@@ -350,7 +370,9 @@ namespace Kuaiyipai.Auction.Item
                     StartPrice = item.StartPrice,
                     StepPrice = item.StepPrice,
                     StartTime = item.StartTime,
-                    Deadline = item.Deadline
+                    Deadline = item.Deadline,
+                    BiddingCount = item.BiddingCount,
+                    HighestBiddingPrice = item.HighestBiddingPrice
                 }).ToListAsync();
 
             return new PagedResultDto<GetMyTerminatedItemsOutputDto>(count, list);
@@ -397,7 +419,9 @@ namespace Kuaiyipai.Auction.Item
                 PriceLimit = item.PriceLimit,
                 Deadline = item.Deadline,
                 Title = item.Title,
-                Description = item.Description
+                Description = item.Description,
+                BiddingCount = item.BiddingCount,
+                HighestBiddingPrice = item.HighestBiddingPrice
             };
         }
 
@@ -420,7 +444,9 @@ namespace Kuaiyipai.Auction.Item
                 PriceLimit = item.PriceLimit,
                 Deadline = item.Deadline,
                 Title = item.Title,
-                Description = item.Description
+                Description = item.Description,
+                BiddingCount = item.BiddingCount,
+                HighestBiddingPrice = item.HighestBiddingPrice
             };
         }
 
@@ -443,7 +469,9 @@ namespace Kuaiyipai.Auction.Item
                 PriceLimit = item.PriceLimit,
                 Deadline = item.Deadline,
                 Title = item.Title,
-                Description = item.Description
+                Description = item.Description,
+                BiddingCount = item.BiddingCount,
+                HighestBiddingPrice = item.HighestBiddingPrice
             };
         }
 
@@ -477,7 +505,9 @@ namespace Kuaiyipai.Auction.Item
                             Deadline = item4.Deadline,
                             Title = item4.Title,
                             Description = item4.Description,
-                            Status = "Terminated"
+                            Status = "Terminated",
+                            BiddingCount = item4.BiddingCount,
+                            HighestBiddingPrice = item4.HighestBiddingPrice
                         };
                     }
 
@@ -494,7 +524,9 @@ namespace Kuaiyipai.Auction.Item
                         Deadline = item3.Deadline,
                         Title = item3.Title,
                         Description = item3.Description,
-                        Status = "Completed"
+                        Status = "Completed",
+                        BiddingCount = item3.BiddingCount,
+                        HighestBiddingPrice = item3.HighestBiddingPrice
                     };
                 }
 
@@ -511,7 +543,9 @@ namespace Kuaiyipai.Auction.Item
                     Deadline = item2.Deadline,
                     Title = item2.Title,
                     Description = item2.Description,
-                    Status = "Auctioning"
+                    Status = "Auctioning",
+                    BiddingCount = item2.BiddingCount,
+                    HighestBiddingPrice = item2.HighestBiddingPrice
                 };
             }
 
@@ -528,7 +562,9 @@ namespace Kuaiyipai.Auction.Item
                 Deadline = item1.Deadline,
                 Title = item1.Title,
                 Description = item1.Description,
-                Status = "Drafting"
+                Status = "Drafting",
+                BiddingCount = item1.BiddingCount,
+                HighestBiddingPrice = item1.HighestBiddingPrice
             };
         }
 
@@ -637,6 +673,7 @@ namespace Kuaiyipai.Auction.Item
                 query = query.OrderBy(input.Sorting);
             }
             var count = await query.CountAsync();
+<<<<<<< HEAD
             var list = await query.PageBy(input)
                          .Join(pillarQuery, item => item.PillarId, pillar => pillar.Id, (item, pillar) => new { item, pillar })
                          .Join(categoryQuery, items => items.item.CategoryId, category => category.Id, (items, category) => new { items, category })
@@ -659,6 +696,36 @@ namespace Kuaiyipai.Auction.Item
                            //  biddingCount = userBiddingRecordQuery.Where(r=>r.ItemId==itemss.items.item.Id).ToList().Count
                              
                          }).ToListAsync();
+=======
+            
+            var list = await query.PageBy(input).Join(pillarQuery, item => item.PillarId, pillar => pillar.Id, (item, pillar) => new
+            {
+                item.Id,
+                Pillar = pillar.Name,
+                fengmian = itempicQuery.Where(i => i.ItemId == item.Id).First(),
+                item.CategoryId,
+                item.Title,
+                item.StartPrice,
+                item.StepPrice,
+                item.StartTime,
+                item.Deadline
+            })
+                .Join(categoryQuery, item => item.CategoryId, category => category.Id, (item, category) => new GetAuctionItemsOutputDto
+                {
+                    Id = item.Id,
+                    Pillar = item.Pillar,
+                    Category = category.Name,
+                    Title = item.Title,
+                    StartPrice = item.StartPrice,
+                    StepPrice = item.StepPrice,
+                    StartTime = item.StartTime,
+                    Deadline = item.Deadline,
+                    CoverPic = item.fengmian == null ? "" : item.fengmian.Path,
+                    CoverPicWidth = item.fengmian == null ? 0 : item.fengmian.Width,
+                    CoverPicHeight = item.fengmian == null ? 0 : item.fengmian.Height
+                }).ToListAsync();
+
+>>>>>>> 030c96608c6b4d66e155abeb700162e0c01c0c75
             return new PagedResultDto<GetAuctionItemsOutputDto>(count, list);
         }
     }
