@@ -1,7 +1,7 @@
 {
   "pages": [
-    "pages/nav/index",
     "pages/home/home",
+    "pages/classify/index",
     "pages/goodsdetail/index",
     "pages/orderdetail/index",
     "pages/balance/index",
@@ -10,15 +10,35 @@
     "pages/my/index",
     "pages/seller/index",
     "pages/withdraw/index",
-<<<<<<< HEAD
-    "pages/publish/index"
-=======
+    "pages/publish/index",
     "pages/notice/show",
     "pages/setting/index",
     "pages/select-address/index",
     "pages/address-add/index"
->>>>>>> b18db38cc8637b4920cd4773ba1e3f4e71fbb681
   ],
+  "tabBar": {
+    "selectedColor": "#1296db",
+    "list": [
+      {
+        "pagePath": "pages/home/home",
+        "text": "首页",
+        "iconPath": "content/styles/ico/home2.png",
+        "selectedIconPath": "content/styles/ico/home1.png"
+      },
+      {
+        "pagePath": "pages/classify/index",
+        "text": "分类",
+        "iconPath": "/content/styles/ico/fenlei2.png",
+        "selectedIconPath": "/content/styles/ico/fenlei1.png"
+      },
+      {
+        "pagePath": "pages/my/index",
+        "text": "我的",
+        "iconPath": "/content/styles/ico/my2.png",
+        "selectedIconPath": "/content/styles/ico/my1.png"
+      }
+    ]
+  },
   "window": {
     "backgroundTextStyle": "light",
     "navigationBarBackgroundColor": "#66666",

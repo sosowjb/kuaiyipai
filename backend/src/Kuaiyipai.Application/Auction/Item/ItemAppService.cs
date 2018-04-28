@@ -27,11 +27,12 @@ namespace Kuaiyipai.Auction.Item
         private readonly IRepository<ItemCompleted, Guid> _itemCompletedRepository;
         private readonly IRepository<ItemTerminated, Guid> _itemTerminatedRepository;
         private readonly IRepository<ItemPic, Guid> _itemPicRepository;
+        private readonly IRepository<UserBiddingRecord, Guid> _userBiddingRecordRepository;
         private readonly IRepository<Entities.Pillar> _pillarRepository;
         private readonly IRepository<Entities.Category> _categoryRepository;
         private readonly IConfigurationRoot _appConfiguration;
 
-        public ItemAppService(IHostingEnvironment env, IRepository<ItemDrafting, Guid> itemDraftingRepository, IRepository<ItemAuctioning, Guid> itemAuctioningRepository, IRepository<ItemCompleted, Guid> itemCompletedRepository, IRepository<ItemTerminated, Guid> itemTerminatedRepository, IRepository<Entities.Pillar> pillarRepository, IRepository<Entities.Category> categoryRepository, IRepository<ItemPic, Guid> itemPicRepository)
+        public ItemAppService(IHostingEnvironment env, IRepository<ItemDrafting, Guid> itemDraftingRepository, IRepository<ItemAuctioning, Guid> itemAuctioningRepository, IRepository<ItemCompleted, Guid> itemCompletedRepository, IRepository<ItemTerminated, Guid> itemTerminatedRepository, IRepository<Entities.Pillar> pillarRepository, IRepository<Entities.Category> categoryRepository, IRepository<ItemPic, Guid> itemPicRepository, IRepository<UserBiddingRecord, Guid> userBiddingRecordRepository)
         {
             _itemDraftingRepository = itemDraftingRepository;
             _itemAuctioningRepository = itemAuctioningRepository;
@@ -40,6 +41,7 @@ namespace Kuaiyipai.Auction.Item
             _itemPicRepository = itemPicRepository;
             _pillarRepository = pillarRepository;
             _categoryRepository = categoryRepository;
+            _userBiddingRecordRepository = userBiddingRecordRepository;
             _appConfiguration = env.GetAppConfiguration();
         }
 
@@ -353,10 +355,6 @@ namespace Kuaiyipai.Auction.Item
 
             return new PagedResultDto<GetMyTerminatedItemsOutputDto>(count, list);
         }
-
-<<<<<<< HEAD
-
-=======
         public async Task<GetDraftingItemOutputDto> GetDraftingItem(EntityDto<Guid> input)
         {
             var item = await _itemDraftingRepository.FirstOrDefaultAsync(input.Id);
@@ -626,7 +624,6 @@ namespace Kuaiyipai.Auction.Item
 
             await _itemPicRepository.DeleteAsync(input.Id);
         }
->>>>>>> b18db38cc8637b4920cd4773ba1e3f4e71fbb681
 
         public async Task<PagedResultDto<GetAuctionItemsOutputDto>> GetAuctionItems(GetAuctionItemsInputDto input)
         {
@@ -634,61 +631,34 @@ namespace Kuaiyipai.Auction.Item
             var pillarQuery = _pillarRepository.GetAll();
             var categoryQuery = _categoryRepository.GetAll();
             var itempicQuery = _itemPicRepository.GetAll().Where(o=>o.IsCover==true);
+            var userBiddingRecordQuery = _userBiddingRecordRepository.GetAll();
             if (!input.Sorting.IsNullOrEmpty())
             {
                 query = query.OrderBy(input.Sorting);
             }
-            var count1 = await categoryQuery.CountAsync();
-            var count2 = await pillarQuery.CountAsync();
             var count = await query.CountAsync();
-<<<<<<< HEAD
             var list = await query.PageBy(input)
                          .Join(pillarQuery, item => item.PillarId, pillar => pillar.Id, (item, pillar) => new { item, pillar })
                          .Join(categoryQuery, items => items.item.CategoryId, category => category.Id, (items, category) => new { items, category })
-                         .Join(itempicQuery, items => items.items.item.Id, itempic => itempic.ItemId,(items, itempic) => new GetAuctionItemsOutputDto
+                         //.Join(userBiddingRecordQuery, itemss => itemss.items.item.Id,userBid=>userBid.ItemId,(itemss, userBid) => new { itemss,userBid })
+                         .Join(itempicQuery, itemss => itemss.items.item.Id, itempic => itempic.ItemId,(itemss, itempic) => new GetAuctionItemsOutputDto
                          {
 
-                             Id = items.items.item.Id,
-                             Pillar = items.items.pillar.Name,
-                             Category = items.category.Name,
-                             Title = items.items.item.Title,
-                             StartPrice = items.items.item.StartPrice,
-                             StepPrice = items.items.item.StepPrice,
-                             StartTime = items.items.item.StartTime,
-                             Deadline = items.items.item.Deadline,
+                             Id = itemss.items.item.Id,
+                             Pillar = itemss.items.pillar.Name,
+                             Category = itemss.category.Name,
+                             Title = itemss.items.item.Title,
+                             StartPrice = itemss.items.item.StartPrice,
+                             StepPrice = itemss.items.item.StepPrice,
+                             StartTime = itemss.items.item.StartTime,
+                             Deadline = itemss.items.item.Deadline,
                              CoverPic=itempic.Path,
                              CoverPicHeight=itempic.Height,
-                             CoverPicWidth=itempic.Width
+                             CoverPicWidth=itempic.Width//,
+                           //  CurrentPrice= userBiddingRecordQuery.Where(r => r.ItemId == itemss.items.item.Id).OrderByDescending(s=>s.Price).First().Price,
+                           //  biddingCount = userBiddingRecordQuery.Where(r=>r.ItemId==itemss.items.item.Id).ToList().Count
+                             
                          }).ToListAsync();
-=======
-            var list = await query.PageBy(input).Join(pillarQuery, item => item.PillarId, pillar => pillar.Id, (item, pillar) => new
-            {
-                item.Id,
-                Pillar = pillar.Name,
-                fengmian = itempicQuery.Where(i => i.ItemId == item.Id).First(),
-                item.CategoryId,
-                item.Title,
-                item.StartPrice,
-                item.StepPrice,
-                item.StartTime,
-                item.Deadline
-            })
-                .Join(categoryQuery, item => item.CategoryId, category => category.Id, (item, category) => new GetAuctionItemsOutputDto
-                {
-                    Id = item.Id,
-                    Pillar = item.Pillar,
-                    Category = category.Name,
-                    Title = item.Title,
-                    StartPrice = item.StartPrice,
-                    StepPrice = item.StepPrice,
-                    StartTime = item.StartTime,
-                    Deadline = item.Deadline,
-                    CoverPic = item.fengmian == null ? "" : item.fengmian.Path,
-                    CoverPicWidth = item.fengmian == null ? 0 : item.fengmian.Width,
-                    CoverPicHeight = item.fengmian == null ? 0 : item.fengmian.Height
-                }).ToListAsync();
->>>>>>> b18db38cc8637b4920cd4773ba1e3f4e71fbb681
-
             return new PagedResultDto<GetAuctionItemsOutputDto>(count, list);
         }
     }

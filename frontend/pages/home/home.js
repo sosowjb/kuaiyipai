@@ -208,9 +208,6 @@ Page({
             let images = res.data.result.items;
             cpage = cpage+1
             let baseId = "img-" + (+new Date());
-           
-           
-
             that.setData({
               loadingCount: images.length,
               images: images,
@@ -225,7 +222,7 @@ Page({
     openDetail: function (e) {
       var current = e.currentTarget.dataset.text;
       wx.navigateTo({
-        url: '/pages/orderdetail/index?id=' + current,
+        url: '/pages/goodsdetail/index?id=' + current,
       })
     }
 })

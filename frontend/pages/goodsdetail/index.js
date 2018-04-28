@@ -1,5 +1,6 @@
 // pages/details/index.js
-const app=getApp()
+const app=getApp();
+var utils = require("../../content/utils/util.js");
 Page({
   /**
    * 页面的初始数据
@@ -30,61 +31,7 @@ Page({
      // isAuthentication: true,//是否认证
      // isFollow:false,//是否关注
       },
-    goodsInfo:{
-      goodsId:"",
-      rPrice: 78168,//参考价
-      bPrice:0,//起价
-      addPrice:100,//加价幅度
-      pPrice:100,//保证金
-      desc:"【帝舵\t间金原镶时刻钻\t男表】实体店现货\t九九新（二手）Tudor/帝舵\t九九新（二手）骏珏系列\t18K黄金/精钢\t自动机械\t男表\n品牌:Tudor/帝舵\n型号：56003\n编号：J835881\n附件：无附件（裸表）\n直径：39mm\n腕周：180mm\n表盘颜色:金色-时刻原镶钻\n表带:18K黄金/精钢\n表壳:18K黄金/精钢\n功能：日期显示\t星期显示\n公价：34600\n\n注：如果您对商品满意，好评截图返现，非常感谢您对我们店的支持！为了安全起见，部分贵重商品一律采用顺丰到付，您本人收货确认无误后，直接联系我们，运费返现+红包！\n\n本店所有商品，均为实体店现货，请您放心购买，为了回馈新老客户对我们的支持，即日起，出售的所有二手手表，在无损坏的情况下，均支持三月内8.5折，一年内7.5折回收服务！\n\n南京礼尚往来奢侈品1999年创办至今！回收销售世界名表、钻石、名包等一线奢侈品，只销售专柜正品，假一罚十，所有商品均为店内现货。全新表均享受全球联保服务。（99新为二手）\n\n大家请放心购买！里上往来飞格拉姆和南京礼尚往来\t保证金已缴纳23.8888万元\t。\n\n地址：南京市新街口繁华商圈淮海路2号（中央商场正对面）\t礼尚往来奢侈品鉴定评估中心",//描述
-      goodsPic:[
-        {
-          smallpic: app.globalData.imageLink +"/goods/1.jpg",//缩略图链接
-          pic: app.globalData.imageLink +"/goods/1.jpg"//原图链接
-        },
-        {
-          smallpic: app.globalData.imageLink +"/goods/2.jpg",//缩略图链接
-          pic: app.globalData.imageLink +"/goods/2.jpg"//原图链接
-        }
-        ,
-        {
-          smallpic: app.globalData.imageLink +"/goods/3.jpg",//缩略图链接
-          pic: app.globalData.imageLink +"/goods/3.jpg"//原图链接
-        }
-        ,
-        {
-          smallpic: app.globalData.imageLink +"/goods/4.jpg",//缩略图链接
-          pic: app.globalData.imageLink +"/goods/4.jpg"//原图链接
-        }
-        ,
-        {
-          smallpic: app.globalData.imageLink +"/goods/5.jpg",//缩略图链接
-          pic: app.globalData.imageLink +"/goods/5.jpg"//原图链接
-        }
-        ,
-        {
-          smallpic: app.globalData.imageLink +"/goods/6.jpg",//缩略图链接
-          pic: app.globalData.imageLink +"/goods/6.jpg"//原图链接
-        }
-        ,
-        {
-          smallpic: app.globalData.imageLink +"/goods/7.jpg",//缩略图链接
-          pic: app.globalData.imageLink +"/goods/7.jpg"//原图链接
-        }
-        ,
-        {
-          smallpic: app.globalData.imageLink +"/goods/8.jpg",//缩略图链接
-          pic: app.globalData.imageLink +"/goods/8.jpg"//原图链接
-        },
-        {
-          smallpic: app.globalData.imageLink +"/goods/9.jpg",//缩略图链接
-          pic: app.globalData.imageLink +"/goods/9.jpg"//原图链接
-        }
-      ],
-      status:1,//拍卖状态【1，正在拍卖，0是还未开始,2结束】
-      endTime:'2018-4-01 15:30'
-    },
-
+    goodsInfo:{},
     auctionInfo:[//拍卖情况
       {
         id:"1",
@@ -109,8 +56,36 @@ Page({
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
-    
-    countdown(this);
+    var that=this;
+    var statu = 0;
+    wx.request({
+      url: app.globalData.apiLink + '/api/services/app/Item/GetItem?id=' + options.id,
+      header: { 'Abp.TenantId': '1', 'Content-Type': 'application/json' },
+      method: 'GET',
+      dataType: 'json',
+      responseType: 'text',
+      success: function (res) {
+        console.log(new Date(res.data.result.deadline).format("yyyy-MM-dd hh:mm"));
+        if (res.data.result.status =='Auctioning'){
+          statu =1
+        }
+       
+        that.setData({
+          goodsInfo:{
+            goodsId: res.data.result.id,
+            rPrice: 78168,//参考价
+            bPrice: res.data.result.startPrice,//起价
+            addPrice: res.data.result.stepPrice,//加价幅度
+            pPrice: 100,//保证金
+            desc: res.data.result.description,//描述
+            status: statu,//拍卖状态【1，正在拍卖，0是还未开始,2结束】
+            endTime: new Date(res.data.result.deadline).format("yyyy-MM-dd hh:mm")
+          }
+        });
+        countdown(that);
+      }
+    })
+
   },
 
   /**

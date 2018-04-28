@@ -1,0 +1,115 @@
+/* pages/classify/index.wxss */
+.page{
+    height: 100%;
+}
+.weui-search-bar
+{
+position:fixed;
+top:0px;
+width:100%;
+padding:8px 10px;
+display:-webkit-box;
+display:-webkit-flex;
+display:flex;
+box-sizing:border-box;
+background-color:#efeff4;
+border-top:1rpx solid #d7d6dc;
+border-bottom:1rpx solid #d7d6dc;
+z-index: 10;
+
+}
+.menu {
+    position: fixed;
+    top: 50px;
+    bottom: 0;
+    width: 4.5rem;
+    text-align: center;
+    background-color: #F8F8F8;
+}
+.menu .menuItem {
+    height: 45px;
+    width: 100%;
+    font-size: 15px;
+    line-height: 45px;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+    cursor: pointer;
+}
+.menu .menuItem.selected {
+    color: #169ADA;
+    background-color: #FFF;
+}
+.categoryBox {
+  margin-top: 50px;
+    margin-left: 4.5rem;
+    height: 99.9vh;
+    overflow: hidden;
+    overflow-y: scroll;
+    -webkit-overflow-scrolling: touch;
+}
+.categoryBox .categoryContent .categoryList {
+    clear: both;
+    overflow: hidden;
+    text-align: center;
+    padding-bottom: 20px;
+}
+.categoryBox .categoryContent .categoryList .title {
+    position: relative;
+    width: 90%;
+    margin: 0 5%;
+    font-size: 14px;
+    color: #424242;
+    line-height: 40px;
+    text-align: left;
+    text-indent: 7px;
+}
+.categoryBox .categoryContent .categoryList .title .all {
+    float: right;
+    position: relative;
+    color: #b4b4b4;
+    font-size: 12px;
+}
+.categoryBox .categoryContent .categoryList .title:before {
+    position: absolute;
+    content: '';
+    left: 0;
+    top: 13px;
+    width: 3px;
+    height: 14px;
+    background-color: #169ADA;
+}
+.categoryBox .categoryContent .categoryList .categoryItem {
+    position: relative;
+    float: left;
+    height: 100px;
+    line-height: 100px;
+    width: 33.33%;
+    padding: 0 0 5px;
+}
+.categoryBox .categoryContent .categoryList .categoryItem .categoryIcon {
+    position: relative;
+    background-size: 63px;
+    background-repeat: no-repeat;
+    background-position: center 5px;
+    width: 100%;
+    height: 70px;
+}
+
+.categoryBox .categoryContent .categoryList .categoryItem .cursorArea image{
+    position: absolute;
+    top: 5px;
+    left: 50%;
+    width: 64px;
+    height: 64px;
+    cursor: pointer;
+    overflow: hidden;
+    margin-left: -32px;
+}
+.categoryBox .categoryContent .categoryList .categoryItem .text {
+    height: 20px;
+    line-height: 20px;
+    margin: 5px 0;
+    overflow: hidden;
+    font-size: 14px;
+    display: block;
+}
