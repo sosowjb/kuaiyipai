@@ -75,6 +75,8 @@ namespace Kuaiyipai.Authorization.Users
             SignInTokenExpireTimeUtc = Clock.Now.AddMinutes(1).ToUniversalTime();
         }
 
-        public string WeChatId { get; set; }
+        public string NickName { get; set; }
+
+        public string AvatarLink { get; set; }
     }
 }

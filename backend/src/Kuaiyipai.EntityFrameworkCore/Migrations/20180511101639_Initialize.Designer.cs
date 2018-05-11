@@ -19,7 +19,7 @@ using System;
 namespace Kuaiyipai.Migrations
 {
     [DbContext(typeof(KuaiyipaiDbContext))]
-    [Migration("20180423093444_Initialize")]
+    [Migration("20180511101639_Initialize")]
     partial class Initialize
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -932,7 +932,7 @@ namespace Kuaiyipai.Migrations
 
                     b.Property<string>("Code")
                         .IsRequired()
-                        .HasMaxLength(3);
+                        .HasMaxLength(5);
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -952,6 +952,8 @@ namespace Kuaiyipai.Migrations
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd();
 
+                    b.Property<int>("BiddingCount");
+
                     b.Property<int>("CategoryId");
 
                     b.Property<string>("Code")
@@ -970,6 +972,8 @@ namespace Kuaiyipai.Migrations
 
                     b.Property<string>("Description")
                         .IsRequired();
+
+                    b.Property<double>("HighestBiddingPrice");
 
                     b.Property<bool>("IsDeleted");
 
@@ -1005,6 +1009,8 @@ namespace Kuaiyipai.Migrations
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd();
 
+                    b.Property<int>("BiddingCount");
+
                     b.Property<int>("CategoryId");
 
                     b.Property<string>("Code")
@@ -1023,6 +1029,8 @@ namespace Kuaiyipai.Migrations
 
                     b.Property<string>("Description")
                         .IsRequired();
+
+                    b.Property<double>("HighestBiddingPrice");
 
                     b.Property<bool>("IsDeleted");
 
@@ -1058,6 +1066,8 @@ namespace Kuaiyipai.Migrations
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd();
 
+                    b.Property<int>("BiddingCount");
+
                     b.Property<int>("CategoryId");
 
                     b.Property<string>("Code")
@@ -1076,6 +1086,8 @@ namespace Kuaiyipai.Migrations
 
                     b.Property<string>("Description")
                         .IsRequired();
+
+                    b.Property<double>("HighestBiddingPrice");
 
                     b.Property<bool>("IsDeleted");
 
@@ -1111,20 +1123,19 @@ namespace Kuaiyipai.Migrations
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<string>("Extension")
-                        .IsRequired();
+                    b.Property<string>("Extension");
 
-                    b.Property<string>("FileName")
-                        .IsRequired();
+                    b.Property<string>("FileName");
 
                     b.Property<int>("Height");
+
+                    b.Property<int>("Index");
 
                     b.Property<bool>("IsCover");
 
                     b.Property<Guid>("ItemId");
 
-                    b.Property<string>("Path")
-                        .IsRequired();
+                    b.Property<string>("Path");
 
                     b.Property<long>("Size");
 
@@ -1139,6 +1150,8 @@ namespace Kuaiyipai.Migrations
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd();
+
+                    b.Property<int>("BiddingCount");
 
                     b.Property<int>("CategoryId");
 
@@ -1158,6 +1171,8 @@ namespace Kuaiyipai.Migrations
 
                     b.Property<string>("Description")
                         .IsRequired();
+
+                    b.Property<double>("HighestBiddingPrice");
 
                     b.Property<bool>("IsDeleted");
 
@@ -1500,6 +1515,8 @@ namespace Kuaiyipai.Migrations
                     b.Property<string>("AuthenticationSource")
                         .HasMaxLength(64);
 
+                    b.Property<string>("AvatarLink");
+
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
                         .HasMaxLength(128);
@@ -1545,6 +1562,8 @@ namespace Kuaiyipai.Migrations
                         .IsRequired()
                         .HasMaxLength(32);
 
+                    b.Property<string>("NickName");
+
                     b.Property<string>("NormalizedEmailAddress")
                         .IsRequired()
                         .HasMaxLength(256);
@@ -1583,8 +1602,6 @@ namespace Kuaiyipai.Migrations
                     b.Property<string>("UserName")
                         .IsRequired()
                         .HasMaxLength(32);
-
-                    b.Property<string>("WeChatId");
 
                     b.HasKey("Id");
 

@@ -84,7 +84,7 @@ namespace Kuaiyipai.Web.Controllers
             var loginResult = await _logInManager.LoginAsync(openId, openId, GetTenancyNameOrNull());
             if (loginResult.Result == AbpLoginResultType.Success)
             {
-                await UpdateUser(loginResult.User, model.Name);
+                await UpdateUser(loginResult.User, model.Name, model.AvatarLink);
 
                 //get access code
                 var accessToken = CreateAccessToken(CreateJwtClaims(loginResult.Identity));
@@ -98,12 +98,12 @@ namespace Kuaiyipai.Web.Controllers
             }
 
             // login failed then register
-            await CreateUser(model.Name, openId);
-            return await ReAuthenticate(model.Name, openId);
+            await CreateUser(model.Name, openId, model.AvatarLink);
+            return await ReAuthenticate(model.Name, openId, model.AvatarLink);
         }
 
         [UnitOfWork(IsDisabled = true)]
-        private async Task<AuthenticateResultModel> ReAuthenticate(string name, string openId)
+        private async Task<AuthenticateResultModel> ReAuthenticate(string name, string openId, string avatarLink)
         {
             var loginResult = await _logInManager.LoginAsync(openId, openId, GetTenancyNameOrNull());
             if (loginResult.Result == AbpLoginResultType.Success)
@@ -120,32 +120,35 @@ namespace Kuaiyipai.Web.Controllers
             }
 
             // login failed then register
-            await CreateUser(name, openId);
-            return await ReAuthenticate(name, openId);
+            await CreateUser(name, openId, avatarLink);
+            return await ReAuthenticate(name, openId, avatarLink);
         }
 
-        private async Task CreateUser(string name, string openId)
+        private async Task CreateUser(string name, string openId, string avatarLink)
         {
             var user = new User
             {
                 TenantId = AbpSession.TenantId,
-                Name = name,
-                Surname = name,
+                Name = " ",
+                Surname = " ",
                 EmailAddress = openId + "@kuaiyipai.net",
                 IsActive = true,
                 UserName = openId,
                 IsEmailConfirmed = true,
-                Roles = new List<UserRole>()
+                Roles = new List<UserRole>(),
+                NickName = name,
+                AvatarLink = avatarLink
             };
             user.SetNormalizedNames();
             user.Password = _passwordHasher.HashPassword(user, openId);
             await _userRepository.InsertAsync(user);
         }
 
-        private async Task UpdateUser(User user, string name)
+        private async Task UpdateUser(User user, string name, string avatarLink)
         {
             user.Name = name;
             user.Surname = name;
+            user.AvatarLink = avatarLink;
             await _userRepository.UpdateAsync(user);
         }
 

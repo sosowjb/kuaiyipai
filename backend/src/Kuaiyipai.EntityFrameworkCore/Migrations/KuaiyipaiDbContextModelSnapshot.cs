@@ -1514,6 +1514,8 @@ namespace Kuaiyipai.Migrations
                     b.Property<string>("AuthenticationSource")
                         .HasMaxLength(64);
 
+                    b.Property<string>("AvatarLink");
+
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
                         .HasMaxLength(128);
@@ -1559,6 +1561,8 @@ namespace Kuaiyipai.Migrations
                         .IsRequired()
                         .HasMaxLength(32);
 
+                    b.Property<string>("NickName");
+
                     b.Property<string>("NormalizedEmailAddress")
                         .IsRequired()
                         .HasMaxLength(256);
@@ -1597,8 +1601,6 @@ namespace Kuaiyipai.Migrations
                     b.Property<string>("UserName")
                         .IsRequired()
                         .HasMaxLength(32);
-
-                    b.Property<string>("WeChatId");
 
                     b.HasKey("Id");
 

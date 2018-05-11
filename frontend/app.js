@@ -54,6 +54,6 @@ App({
   globalData: {
     userInfo: null,
     apiLink: "http://localhost:5000",//api链接
-    imageLink: "http://images.kypwp.com"//图片链接
+    imageLink: "http://localhost"//图片链接
   }
 })

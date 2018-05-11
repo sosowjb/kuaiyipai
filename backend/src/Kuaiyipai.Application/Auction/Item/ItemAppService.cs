@@ -673,31 +673,6 @@ namespace Kuaiyipai.Auction.Item
                 query = query.OrderBy(input.Sorting);
             }
             var count = await query.CountAsync();
-<<<<<<< HEAD
-            var list = await query.PageBy(input)
-                         .Join(pillarQuery, item => item.PillarId, pillar => pillar.Id, (item, pillar) => new { item, pillar })
-                         .Join(categoryQuery, items => items.item.CategoryId, category => category.Id, (items, category) => new { items, category })
-                         //.Join(userBiddingRecordQuery, itemss => itemss.items.item.Id,userBid=>userBid.ItemId,(itemss, userBid) => new { itemss,userBid })
-                         .Join(itempicQuery, itemss => itemss.items.item.Id, itempic => itempic.ItemId,(itemss, itempic) => new GetAuctionItemsOutputDto
-                         {
-
-                             Id = itemss.items.item.Id,
-                             Pillar = itemss.items.pillar.Name,
-                             Category = itemss.category.Name,
-                             Title = itemss.items.item.Title,
-                             StartPrice = itemss.items.item.StartPrice,
-                             StepPrice = itemss.items.item.StepPrice,
-                             StartTime = itemss.items.item.StartTime,
-                             Deadline = itemss.items.item.Deadline,
-                             CoverPic=itempic.Path,
-                             CoverPicHeight=itempic.Height,
-                             CoverPicWidth=itempic.Width//,
-                           //  CurrentPrice= userBiddingRecordQuery.Where(r => r.ItemId == itemss.items.item.Id).OrderByDescending(s=>s.Price).First().Price,
-                           //  biddingCount = userBiddingRecordQuery.Where(r=>r.ItemId==itemss.items.item.Id).ToList().Count
-                             
-                         }).ToListAsync();
-=======
-            
             var list = await query.PageBy(input).Join(pillarQuery, item => item.PillarId, pillar => pillar.Id, (item, pillar) => new
             {
                 item.Id,
@@ -724,8 +699,7 @@ namespace Kuaiyipai.Auction.Item
                     CoverPicWidth = item.fengmian == null ? 0 : item.fengmian.Width,
                     CoverPicHeight = item.fengmian == null ? 0 : item.fengmian.Height
                 }).ToListAsync();
-
->>>>>>> 030c96608c6b4d66e155abeb700162e0c01c0c75
+            
             return new PagedResultDto<GetAuctionItemsOutputDto>(count, list);
         }
     }
