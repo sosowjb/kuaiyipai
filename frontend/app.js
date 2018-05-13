@@ -42,7 +42,6 @@ App({
           wx.setStorage({
             key: "userId",
             data: res.data.result.userId
-          })
           });
           if(callback)
           {
