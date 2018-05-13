@@ -57,7 +57,9 @@ App({
   },
   globalData: {
     userInfo: null,
+<<<<<<< HEAD
     apiLink: "http://api.kypwp.com",//api链接
     imageLink: "http://images.kypwp.com"//图片链接
+=======
   }
 })
