@@ -1,15 +1,11 @@
 const app = getApp()
-
 Page({
   onLoad() {
-
   },
   onShow() {
   },
   charge:function(e){
-    
     var money = e.detail.value.chargemoney;
-
     if(money <= 0){
       wx.showModal({
         title: '提示',

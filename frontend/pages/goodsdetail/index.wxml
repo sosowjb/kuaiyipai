@@ -41,8 +41,8 @@
            <view class='desc fullDesc'><text>{{goodsInfo.desc}}</text></view>
 
         <view class="weui-grids">
-            <view wx:for="{{goodsInfo.goodsPic}}" wx:for-item="image" wx:key="*this" class="previewimg" >
-                 <image class="weui-grid__icon" src="{{image.pic}}" data-text="{{image.smallpic}}" bindtap='previewImage'/>
+            <view wx:for="{{goodsInfoPic}}" wx:for-item="image" wx:key="*this" class="previewimg" >
+                 <image class="weui-grid__icon" src="{{image.url}}" data-text="{{image.url}}" bindtap='previewImage'/>
             </view>
 <view wx:if='{{fixednum.is_open!=0}}' id="fixednumMain" >
   <view class="fixednumMask" style="opacity: 0.38;"></view>
@@ -114,22 +114,22 @@
              <view wx:if='{{!(djs.clock=="已经结束" || goodsInfo.status==2)}}' class='bidBtns'><button bindtap='bid'>出价</button></view>
              <view wx:if='{{djs.clock=="已经结束" || goodsInfo.status==2}}' class='bidBtns isgray'><button>结束</button></view>
             <view class='moneyInfo'>
-                      <view><i class='iconfont .icon-fm-saleqi'></i>￥0元</view>
-                      <view><i class='iconfont .icon-fm-salejia'></i>￥543元</view>
-                      <view><i class='iconfont .icon-fm-salebao'></i>￥0元</view>
+                      <view><i class='iconfont .icon-fm-saleqi'></i>￥{{goodsInfo.bPrice}}元</view>
+                      <view><i class='iconfont .icon-fm-salejia'></i>￥{{goodsInfo.addPrice}}元</view>
+                      <!--<view><i class='iconfont .icon-fm-salebao'></i>￥0元</view>-->
                     </view>
             <view class='bidList'>
-            <view wx:for="{{auctionInfo}}" wx:for-item="item" wx:key="*this"  class='{{item.isBid?"ddli":"ddli isgray"}}'>
+            <view wx:for="{{auctionInfo}}" wx:for-item="item" wx:key="*this"  class='{{index==0?"ddli":"ddli isgray"}}'>
               <view class='li-wrap'>
                 <view class='state'>
                    <view class='bidTime'>{{item.bidTime}}</view>
                     <view class='bidState'>
-                      <view class='bidLeader'><image style='width:100%;height:100%;display:block' src='{{item.isBid?imageLink+"/application/lx.png":imageLink+"/application/cj.png"}}'></image></view>
+                      <view class='bidLeader'><image style='width:100%;height:100%;display:block' src='{{index==0?imageLink+"/application/lx.png":imageLink+"/application/cj.png"}}'></image></view>
                     </view>
                 </view>
                 <view class='avatar'><image src="{{item.avatar}}"></image></view>
                 <view class='bidUser'>
-                  <view class='name2'>{{item.nickname}}</view>
+                  <view class='name2'>{{item.userName}}</view>
                   <view class='price'>￥{{item.price}}</view>
                 </view>
               </view>

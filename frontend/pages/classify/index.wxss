@@ -34,6 +34,7 @@ z-index: 10;
     -webkit-box-sizing: border-box;
     box-sizing: border-box;
     cursor: pointer;
+     z-index:100;
 }
 .menu .menuItem.selected {
     color: #169ADA;

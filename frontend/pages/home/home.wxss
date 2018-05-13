@@ -70,3 +70,6 @@
   vertical-align: top;
 border: 1px #bbb solid;
 }
+.left{
+  float: left;
+}

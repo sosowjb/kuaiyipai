@@ -14,36 +14,28 @@
             </label>
         </view>
         <view class="weui-search-bar__cancel-btn" hidden="{{!inputShowed}}" bindtap="hideInput">取消</view>
-    </view>
+    </view><!--bar结束-->
 <view class="menu">
-  <view class="menuItem selected">推荐分类</view>
-  <view class="menuItem ">玉翠珠宝</view>
-  <view class="menuItem ">书画篆刻</view>
-  <view class="menuItem ">茶酒滋补</view>
-  <view class="menuItem ">紫砂陶瓷</view>
-  <view class="menuItem ">工艺作品</view>
-  <view class="menuItem ">花鸟文娱</view>
-  <view class="menuItem ">文玩杂项</view>
+  <view bindtap="selectmenu" wx:for="{{getPillars}}" wx:key="id"  wx:for-item="item" data-text="{{item.id}}"  class="menuItem">{{item.name}}</view>
 </view>
-<scroll-view  scroll-into-view="{{toView}}"  scroll-y="true"  scroll-with-animation="true"  class="scr">
+
 <view class="categoryBox">
-  <view class="categoryContent">
-    <view class="categoryList">
-      <view class="title anchor1">玉翠珠宝
+<scroll-view  scroll-into-view="{{toView}}"  scroll-y="true"  scroll-with-animation="true"  class="scr">
+    <view class="categoryContent">
+    <view  wx:for="{{GetCategories}}" wx:key="id"  wx:for-item="item"  class="categoryList">
+      <view class="title anchor1">
         <view class="all">查看全部<i class="iconfont icon-fm-arrowright"></i></view> 
       </view>
-
       <view class='categoryItem'>
         <view class="categoryIcon"></view>
         <view class="cursorArea">
         <image src='{{imageLink}}/application/classify/1_1001.jpg'></image>
         </view>
-        <view class="text">木质把件</view>
+        <view class="text">{{item.name}}</view>
       </view>
-
       </view>
     </view>
-    
+      </scroll-view>
   </view>
-  </scroll-view>
+
 </view>

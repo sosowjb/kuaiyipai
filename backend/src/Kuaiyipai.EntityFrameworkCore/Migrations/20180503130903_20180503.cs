@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace Kuaiyipai.Migrations
 {
-    public partial class Initialize : Migration
+    public partial class _20180503 : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -517,12 +517,13 @@ namespace Kuaiyipai.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(nullable: false),
-                    Extension = table.Column<string>(nullable: false),
-                    FileName = table.Column<string>(nullable: false),
+                    Extension = table.Column<string>(nullable: true),
+                    FileName = table.Column<string>(nullable: true),
                     Height = table.Column<int>(nullable: false),
+                    Index = table.Column<int>(nullable: false),
                     IsCover = table.Column<bool>(nullable: false),
                     ItemId = table.Column<Guid>(nullable: false),
-                    Path = table.Column<string>(nullable: false),
+                    Path = table.Column<string>(nullable: true),
                     Size = table.Column<long>(nullable: false),
                     Width = table.Column<int>(nullable: false)
                 },
@@ -1027,7 +1028,7 @@ namespace Kuaiyipai.Migrations
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    Code = table.Column<string>(maxLength: 3, nullable: false),
+                    Code = table.Column<string>(maxLength: 5, nullable: false),
                     Name = table.Column<string>(maxLength: 50, nullable: false),
                     PillarId = table.Column<int>(nullable: false)
                 },
@@ -1127,6 +1128,7 @@ namespace Kuaiyipai.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(nullable: false),
+                    BiddingCount = table.Column<int>(nullable: false),
                     CategoryId = table.Column<int>(nullable: false),
                     Code = table.Column<string>(maxLength: 50, nullable: false),
                     CreationTime = table.Column<DateTime>(nullable: false),
@@ -1135,6 +1137,7 @@ namespace Kuaiyipai.Migrations
                     DeleterUserId = table.Column<long>(nullable: true),
                     DeletionTime = table.Column<DateTime>(nullable: true),
                     Description = table.Column<string>(nullable: false),
+                    HighestBiddingPrice = table.Column<double>(nullable: false),
                     IsDeleted = table.Column<bool>(nullable: false),
                     LastModificationTime = table.Column<DateTime>(nullable: true),
                     LastModifierUserId = table.Column<long>(nullable: true),
@@ -1167,6 +1170,7 @@ namespace Kuaiyipai.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(nullable: false),
+                    BiddingCount = table.Column<int>(nullable: false),
                     CategoryId = table.Column<int>(nullable: false),
                     Code = table.Column<string>(maxLength: 50, nullable: false),
                     CreationTime = table.Column<DateTime>(nullable: false),
@@ -1175,6 +1179,7 @@ namespace Kuaiyipai.Migrations
                     DeleterUserId = table.Column<long>(nullable: true),
                     DeletionTime = table.Column<DateTime>(nullable: true),
                     Description = table.Column<string>(nullable: false),
+                    HighestBiddingPrice = table.Column<double>(nullable: false),
                     IsDeleted = table.Column<bool>(nullable: false),
                     LastModificationTime = table.Column<DateTime>(nullable: true),
                     LastModifierUserId = table.Column<long>(nullable: true),
@@ -1207,6 +1212,7 @@ namespace Kuaiyipai.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(nullable: false),
+                    BiddingCount = table.Column<int>(nullable: false),
                     CategoryId = table.Column<int>(nullable: false),
                     Code = table.Column<string>(maxLength: 50, nullable: false),
                     CreationTime = table.Column<DateTime>(nullable: false),
@@ -1215,6 +1221,7 @@ namespace Kuaiyipai.Migrations
                     DeleterUserId = table.Column<long>(nullable: true),
                     DeletionTime = table.Column<DateTime>(nullable: true),
                     Description = table.Column<string>(nullable: false),
+                    HighestBiddingPrice = table.Column<double>(nullable: false),
                     IsDeleted = table.Column<bool>(nullable: false),
                     LastModificationTime = table.Column<DateTime>(nullable: true),
                     LastModifierUserId = table.Column<long>(nullable: true),
@@ -1247,6 +1254,7 @@ namespace Kuaiyipai.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(nullable: false),
+                    BiddingCount = table.Column<int>(nullable: false),
                     CategoryId = table.Column<int>(nullable: false),
                     Code = table.Column<string>(maxLength: 50, nullable: false),
                     CreationTime = table.Column<DateTime>(nullable: false),
@@ -1255,6 +1263,7 @@ namespace Kuaiyipai.Migrations
                     DeleterUserId = table.Column<long>(nullable: true),
                     DeletionTime = table.Column<DateTime>(nullable: true),
                     Description = table.Column<string>(nullable: false),
+                    HighestBiddingPrice = table.Column<double>(nullable: false),
                     IsDeleted = table.Column<bool>(nullable: false),
                     LastModificationTime = table.Column<DateTime>(nullable: true),
                     LastModifierUserId = table.Column<long>(nullable: true),

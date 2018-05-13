@@ -11,6 +11,9 @@ Page({
     list: ["list0", "list1", "list2", "list3", "list4", "list5", "list6", "list7", "list8", "list9", "list10", "list11", "list12", "list13", "list14", "list15", "list16", "list17", "list18", "list19", "list20", "list21", "list22", "list23", "list24", "list25", "list26", "list27", "list28", "list29"],
 
     toView: 'eeede'
+    getPillars:[],
+    GetCategories:[],
+    total:[]
   },
 
   /**
@@ -24,7 +27,56 @@ Page({
    * 生命周期函数--监听页面初次渲染完成
    */
   onReady: function () {
-  
+    var that = this;
+     wx.request({
+       url: app.globalData.apiLink + '/api/services/app/Pillar/GetPillars?SkipCount=0&MaxResultCount=100',
+       header: { 'Abp.TenantId': '1', 'Content-Type': 'application/json' },
+       method: 'get',
+       dataType: 'json',
+       responseType: 'text',
+       success: function (res) {
+        if(res.data.success)
+        {
+          that.setData({
+            getPillars: res.data.result.items
+          })
+          wx.request({
+            url: app.globalData.apiLink + '/api/services/app/Category/GetCategories?SkipCount=0&MaxResultCount=100',
+            header: { 'Abp.TenantId': '1', 'Content-Type': 'application/json' },
+            method: 'get',
+            dataType: 'json',
+            responseType: 'text',
+            success: function (res) {
+              if (res.data.success) {
+                that.setData({
+                  GetCategories: res.data.result.items
+                });
+                var totals=[]
+                for (var i = 0; i <= this.data.getPillars.length;i++)
+                {
+                  var str = { 'id': this.data.getPillars[i].id, 'code': this.data.getPillars[i].code, 'name': this.data.getPillars[i].name, categories:[]}
+                  for (var j = 0; j <= this.data.GetCategories.length; j++) 
+                  {
+                    if (this.data.GetCategories[j].PillarId == this.data.getPillars[i].id)
+                    {
+                      str.categories.push = {
+                        'id': this.data.GetCategories[j].Id,
+                        'code':this.data.GetCategories[j].Code,
+                        'name': this.data.GetCategories[j].Name,
+                        'pillars': this.data.GetCategories[j].PillarId
+                    }
+                    }
+                  }
+                  totals.push(str);
+            
+                }
+                console.log(totals);
+              }
+            }
+          })
+        }
+       }
+     });
   },
 
   /**
@@ -61,24 +113,16 @@ Page({
   onReachBottom: function () {
   
   },
-
+  selectmenu: function (e) {
+    console.log(e);
+  },
   /**
    * 用户点击右上角分享
    */
   onShareAppMessage: function () {
-  
   },
-  jumpTo : function (e) {
-
-    // 获取标签元素上自定义的 data-opt 属性的值
-
-    let target = e.currentTarget.dataset.opt;
-
-    this.setData({
-
-      toView: target
-
-    })
-
-  },
+  getName:function(id){
+    var menu_node1 = this.data.getPillars.filter(function (e) { return e.id == id; });
+    return menu_node1;
+  }
 })

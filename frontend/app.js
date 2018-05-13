@@ -15,7 +15,7 @@ App({
               {
                 wx.login({
                   success: res => {
-                  this.Logins(res.code)
+                  this.Logins(res.code,null)
                   }
                 })
               }
@@ -28,10 +28,8 @@ App({
       }
     })
   },
-  Logins:function(code){
     wx.request({
       url: this.globalData.apiLink + '/api/TokenAuth/Authenticate',
-      data: { name: this.globalData.userInfo.nickName, code: code },
       header: { 'Abp.TenantId': '1', 'Content-Type': 'application/json' },
       method: 'POST',
       dataType: 'json',
@@ -41,11 +39,15 @@ App({
         wx.setStorage({
           key: "accessToken",
           data: res.data.result.accessToken
-        }),
           wx.setStorage({
             key: "userId",
             data: res.data.result.userId
           })
+          });
+          if(callback)
+          {
+            callback();
+          }
       },
       fail: function (res) { },
       complete: function (res) { },
@@ -53,7 +55,6 @@ App({
   },
   globalData: {
     userInfo: null,
-    apiLink: "http://localhost:5000",//api链接
     imageLink: "http://images.kypwp.com"//图片链接
   }
 })

@@ -23,36 +23,33 @@
     </view>
  
     <view style="display:none">
-  <image wx:for="{{images}}" wx:key="id" id="{{item.id}}" src="{{imageLink+item.coverPic}}" bindload="onImageLoad"></image>
+  <image wx:for="{{images}}" wx:key="id" id="{{item.id}}" src="{{item.coverPic}}" bindload="onImageLoad"></image>
 </view>
 <scroll-view scroll-y="true" style="height:{{scrollH}}px" bindscrolltolower="loadImages">
   <view style="width:100%">
-    <view class="img_item" wx:for="{{col1}}" wx:key="id">
-       <view bindtap='openDetail' data-text="{{item.id}}">
-        <image src="{{imageLink+item.coverPic}}" style="height:{{item.coverPicHeight}}px"></image>
+    <view class="img_item" >
+      <view bindtap='openDetail' wx:for="{{col1}}" wx:key="id" data-text="{{item.id}}">
+        <image src="{{item.coverPic}}" style="width:100%;height:{{item.coverPicHeight*imgWidth/item.coverPicWidth}}px"></image>
         <view class='info'>
-                            <view class='title'>
-                                <text class='label deadline'>即将结束</text>陶都名家紫砂陶都名家紫砂陶都名家紫砂陶都名家紫砂陶都名家紫砂</view>
-                            <view class='weui-flex'>
-                                <text class='weui-flex__item bids'>3人已出价</text>
-                                <text class='weui-flex__item price'>￥1000</text>
-                            </view>
-                        </view>
-  </view>
+          <view class='title'>{{item.title}}</view>
+            <view class='weui-flex'>
+              <text class='weui-flex__item bids'>{{item.biddingCount}}人已出价1</text>
+              <text class='weui-flex__item price'>￥{{item.currentPrice}}</text>
+            </view>
+        </view>
+      </view>
     </view>
-    <view  class="img_item" wx:for="{{col2}}" wx:key="id">
-<view bindtap='openDetail' data-text="{{item.id}}">
-        <image  src="{{imageLink+item.coverPic}}" style="width:100%;height:{{item.coverPicHeight}}px"></image>
+    <view class="img_item" >
+      <view bindtap='openDetail' wx:for="{{col2}}" wx:key="id" data-text="{{item.id}}">
+        <image src="{{item.coverPic}}" style="width:100%;height:{{item.coverPicHeight*imgWidth/item.coverPicWidth}}px"></image>
         <view class='info'>
-                            <view class='title'>
-                                <text class='label deadline'>即将结束</text>{{item.title}}</view>
-                            <view class='weui-flex'>
-                                <text class='weui-flex__item bids'>3人已出价</text>
-                                <text class='weui-flex__item price'>￥1000</text>
-                            </view>
-                        </view>
-
-    </view>
+          <view class='title'>{{item.title}}</view>
+            <view class='weui-flex'>
+              <text class='weui-flex__item bids'>{{item.biddingCount}}人已出价1</text>
+              <text class='weui-flex__item price'>￥{{item.currentPrice}}</text>
+            </view>
+        </view>
+      </view>
     </view>
   </view>
 </scroll-view>

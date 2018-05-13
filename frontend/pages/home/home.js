@@ -18,8 +18,8 @@ Page({
           { title: "", link: "", picurl:"/goods/swiper-2.jpg"},
           { title: "", link: "", picurl: "/goods/swiper-3.jpg" }
           ],
-          scrollH: 0,
           imgWidth: 0,
+          scrollH: 0,
           loadingCount: 0,
           images: [],
           col1: [],
@@ -66,10 +66,9 @@ Page({
           let scrollH = wh;
 
           this.setData({
-            scrollH: scrollH,
+            scrollH: scrollH-100,
             imgWidth: imgWidth
           });
-
           //加载首组图片
           this.loadImages();
         }
@@ -161,19 +160,16 @@ Page({
           break;
         }
       }
-
       imageObj.height = imgHeight;
-
       let loadingCount = this.data.loadingCount - 1;
       let col1 = this.data.col1;
       let col2 = this.data.col2;
-
       //判断当前图片添加到左列还是右列
       if (col1H <= col2H) {
-        col1H += imgHeight+71;
+        col1H += imgHeight;
         col1.push(imageObj);
       } else {
-        col2H += imgHeight+71;
+        col2H += imgHeight;
         col2.push(imageObj);
       }
 
@@ -187,10 +183,8 @@ Page({
       if (!loadingCount) {
         data.images = [];
       }
-
       this.setData(data);
     },
-
     loadImages: function () {
       var that = this;
       var skincount = (this.data.currentpage - 1) * this.data.pageSize

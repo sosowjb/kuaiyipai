@@ -5,7 +5,6 @@ Page({
   /**
    * 页面的初始数据
    */
-
   data: {
     imageLink: app.globalData.imageLink,
     djs:{//倒计时
@@ -32,24 +31,8 @@ Page({
      // isFollow:false,//是否关注
       },
     goodsInfo:{},
-    auctionInfo:[//拍卖情况
-      {
-        id:"1",
-        avatar: app.globalData.imageLink + "/avatar/96.jpg",
-         nickname:"xiaoPeng",
-         price:100,
-         isBid:true,//是否中标
-         bidTime:"2018/04/01 15:44"//中标时间
-      },
-      {
-        id: "2",
-        avatar: app.globalData.imageLink + "/avatar/96.jpg",
-        nickname: "xiaoMing",
-        price: 100,
-        isBid: false,//是否中标
-        bidTime: "2018/04/05 15:44"//投标时间
-      }
-      ]
+    goodsInfoPic:[],
+    auctionInfo: []//拍卖情况
   },
 
   /**
@@ -65,11 +48,12 @@ Page({
       dataType: 'json',
       responseType: 'text',
       success: function (res) {
+        if (res.data.success)
+        {
         console.log(new Date(res.data.result.deadline).format("yyyy-MM-dd hh:mm"));
         if (res.data.result.status =='Auctioning'){
-          statu =1
+          statu =1;
         }
-       
         that.setData({
           goodsInfo:{
             goodsId: res.data.result.id,
@@ -79,10 +63,42 @@ Page({
             pPrice: 100,//保证金
             desc: res.data.result.description,//描述
             status: statu,//拍卖状态【1，正在拍卖，0是还未开始,2结束】
-            endTime: new Date(res.data.result.deadline).format("yyyy-MM-dd hh:mm")
+            endTime: new Date(res.data.result.deadline).format("yyyy-MM-dd hh:mm"),
+            goodsPic: [{ pic: "", smallpic:""}]
           }
         });
         countdown(that);
+      }
+      }
+    });
+    wx.request({
+      url: app.globalData.apiLink + '/api/services/app/Item/GetItemPictures?id=' + options.id,
+      header: { 'Abp.TenantId': '1', 'Content-Type': 'application/json' },
+      method: 'GET',
+      dataType: 'json',
+      responseType: 'text',
+      success: function (res) {
+        if (res.data.success)
+        {
+          that.setData({
+            goodsInfoPic:res.data.result.items
+          });
+        }
+      }
+    });
+    
+    wx.request({
+      url: app.globalData.apiLink + '/api/services/app/Bidding/GetBiddings?ItemId=' + options.id +'&SkipCount=0&MaxResultCount=5&Sorting=Price',
+      header: { 'Abp.TenantId': '1', 'Content-Type': 'application/json' },
+      method: 'GET',
+      dataType: 'json',
+      responseType: 'text',
+      success: function (res) {
+        if (res.data.success) {
+          that.setData({
+            auctionInfo: res.data.result.items
+          });
+        }
       }
     })
 
@@ -145,6 +161,7 @@ Page({
   },
   previewImage: function (e) {
     var current = e.currentTarget.dataset.text;
+    console.log(current);
     var arry = this.getImageArry();
     wx.previewImage({
       current: current, // 当前显示图片的http链接  
@@ -152,8 +169,15 @@ Page({
     })
   },
   bid:function(){//出价
+    var suprice=0;
+    if (this.data.auctionInfo.length>0)
+   {
+     suprice = this.data.auctionInfo[0].price;
+   }
+   console.log(suprice)
   this.setData({
-      "fixednum.is_open": 1
+      "fixednum.is_open": 1,
+      "fixednum.price": parseFloat(suprice) + parseFloat(this.data.goodsInfo.addPrice)
    });
   },
   //出价手机键盘控件方法
@@ -175,13 +199,74 @@ closefixednum: function () {//关闭弹窗
     });
   },
   backspace: function () {//退格
-    var priceTest = this.data.fixednum.price.replace(/.$/, '');
+    var priceTest = this.data.fixednum.price.toString().replace(/.$/, '');
     this.setData({
       "fixednum.price": priceTest
     });
   },
   submitPrice: function () {
     //提交加个，追标加价
+    //验证价格是否合法
+    var price = 0;
+    if (this.data.auctionInfo.length > 0) {
+      price = this.data.auctionInfo[0].price;
+    }
+   var nowPrice= this.data.fixednum.price
+   //console.log("拍卖价格不能低于或等于当前价格1" + nowPrice);
+   //console.log("拍卖价格不能低于或等于当前价格2" + price);
+   if (nowPrice <= price)//如果小于或者等于当前最高价格，是不可以的
+   {
+   //console.log("拍卖价格不能低于或等于当前价格");
+     show("拍卖价格不能低于或等于当前价格");
+   }
+   else if (price>0 && nowPrice%price!=0)//如果小于或者等于当前最高价格，是不可以的
+   {
+        //console.log("拍卖价格不能低于或等于当前价格");
+        show("加价幅度错误");
+   }
+   else if (price <= 0 && nowPrice % this.data.goodsInfo.addPrice != 0)//如果小于或者等于当前最高价格，是不可以的
+   {
+     //console.log("拍卖价格不能低于或等于当前价格");
+     show("加价幅度错误");
+   }
+   else
+   {
+    if(wx.getStorageSync("accessToken")) {
+     this.submitdata();
+    }
+    else
+    {
+      wx.login({
+        success: res => {
+          app.Logins(res.code, this.submitdata)
+        }
+      })
+    }
+   }
+  },
+  submitdata:function(){
+    console.log(wx.getStorageSync("accessToken"));
+    wx.request({
+      url: app.globalData.apiLink + '/api/services/app/Bidding/Bid',
+      data: { itemId: this.data.goodsInfo.goodsId, price: this.data.fixednum.price },
+      header: { 'Abp.TenantId': '1', 'Content-Type': 'application/json', 'Authorization':"Bearer "+ wx.getStorageSync("accessToken") },
+      method: 'POST',
+      dataType: 'json',
+      responseType: 'text',
+      success: function (res) {
+        if (res.data.success)
+        {
+          //提交获取成功
+          show("恭喜您，竞拍成功");
+          closefixednum();
+
+        }
+        else
+        {
+          show(res.data.error.message);
+        }
+      }
+    })
   }
 })
 function countdown(that) {
@@ -191,7 +276,6 @@ function countdown(that) {
   var total_micro_second = EndTime - NowTime || [];
   // 渲染倒计时时钟
   var second = Math.floor(total_micro_second / 1000);
-  console.log(second);
   if(second<=0)
   {
     if (that.data.goodsInfo.status==1)//说明后台状态还未结束，需要修改状态
@@ -225,4 +309,16 @@ function countdown(that) {
 function dateformat(that,micro_second) {
   // 总秒数
 
+}
+function show(content)
+{
+  wx.showModal({
+    content: content,
+    showCancel: false,
+    success: function (res) {
+      if (res.confirm) {
+       
+      }
+    }
+  });
 }
