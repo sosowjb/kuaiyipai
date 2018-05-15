@@ -16,22 +16,23 @@
         <view class="weui-search-bar__cancel-btn" hidden="{{!inputShowed}}" bindtap="hideInput">取消</view>
     </view><!--bar结束-->
 <view class="menu">
-  <view bindtap="selectmenu" wx:for="{{getPillars}}" wx:key="id"  wx:for-item="item" data-text="{{item.id}}"  class="menuItem">{{item.name}}</view>
+  <view bindtap="selectmenu" wx:for="{{getPillars}}" wx:key="id"  data-text="{{item.id}}"  class="menuItem {{'inToView'+item.id==toView?'selected':''}}">
+  {{item.name}}</view>
 </view>
-
 <view class="categoryBox">
-<scroll-view  scroll-into-view="{{toView}}"  scroll-y="true"  scroll-with-animation="true"  class="scr">
+<scroll-view scroll-y="true"  scroll-with-animation="true"  scroll-into-view="{{toView}}"  class="scr">
     <view class="categoryContent">
-    <view  wx:for="{{GetCategories}}" wx:key="id"  wx:for-item="item"  class="categoryList">
+    <view wx:for="{{getPillars}}" wx:key="id"  data-text="{{item.id}}" id="{{'inToView'+item.id}}"  class="categoryList">
       <view class="title anchor1">
-        <view class="all">查看全部<i class="iconfont icon-fm-arrowright"></i></view> 
+          {{item.name}}
+      <!--<view class="all">查看全部<i class="iconfont icon-fm-arrowright"></i></view>--> 
       </view>
-      <view class='categoryItem'>
+      <view wx:for="{{item.categories}}" wx:key="id"  wx:for-item="categories" class='categoryItem'>
         <view class="categoryIcon"></view>
         <view class="cursorArea">
         <image src='{{imageLink}}/application/classify/1_1001.jpg'></image>
         </view>
-        <view class="text">{{item.name}}</view>
+        <view class="text">{{categories.name}}</view>
       </view>
       </view>
     </view>

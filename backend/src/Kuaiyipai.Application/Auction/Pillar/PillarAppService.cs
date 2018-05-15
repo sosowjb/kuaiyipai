@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Linq.Dynamic.Core;
 using System.Threading.Tasks;
 using Abp.Application.Services.Dto;
@@ -14,32 +15,33 @@ namespace Kuaiyipai.Auction.Pillar
     {
         private readonly IPillarAndCategoryManager _pillarAndCategoryManager;
         private readonly IRepository<Entities.Pillar> _pillarRepository;
-
-        public PillarAppService(IPillarAndCategoryManager pillarAndCategoryManager, IRepository<Entities.Pillar> pillarRepository)
+        private readonly IRepository<Entities.Category> _categoryRepository;
+        public PillarAppService(IPillarAndCategoryManager pillarAndCategoryManager, IRepository<Entities.Pillar> pillarRepository, IRepository<Entities.Category> categoryRepository)
         {
             _pillarAndCategoryManager = pillarAndCategoryManager;
             _pillarRepository = pillarRepository;
+            _categoryRepository = categoryRepository;
         }
-        
+
         public async Task<int> CreatePillar(CreatePillarInputDto input)
         {
             return await _pillarAndCategoryManager.CreatePillar(input.Name);
         }
-        
+
         public async Task UpdatePillar(UpdatePillarInputDto input)
         {
             await _pillarAndCategoryManager.UpdatePillar(input.Id, input.Name);
         }
-        
+
         public async Task DeletePillar(DeletePillarInputDto input)
         {
             await _pillarAndCategoryManager.DeletePillar(input.Id, input.Recursive);
         }
-        
+
         public async Task<PagedResultDto<GetPillarsOutputDto>> GetPillars(GetPillarsInputDto input)
         {
             var query = _pillarRepository.GetAll();
-
+            var categoriesQuery = _categoryRepository.GetAll();
             if (!input.Sorting.IsNullOrEmpty())
             {
                 query = query.OrderBy(input.Sorting);
@@ -52,7 +54,6 @@ namespace Kuaiyipai.Auction.Pillar
                 Code = pillar.Code,
                 Name = pillar.Name
             }).ToListAsync();
-
             return new PagedResultDto<GetPillarsOutputDto>(count, list);
         }
     }

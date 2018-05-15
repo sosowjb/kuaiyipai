@@ -31,7 +31,6 @@ App({
   Logins:function(code,callback){
     wx.request({
       url: this.globalData.apiLink + '/api/TokenAuth/Authenticate',
-      data: { name: this.globalData.userInfo.nickName,code: code },
       header: { 'Abp.TenantId': '1', 'Content-Type': 'application/json' },
       method: 'POST',
       dataType: 'json',
@@ -58,7 +57,7 @@ App({
   globalData: {
     userInfo: null,
 <<<<<<< HEAD
-    apiLink: "http://api.kypwp.com",//api链接
+    apiLink: "http://localhost:5000",//api链接
     imageLink: "http://images.kypwp.com"//图片链接
 =======
   }

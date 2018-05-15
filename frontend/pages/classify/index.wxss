@@ -114,3 +114,7 @@ z-index: 10;
     font-size: 14px;
     display: block;
 }
+.scr{
+white-space:nowrap;
+height: 100%;
+}

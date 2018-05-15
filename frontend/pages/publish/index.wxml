@@ -1,4 +1,5 @@
 <view class="page">
+<form bindsubmit="formSubmit" bindreset="formReset">  
   <view class="page__bd">
     <view class="weui-cells weui-cells_after-title">
       <view class="weui-cell weui-cell_input">
@@ -6,7 +7,7 @@
           <view class="weui-label">标题</view>
         </view>
         <view class="weui-cell__bd">
-          <input class="weui-input" placeholder="请输入标题"/>
+          <input class="weui-input" name="title" value='{{formdata.title}}' placeholder="请输入标题"/>
         </view>
       </view><!--起拍价，加价幅度，最高价，最后时限-->
       <view class="weui-cell weui-cell_input">
@@ -14,7 +15,7 @@
           <view class="weui-label">起拍价</view>
         </view>
         <view class="weui-cell__bd">
-          <input class="weui-input" placeholder="请输入起拍价"/>
+          <input class="weui-input" name="startPrice" value='{{formdata.startPrice}}' placeholder="请输入起拍价"/>
         </view>
       </view>
       <view class="weui-cell weui-cell_input">
@@ -22,7 +23,7 @@
           <view class="weui-label">加价幅度</view>
         </view>
         <view class="weui-cell__bd">
-          <input class="weui-input" placeholder="请输入加价幅度"/>
+          <input class="weui-input" name="stepPrice" value='{{formdata.stepPrice}}' placeholder="请输入加价幅度"/>
         </view>
       </view>
       <view class="weui-cell weui-cell_input">
@@ -30,7 +31,7 @@
           <view class="weui-label">最高价</view>
         </view>
         <view class="weui-cell__bd">
-          <input class="weui-input" placeholder="请输入最高价"/>
+          <input class="weui-input" name="priceLimit" value='{{formdata.priceLimit}}'  placeholder="请输入最高价"/>
         </view>
       </view>
       <view class="weui-cell weui-cell_input">
@@ -55,8 +56,8 @@
       </view>
       <view class="weui-cell">
         <view class="weui-cell__bd">
-          <textarea class="weui-textarea" placeholder="请输入描述" style="height: 3.3em" />
-            <view class="weui-textarea-counter">0/200</view>
+          <textarea bindinput='textchange' class="weui-textarea" name="description" value='{{formdata.description}}' placeholder="请输入描述" style="height: 3.3em" />
+            <view class="weui-textarea-counter">{{formdata.description.length}}/140</view>
         </view>
       </view>
       <view class="weui-cell">
@@ -64,7 +65,7 @@
         <view class="weui-uploader">
           <view class="weui-uploader__hd">
             <view class="weui-uploader__title">图片上传</view>
-              <view class="weui-uploader__info">{{files.length}}/9</view>
+              <view class="weui-uploader__info">{{formdata.length}}/9</view>
             </view>
           <view class="weui-uploader__bd">
             <view class="weui-uploader__files" id="uploaderFiles">
@@ -87,7 +88,8 @@
     </view>
 
     <view class="page__bd page__bd_spacing">
-       <button class="weui-btn" type="primary">发布</button>
+       <button class="weui-btn"  formType="submit" type="primary">发布</button>
 </view>
   </view>
+  </form>
 </view>

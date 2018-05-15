@@ -9,8 +9,7 @@ Page({
   data: {
     imageLink: app.globalData.imageLink,
     getPillars:[],
-    GetCategories:[],
-    total:[]
+    toView: 'inToView1'
   },
   /**
    * 生命周期函数--监听页面加载
@@ -33,43 +32,7 @@ Page({
        success: function (res) {
         if(res.data.success)
         {
-          that.setData({
-            getPillars: res.data.result.items
-          })
-          wx.request({
-            url: app.globalData.apiLink + '/api/services/app/Category/GetCategories?SkipCount=0&MaxResultCount=100',
-            header: { 'Abp.TenantId': '1', 'Content-Type': 'application/json' },
-            method: 'get',
-            dataType: 'json',
-            responseType: 'text',
-            success: function (res) {
-              if (res.data.success) {
-                that.setData({
-                  GetCategories: res.data.result.items
-                });
-                var totals=[]
-                for (var i = 0; i <= this.data.getPillars.length;i++)
-                {
-                  var str = { 'id': this.data.getPillars[i].id, 'code': this.data.getPillars[i].code, 'name': this.data.getPillars[i].name, categories:[]}
-                  for (var j = 0; j <= this.data.GetCategories.length; j++) 
-                  {
-                    if (this.data.GetCategories[j].PillarId == this.data.getPillars[i].id)
-                    {
-                      str.categories.push = {
-                        'id': this.data.GetCategories[j].Id,
-                        'code':this.data.GetCategories[j].Code,
-                        'name': this.data.GetCategories[j].Name,
-                        'pillars': this.data.GetCategories[j].PillarId
-                    }
-                    }
-                  }
-                  totals.push(str);
-            
-                }
-                console.log(totals);
-              }
-            }
-          })
+          that.getCategory(res.data.result.items);
         }
        }
      });
@@ -110,15 +73,51 @@ Page({
   
   },
   selectmenu: function (e) {
-    console.log(e);
+    console.log(e)
+    var _id = e.target.dataset.text;
+    this.setData({
+      toView: 'inToView' + _id
+    })
+    console.log(this.data.toView)
   },
   /**
    * 用户点击右上角分享
    */
   onShareAppMessage: function () {
   },
-  getName:function(id){
-    var menu_node1 = this.data.getPillars.filter(function (e) { return e.id == id; });
-    return menu_node1;
+  getCategory:function(Pillars){
+    var that=this;
+    wx.request({
+      url: app.globalData.apiLink + '/api/services/app/Category/GetCategories?SkipCount=0&MaxResultCount=100',
+      header: { 'Abp.TenantId': '1', 'Content-Type': 'application/json' },
+      method: 'get',
+      dataType: 'json',
+      responseType: 'text',
+      success: function (res) {
+        if (res.data.success) {
+          var categories= res.data.result.items
+          var totals = []
+          for (var i = 0; i < Pillars.length; i++) {
+            var str = { 'id': Pillars[i].id, 'code': Pillars[i].code, 'name': Pillars[i].name, 'categories': [] }
+            for (var j = 0; j < categories.length; j++) {
+              if (categories[j].pillarId == Pillars[i].id) {
+                var categorie = {
+                  'id': categories[j].id,
+                  'code': categories[j].code,
+                  'name': categories[j].name,
+                  'pillars': categories[j].pillarId
+                }
+                str.categories.push(categorie)
+              }
+            }
+            totals.push(str);
+          }
+          that.setData({
+             getPillars: totals
+          })
+          //console.log(JSON.stringify(that.data.getPillars));
+        }
+      }
+    })
   }
 })

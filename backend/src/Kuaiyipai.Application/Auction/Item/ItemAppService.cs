@@ -672,7 +672,7 @@ namespace Kuaiyipai.Auction.Item
                 query = query.OrderBy(input.Sorting);
             }
             var count = await query.CountAsync();
-<<<<<<< HEAD
+//<<<<<<< HEAD
             var list = await query.PageBy(input)
                          .Join(pillarQuery, item => item.PillarId, pillar => pillar.Id, (item, pillar) => new { item, pillar })
                          .Join(categoryQuery, items => items.item.CategoryId, category => category.Id, (items, category) => new { items, category })
@@ -694,36 +694,36 @@ namespace Kuaiyipai.Auction.Item
                              biddingCount = itemss.items.item.BiddingCount
                          }).ToListAsync();
             return new PagedResultDto<GetAuctionItemsOutputDto>(count,list);
-=======
-            var list = await query.PageBy(input).Join(pillarQuery, item => item.PillarId, pillar => pillar.Id, (item, pillar) => new
-            {
-                item.Id,
-                Pillar = pillar.Name,
-                fengmian = itempicQuery.Where(i => i.ItemId == item.Id).First(),
-                item.CategoryId,
-                item.Title,
-                item.StartPrice,
-                item.StepPrice,
-                item.StartTime,
-                item.Deadline
-            })
-                .Join(categoryQuery, item => item.CategoryId, category => category.Id, (item, category) => new GetAuctionItemsOutputDto
-                {
-                    Id = item.Id,
-                    Pillar = item.Pillar,
-                    Category = category.Name,
-                    Title = item.Title,
-                    StartPrice = item.StartPrice,
-                    StepPrice = item.StepPrice,
-                    StartTime = item.StartTime,
-                    Deadline = item.Deadline,
-                    CoverPic = item.fengmian == null ? "" : item.fengmian.Path,
-                    CoverPicWidth = item.fengmian == null ? 0 : item.fengmian.Width,
-                    CoverPicHeight = item.fengmian == null ? 0 : item.fengmian.Height
-                }).ToListAsync();
+//=======
+//            var list = await query.PageBy(input).Join(pillarQuery, item => item.PillarId, pillar => pillar.Id, (item, pillar) => new
+//            {
+//                item.Id,
+//                Pillar = pillar.Name,
+//                fengmian = itempicQuery.Where(i => i.ItemId == item.Id).First(),
+//                item.CategoryId,
+//                item.Title,
+//                item.StartPrice,
+//                item.StepPrice,
+//                item.StartTime,
+//                item.Deadline
+//            })
+//                .Join(categoryQuery, item => item.CategoryId, category => category.Id, (item, category) => new GetAuctionItemsOutputDto
+//                {
+//                    Id = item.Id,
+//                    Pillar = item.Pillar,
+//                    Category = category.Name,
+//                    Title = item.Title,
+//                    StartPrice = item.StartPrice,
+//                    StepPrice = item.StepPrice,
+//                    StartTime = item.StartTime,
+//                    Deadline = item.Deadline,
+//                    CoverPic = item.fengmian == null ? "" : item.fengmian.Path,
+//                    CoverPicWidth = item.fengmian == null ? 0 : item.fengmian.Width,
+//                    CoverPicHeight = item.fengmian == null ? 0 : item.fengmian.Height
+//                }).ToListAsync();
             
-            return new PagedResultDto<GetAuctionItemsOutputDto>(count, list);
->>>>>>> f87d9ba00808cd651c06951d40e4e902bbc20778
+//            return new PagedResultDto<GetAuctionItemsOutputDto>(count, list);
+//>>>>>>> f87d9ba00808cd651c06951d40e4e902bbc20778
         }
     }
 }
