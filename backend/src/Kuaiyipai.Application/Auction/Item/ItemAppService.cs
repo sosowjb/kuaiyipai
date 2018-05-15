@@ -15,6 +15,7 @@ using Kuaiyipai.Auction.Entities;
 using Kuaiyipai.Auction.Item.Dto;
 using Kuaiyipai.Configuration;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 
@@ -27,21 +28,21 @@ namespace Kuaiyipai.Auction.Item
         private readonly IRepository<ItemCompleted, Guid> _itemCompletedRepository;
         private readonly IRepository<ItemTerminated, Guid> _itemTerminatedRepository;
         private readonly IRepository<ItemPic, Guid> _itemPicRepository;
-        private readonly IRepository<UserBiddingRecord, Guid> _userBiddingRecordRepository;
         private readonly IRepository<Entities.Pillar> _pillarRepository;
         private readonly IRepository<Entities.Category> _categoryRepository;
         private readonly IConfigurationRoot _appConfiguration;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public ItemAppService(IHostingEnvironment env, IRepository<ItemDrafting, Guid> itemDraftingRepository, IRepository<ItemAuctioning, Guid> itemAuctioningRepository, IRepository<ItemCompleted, Guid> itemCompletedRepository, IRepository<ItemTerminated, Guid> itemTerminatedRepository, IRepository<Entities.Pillar> pillarRepository, IRepository<Entities.Category> categoryRepository, IRepository<ItemPic, Guid> itemPicRepository, IRepository<UserBiddingRecord, Guid> userBiddingRecordRepository)
+        public ItemAppService(IHostingEnvironment env, IRepository<ItemDrafting, Guid> itemDraftingRepository, IRepository<ItemAuctioning, Guid> itemAuctioningRepository, IRepository<ItemCompleted, Guid> itemCompletedRepository, IRepository<ItemTerminated, Guid> itemTerminatedRepository, IRepository<Entities.Pillar> pillarRepository, IRepository<Entities.Category> categoryRepository, IRepository<ItemPic, Guid> itemPicRepository, IHttpContextAccessor httpContextAccessor)
         {
             _itemDraftingRepository = itemDraftingRepository;
             _itemAuctioningRepository = itemAuctioningRepository;
             _itemCompletedRepository = itemCompletedRepository;
             _itemTerminatedRepository = itemTerminatedRepository;
             _itemPicRepository = itemPicRepository;
+            _httpContextAccessor = httpContextAccessor;
             _pillarRepository = pillarRepository;
             _categoryRepository = categoryRepository;
-            _userBiddingRecordRepository = userBiddingRecordRepository;
             _appConfiguration = env.GetAppConfiguration();
         }
 
@@ -568,46 +569,40 @@ namespace Kuaiyipai.Auction.Item
             };
         }
 
-        public async Task<UploadPictureOutputDto> UploadPicture(UploadPictureInputDto input)
+        public async Task<UploadPictureOutputDto> UploadPicture()
         {
+            var files = _httpContextAccessor.HttpContext.Request.Form.Files;
+            if (files.Count != 1)
+            {
+                throw new UserFriendlyException("未上传图片");
+            }
+
             try
             {
                 var now = DateTime.Now;
-                var relativePath = Path.Combine(now.Year.ToString(), now.Month.ToString(), now.Day.ToString(), now.Hour.ToString());
+                var relativePath = Path.Combine(now.Year.ToString(), now.Month.ToString(), now.Day.ToString(),
+                    now.Hour.ToString());
                 var filePath = Path.Combine(_appConfiguration["App:ImagePhysicalPath"], relativePath);
                 var fileName = now.ToString("yyyyMMddhhmmssffff") + "_" + AbpSession.UserId;
                 var ext = ".jpg";
 
-                var base64 = (input.Base64.IndexOf(',') == -1 ? input.Base64 : input.Base64.Substring(input.Base64.IndexOf(',') + 1)).Trim('\0');
-                byte[] arr = Convert.FromBase64String(base64);
-                long length = arr.Length;
-                int height;
-                int width;
-                using (MemoryStream ms = new MemoryStream(arr))
+                if (!Directory.Exists(filePath))
                 {
-                    Bitmap bmp = new Bitmap(ms);
-                    height = bmp.Height;
-                    width = bmp.Width;
-                    Bitmap bmp2 = new Bitmap(bmp, bmp.Width, bmp.Height);
-                    Graphics draw = Graphics.FromImage(bmp2);
-                    draw.DrawImage(bmp, 0, 0);
-                    draw.Dispose();
-                    if (!Directory.Exists(filePath))
-                    {
-                        Directory.CreateDirectory(filePath);
-                    }
-                    bmp2.Save(Path.Combine(filePath, fileName + ext), ImageFormat.Jpeg);
-                    ms.Close();
+                    Directory.CreateDirectory(filePath);
+                }
+
+                var file = files[0];
+                using (var stream = new FileStream(Path.Combine(filePath, fileName + ext), FileMode.CreateNew))
+                {
+                    await file.CopyToAsync(stream);
                 }
 
                 var pic = new ItemPic
                 {
                     Path = relativePath,
                     FileName = fileName,
-                    Size = length,
-                    Extension = ext,
-                    Height = height,
-                    Width = width
+                    Size = file.Length,
+                    Extension = ext
                 };
                 var id = await _itemPicRepository.InsertAndGetIdAsync(pic);
                 return new UploadPictureOutputDto { Id = id };
@@ -666,12 +661,13 @@ namespace Kuaiyipai.Auction.Item
             var query = _itemAuctioningRepository.GetAll();
             var pillarQuery = _pillarRepository.GetAll();
             var categoryQuery = _categoryRepository.GetAll();
-            var itempicQuery = _itemPicRepository.GetAll().Where(o=>o.IsCover==true);
+            var itempicQuery = _itemPicRepository.GetAll().Where(o=>o.IsCover);
             if (!input.Sorting.IsNullOrEmpty())
             {
                 query = query.OrderBy(input.Sorting);
             }
             var count = await query.CountAsync();
+<<<<<<< HEAD
 //<<<<<<< HEAD
             var list = await query.PageBy(input)
                          .Join(pillarQuery, item => item.PillarId, pillar => pillar.Id, (item, pillar) => new { item, pillar })
@@ -724,6 +720,36 @@ namespace Kuaiyipai.Auction.Item
             
 //            return new PagedResultDto<GetAuctionItemsOutputDto>(count, list);
 //>>>>>>> f87d9ba00808cd651c06951d40e4e902bbc20778
+=======
+            var list = await query.PageBy(input).Join(pillarQuery, item => item.PillarId, pillar => pillar.Id, (item, pillar) => new
+            {
+                item.Id,
+                Pillar = pillar.Name,
+                fengmian = itempicQuery.Where(i => i.ItemId == item.Id).First(),
+                item.CategoryId,
+                item.Title,
+                item.StartPrice,
+                item.StepPrice,
+                item.StartTime,
+                item.Deadline
+            })
+                .Join(categoryQuery, item => item.CategoryId, category => category.Id, (item, category) => new GetAuctionItemsOutputDto
+                {
+                    Id = item.Id,
+                    Pillar = item.Pillar,
+                    Category = category.Name,
+                    Title = item.Title,
+                    StartPrice = item.StartPrice,
+                    StepPrice = item.StepPrice,
+                    StartTime = item.StartTime,
+                    Deadline = item.Deadline,
+                    CoverPic = item.fengmian == null ? "" : item.fengmian.Path,
+                    CoverPicWidth = item.fengmian == null ? 0 : item.fengmian.Width,
+                    CoverPicHeight = item.fengmian == null ? 0 : item.fengmian.Height
+                }).ToListAsync();
+            
+            return new PagedResultDto<GetAuctionItemsOutputDto>(count, list);
+>>>>>>> e67d75142adfc21f400ca05cef3e84fa6a139935
         }
     }
 }

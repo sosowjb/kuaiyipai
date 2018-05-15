@@ -45,7 +45,7 @@ namespace Kuaiyipai.Auction.Item
         /// <returns></returns>
         Task<PagedResultDto<GetAuctionItemsOutputDto>> GetAuctionItems(GetAuctionItemsInputDto input);
 
-        Task<UploadPictureOutputDto> UploadPicture(UploadPictureInputDto input);
+        Task<UploadPictureOutputDto> UploadPicture();
 
         Task<ListResultDto<GetItemPicturesOutputDto>> GetItemPictures(GetItemPicturesInputDto input);
 

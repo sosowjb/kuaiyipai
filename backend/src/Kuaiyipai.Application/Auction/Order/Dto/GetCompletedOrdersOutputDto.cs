@@ -9,17 +9,9 @@ namespace Kuaiyipai.Auction.Order.Dto
 
         public long BuyerId { get; set; }
 
-        public string BuyerName { get; set; }
-
         public long SellerId { get; set; }
 
-        public string SellerName { get; set; }
-
-        public string ContactPhoneNumber { get; set; }
-
         public Guid AddressId { get; set; }
-
-        public string Address { get; set; }
 
         public string DeliveryId { get; set; }
 

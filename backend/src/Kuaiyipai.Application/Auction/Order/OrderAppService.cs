@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 using Abp.Application.Services.Dto;
 using Abp.Domain.Repositories;
 using Abp.Linq.Extensions;
-using Abp.Runtime.Session;
 using Abp.UI;
 using Castle.Core.Internal;
 using Kuaiyipai.Auction.Entities;
@@ -36,54 +35,254 @@ namespace Kuaiyipai.Auction.Order
             _addressRepository = addressRepository;
         }
 
-        public Task<PagedResultDto<GetWaitingForPaymentOrdersOutputDto>> GetWaitingForPaymentOrdersAsBuyer(GetWaitingForPaymentOrdersInputDto input)
+        public async Task<PagedResultDto<GetWaitingForPaymentOrdersOutputDto>> GetWaitingForPaymentOrdersAsBuyer(GetWaitingForPaymentOrdersInputDto input)
         {
-            throw new NotImplementedException();
+            var query = _paymentRepository.GetAll().Where(o => o.BuyerId == AbpSession.UserId.Value);
+            if (!input.Sorting.IsNullOrEmpty())
+            {
+                query = query.OrderBy(input.Sorting);
+            }
+
+            var count = await query.CountAsync();
+            var list = await query.PageBy(input).Select(o => new GetWaitingForPaymentOrdersOutputDto
+            {
+                Code = o.Code,
+                BuyerId = o.BuyerId,
+                SellerId = o.SellerId,
+                AddressId = o.AddressId,
+                DeliveryId = o.DeliveryId,
+                OrderTime = o.OrderTime,
+                Amount = o.Amount,
+                ItemPriceAmount = o.ItemPriceAmount,
+                ExpressCostAmount = o.ExpressCostAmount
+            }).ToListAsync();
+
+            return new PagedResultDto<GetWaitingForPaymentOrdersOutputDto>(count, list);
         }
 
-        public Task<PagedResultDto<GetWaitingForSendingOrdersOutputDto>> GetWaitingForSendingOrdersAsBuyer(GetWaitingForSendingOrdersInputDto input)
+        public async Task<PagedResultDto<GetWaitingForSendingOrdersOutputDto>> GetWaitingForSendingOrdersAsBuyer(GetWaitingForSendingOrdersInputDto input)
         {
-            throw new NotImplementedException();
+            var query = _sendingRepository.GetAll().Where(o => o.BuyerId == AbpSession.UserId.Value);
+            if (!input.Sorting.IsNullOrEmpty())
+            {
+                query = query.OrderBy(input.Sorting);
+            }
+
+            var count = await query.CountAsync();
+            var list = await query.PageBy(input).Select(o => new GetWaitingForSendingOrdersOutputDto
+            {
+                Code = o.Code,
+                BuyerId = o.BuyerId,
+                SellerId = o.SellerId,
+                AddressId = o.AddressId,
+                DeliveryId = o.DeliveryId,
+                OrderTime = o.OrderTime,
+                Amount = o.Amount,
+                ItemPriceAmount = o.ItemPriceAmount,
+                ExpressCostAmount = o.ExpressCostAmount
+            }).ToListAsync();
+
+            return new PagedResultDto<GetWaitingForSendingOrdersOutputDto>(count, list);
         }
 
-        public Task<PagedResultDto<GetWaitingForReceivingOrdersOutputDto>> GetWaitingForReceivingOrdersAsBuyer(GetWaitingForReceivingOrdersInputDto input)
+        public async Task<PagedResultDto<GetWaitingForReceivingOrdersOutputDto>> GetWaitingForReceivingOrdersAsBuyer(GetWaitingForReceivingOrdersInputDto input)
         {
-            throw new NotImplementedException();
+            var query = _receivingRepository.GetAll().Where(o => o.BuyerId == AbpSession.UserId.Value);
+            if (!input.Sorting.IsNullOrEmpty())
+            {
+                query = query.OrderBy(input.Sorting);
+            }
+
+            var count = await query.CountAsync();
+            var list = await query.PageBy(input).Select(o => new GetWaitingForReceivingOrdersOutputDto
+            {
+                Code = o.Code,
+                BuyerId = o.BuyerId,
+                SellerId = o.SellerId,
+                AddressId = o.AddressId,
+                DeliveryId = o.DeliveryId,
+                OrderTime = o.OrderTime,
+                Amount = o.Amount,
+                ItemPriceAmount = o.ItemPriceAmount,
+                ExpressCostAmount = o.ExpressCostAmount
+            }).ToListAsync();
+
+            return new PagedResultDto<GetWaitingForReceivingOrdersOutputDto>(count, list);
         }
 
-        public Task<PagedResultDto<GetWaitingForEvaluatingOrdersOutputDto>> GetWaitingForEvaluatingOrdersAsBuyer(GetWaitingForEvaluatingOrdersInputDto input)
+        public async Task<PagedResultDto<GetWaitingForEvaluatingOrdersOutputDto>> GetWaitingForEvaluatingOrdersAsBuyer(GetWaitingForEvaluatingOrdersInputDto input)
         {
-            throw new NotImplementedException();
+            var query = _evaluatingRepository.GetAll().Where(o => o.BuyerId == AbpSession.UserId.Value);
+            if (!input.Sorting.IsNullOrEmpty())
+            {
+                query = query.OrderBy(input.Sorting);
+            }
+
+            var count = await query.CountAsync();
+            var list = await query.PageBy(input).Select(o => new GetWaitingForEvaluatingOrdersOutputDto
+            {
+                Code = o.Code,
+                BuyerId = o.BuyerId,
+                SellerId = o.SellerId,
+                AddressId = o.AddressId,
+                DeliveryId = o.DeliveryId,
+                OrderTime = o.OrderTime,
+                Amount = o.Amount,
+                ItemPriceAmount = o.ItemPriceAmount,
+                ExpressCostAmount = o.ExpressCostAmount
+            }).ToListAsync();
+
+            return new PagedResultDto<GetWaitingForEvaluatingOrdersOutputDto>(count, list);
         }
 
-        public Task<PagedResultDto<GetCompletedOrdersOutputDto>> GetCompletedOrdersAsBuyer(GetCompletedOrdersInputDto input)
+        public async Task<PagedResultDto<GetCompletedOrdersOutputDto>> GetCompletedOrdersAsBuyer(GetCompletedOrdersInputDto input)
         {
-            throw new NotImplementedException();
+            var query = _completedRepository.GetAll().Where(o => o.BuyerId == AbpSession.UserId.Value);
+            if (!input.Sorting.IsNullOrEmpty())
+            {
+                query = query.OrderBy(input.Sorting);
+            }
+
+            var count = await query.CountAsync();
+            var list = await query.PageBy(input).Select(o => new GetCompletedOrdersOutputDto
+            {
+                Code = o.Code,
+                BuyerId = o.BuyerId,
+                SellerId = o.SellerId,
+                AddressId = o.AddressId,
+                DeliveryId = o.DeliveryId,
+                OrderTime = o.OrderTime,
+                Amount = o.Amount,
+                ItemPriceAmount = o.ItemPriceAmount,
+                ExpressCostAmount = o.ExpressCostAmount
+            }).ToListAsync();
+
+            return new PagedResultDto<GetCompletedOrdersOutputDto>(count, list);
         }
 
-        public Task<PagedResultDto<GetWaitingForPaymentOrdersOutputDto>> GetWaitingForPaymentOrdersAsSeller(GetWaitingForPaymentOrdersInputDto input)
+        public async Task<PagedResultDto<GetWaitingForPaymentOrdersOutputDto>> GetWaitingForPaymentOrdersAsSeller(GetWaitingForPaymentOrdersInputDto input)
         {
-            throw new NotImplementedException();
+            var query = _paymentRepository.GetAll().Where(o => o.SellerId == AbpSession.UserId.Value);
+            if (!input.Sorting.IsNullOrEmpty())
+            {
+                query = query.OrderBy(input.Sorting);
+            }
+
+            var count = await query.CountAsync();
+            var list = await query.PageBy(input).Select(o => new GetWaitingForPaymentOrdersOutputDto
+            {
+                Code = o.Code,
+                BuyerId = o.BuyerId,
+                SellerId = o.SellerId,
+                AddressId = o.AddressId,
+                DeliveryId = o.DeliveryId,
+                OrderTime = o.OrderTime,
+                Amount = o.Amount,
+                ItemPriceAmount = o.ItemPriceAmount,
+                ExpressCostAmount = o.ExpressCostAmount
+            }).ToListAsync();
+
+            return new PagedResultDto<GetWaitingForPaymentOrdersOutputDto>(count, list);
         }
 
-        public Task<PagedResultDto<GetWaitingForSendingOrdersOutputDto>> GetWaitingForSendingOrdersAsSeller(GetWaitingForSendingOrdersInputDto input)
+        public async Task<PagedResultDto<GetWaitingForSendingOrdersOutputDto>> GetWaitingForSendingOrdersAsSeller(GetWaitingForSendingOrdersInputDto input)
         {
-            throw new NotImplementedException();
+            var query = _sendingRepository.GetAll().Where(o => o.SellerId == AbpSession.UserId.Value);
+            if (!input.Sorting.IsNullOrEmpty())
+            {
+                query = query.OrderBy(input.Sorting);
+            }
+
+            var count = await query.CountAsync();
+            var list = await query.PageBy(input).Select(o => new GetWaitingForSendingOrdersOutputDto
+            {
+                Code = o.Code,
+                BuyerId = o.BuyerId,
+                SellerId = o.SellerId,
+                AddressId = o.AddressId,
+                DeliveryId = o.DeliveryId,
+                OrderTime = o.OrderTime,
+                Amount = o.Amount,
+                ItemPriceAmount = o.ItemPriceAmount,
+                ExpressCostAmount = o.ExpressCostAmount
+            }).ToListAsync();
+
+            return new PagedResultDto<GetWaitingForSendingOrdersOutputDto>(count, list);
         }
 
-        public Task<PagedResultDto<GetWaitingForReceivingOrdersOutputDto>> GetWaitingForReceivingOrdersAsSeller(GetWaitingForReceivingOrdersInputDto input)
+        public async Task<PagedResultDto<GetWaitingForReceivingOrdersOutputDto>> GetWaitingForReceivingOrdersAsSeller(GetWaitingForReceivingOrdersInputDto input)
         {
-            throw new NotImplementedException();
+            var query = _receivingRepository.GetAll().Where(o => o.SellerId == AbpSession.UserId.Value);
+            if (!input.Sorting.IsNullOrEmpty())
+            {
+                query = query.OrderBy(input.Sorting);
+            }
+
+            var count = await query.CountAsync();
+            var list = await query.PageBy(input).Select(o => new GetWaitingForReceivingOrdersOutputDto
+            {
+                Code = o.Code,
+                BuyerId = o.BuyerId,
+                SellerId = o.SellerId,
+                AddressId = o.AddressId,
+                DeliveryId = o.DeliveryId,
+                OrderTime = o.OrderTime,
+                Amount = o.Amount,
+                ItemPriceAmount = o.ItemPriceAmount,
+                ExpressCostAmount = o.ExpressCostAmount
+            }).ToListAsync();
+
+            return new PagedResultDto<GetWaitingForReceivingOrdersOutputDto>(count, list);
         }
 
-        public Task<PagedResultDto<GetWaitingForEvaluatingOrdersOutputDto>> GetWaitingForEvaluatingOrdersAsSeller(GetWaitingForEvaluatingOrdersInputDto input)
+        public async Task<PagedResultDto<GetWaitingForEvaluatingOrdersOutputDto>> GetWaitingForEvaluatingOrdersAsSeller(GetWaitingForEvaluatingOrdersInputDto input)
         {
-            throw new NotImplementedException();
+            var query = _evaluatingRepository.GetAll().Where(o => o.SellerId == AbpSession.UserId.Value);
+            if (!input.Sorting.IsNullOrEmpty())
+            {
+                query = query.OrderBy(input.Sorting);
+            }
+
+            var count = await query.CountAsync();
+            var list = await query.PageBy(input).Select(o => new GetWaitingForEvaluatingOrdersOutputDto
+            {
+                Code = o.Code,
+                BuyerId = o.BuyerId,
+                SellerId = o.SellerId,
+                AddressId = o.AddressId,
+                DeliveryId = o.DeliveryId,
+                OrderTime = o.OrderTime,
+                Amount = o.Amount,
+                ItemPriceAmount = o.ItemPriceAmount,
+                ExpressCostAmount = o.ExpressCostAmount
+            }).ToListAsync();
+
+            return new PagedResultDto<GetWaitingForEvaluatingOrdersOutputDto>(count, list);
         }
 
-        public Task<PagedResultDto<GetCompletedOrdersOutputDto>> GetCompletedOrdersAsSeller(GetCompletedOrdersInputDto input)
+        public async Task<PagedResultDto<GetCompletedOrdersOutputDto>> GetCompletedOrdersAsSeller(GetCompletedOrdersInputDto input)
         {
-            throw new NotImplementedException();
+            var query = _completedRepository.GetAll().Where(o => o.SellerId == AbpSession.UserId.Value);
+            if (!input.Sorting.IsNullOrEmpty())
+            {
+                query = query.OrderBy(input.Sorting);
+            }
+
+            var count = await query.CountAsync();
+            var list = await query.PageBy(input).Select(o => new GetCompletedOrdersOutputDto
+            {
+                Code = o.Code,
+                BuyerId = o.BuyerId,
+                SellerId = o.SellerId,
+                AddressId = o.AddressId,
+                DeliveryId = o.DeliveryId,
+                OrderTime = o.OrderTime,
+                Amount = o.Amount,
+                ItemPriceAmount = o.ItemPriceAmount,
+                ExpressCostAmount = o.ExpressCostAmount
+            }).ToListAsync();
+
+            return new PagedResultDto<GetCompletedOrdersOutputDto>(count, list);
         }
 
         public async Task<GetEachTypeOrderCountOutputDto> GetEachTypeOrderCount()
@@ -95,7 +294,7 @@ namespace Kuaiyipai.Auction.Order
                     throw new UserFriendlyException("用户未登录");
                 }
 
-                var output = new GetEachTypeOrderCountOutputDto();                
+                var output = new GetEachTypeOrderCountOutputDto();
 
                 output.WaitPay = await _paymentRepository.CountAsync(t => t.SellerId == AbpSession.UserId.Value || t.BuyerId == AbpSession.UserId.Value);
                 output.WaitReceive = await _receivingRepository.CountAsync(t => t.SellerId == AbpSession.UserId.Value || t.BuyerId == AbpSession.UserId.Value);
