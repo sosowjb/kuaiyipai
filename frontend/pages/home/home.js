@@ -218,5 +218,10 @@ Page({
       wx.navigateTo({
         url: '/pages/goodsdetail/index?id=' + current,
       })
+    },
+    search:function(){
+      wx.navigateTo({
+        url: '/pages/search/index',
+      })
     }
 })
