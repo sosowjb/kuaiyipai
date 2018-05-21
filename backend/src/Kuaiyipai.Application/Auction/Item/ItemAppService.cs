@@ -689,6 +689,7 @@ namespace Kuaiyipai.Auction.Item
                              biddingCount = itemss.items.item.BiddingCount
                          }).ToListAsync();
             return new PagedResultDto<GetAuctionItemsOutputDto>(count,list);
+<<<<<<< HEAD
 //            var list = await query.PageBy(input).Join(pillarQuery, item => item.PillarId, pillar => pillar.Id, (item, pillar) => new
 //            {
 //                item.Id,
@@ -746,6 +747,9 @@ namespace Kuaiyipai.Auction.Item
             //    }).ToListAsync();
             
             return new PagedResultDto<GetAuctionItemsOutputDto>(count, list);
+=======
+
+>>>>>>> ddc2297e5dc8e7fdbfaf3a072bdfa8eb545142e6
         }
     }
 }

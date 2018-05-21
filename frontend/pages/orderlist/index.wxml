@@ -1,0 +1,31 @@
+<view class="container">
+    <view class="status-box">
+        <view bindtap="statusTap" class="status-label {{index == currentType ? 'active' : ''}}" wx:for-items="{{statusType}}" wx:key="{{index}}" data-index="{{index}}">
+            {{item}}
+            <view class="{{tabClass[index]}}"></view>
+        </view>
+    </view>
+    <view class="no-order" hidden="{{orderList ? true : false}}">
+        <image src="/images/no-order.png" class="no-order-img"></image>
+        <view class="text">暂无订单</view>
+    </view>
+  <scroll-view scroll-y='true' style="height:{{height}}px" bindscrolltolower='more'>
+    <view class="order-list" hidden="{{orderList ? false : true}}">
+        <view class="a-order" wx:for-items="{{orderList}}" wx:key="{{index}}" bindtap='orderDetail'>
+            <view class="order-date">
+                <view class="date-box">下单时间：{{item.orderTime}}</view>
+            </view>
+            <view class="goods-info" bindtap="orderDetail" data-id="{{item.id}}">
+                <view class="goods-des">
+                   <view>订单号:{{item.code}} </view>
+                   <view wx:if="{{item.remark && item.remark != ''}}">备注： {{item.remark}}</view>
+                </view>
+            </view>
+            <view class="price-box">
+                <view class="total-price">合计：¥ {{item.itemPriceAmount}}</view>
+                <view class="btn topay-btn" hidden="{{item.status==0? fslse : true}}" bindtap="toPayTap" data-id="{{item.id}}" data-money="{{item.amountReal}}">马上付款</view>        
+            </view>  
+        </view>
+      </view>
+    </scroll-view>
+</view>
