@@ -1,11 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Linq.Dynamic.Core;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml;
 using Abp.Application.Services.Dto;
 using Abp.Domain.Repositories;
 using Abp.Domain.Uow;
@@ -85,7 +88,7 @@ namespace Kuaiyipai.Auction.Balance
         }
 
         [UnitOfWork]
-        public async Task Charge(ChargeInputDto input)
+        public async Task<string> Charge(ChargeInputDto input)
         {
             var appId = _appConfiguration["WeChat:AppId"];
             var appSecret = _appConfiguration["WeChat:AppSecret"];
@@ -168,6 +171,23 @@ namespace Kuaiyipai.Auction.Balance
             sb.Append("</xml>");
 
             var result = await HttpHelper.Post(OrderApi, sb.ToString());
+
+            DataSet ds = new DataSet();
+            StringReader stram = new StringReader(result);
+            XmlTextReader reader = new XmlTextReader(stram);
+            ds.ReadXml(reader);
+            string returnCode = ds.Tables[0].Rows[0]["return_code"].ToString();
+            string prepayId = "";
+            if (returnCode.ToUpper() == "SUCCESS")
+            {
+                string resultCode = ds.Tables[0].Rows[0]["result_code"].ToString();
+                if (resultCode.ToUpper() == "SUCCESS")
+                {
+                    prepayId = ds.Tables[0].Rows[0]["prepay_id"].ToString();
+                }
+            }
+
+            return prepayId;
         }
 
         public Task CompleteCharge()
