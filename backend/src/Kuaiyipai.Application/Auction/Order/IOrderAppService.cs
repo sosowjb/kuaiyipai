@@ -27,12 +27,5 @@ namespace Kuaiyipai.Auction.Order
         Task<PagedResultDto<GetCompletedOrdersOutputDto>> GetCompletedOrdersAsSeller(GetCompletedOrdersInputDto input);
 
         Task<GetEachTypeOrderCountOutputDto> GetEachTypeOrderCount();
-
-        /// <summary>
-        /// 获取已完成的所有订单（用户可以是卖家也可以是买家）
-        /// </summary>
-        /// <param name="input"></param>
-        /// <returns></returns>
-        Task<PagedResultDto<GetCompletedOrdersOutputDto>> GetCompletedOrders(GetCompletedOrdersInputDto input);
     }
 }

@@ -70,9 +70,9 @@ Page({
       })
       return
     }
-    var url = app.globalData.apiLink + "/api/services/app/Address/CreateAddress";
+    var url = "http://localhost:22742/api/services/app/Address/CreateAddress";
     if (that.data.id) {
-      url = app.globalData.apiLink + "/api/services/app/Address/UpdateAddress";
+      url ="http://localhost:22742/api/services/app/Address/UpdateAddress";
     } 
     wx.request({
       url: url,
@@ -167,13 +167,9 @@ Page({
       // 初始化原数据
       wx.showLoading();
       wx.request({
-        url: app.globalData.apiLink + '/api/services/app/Address/GetAddress',
-        method: "POST",
-        header: {
-          "Authorization": wx.getStorageSync("accessToken"),
-          "Content-Type": "application/json"
-        },
+        url: 'http://localhost:22742/api/services/app/Address/GetAddress',
         data: {
+          token: app.globalData.token,
           id: id
         },
         success: function (res) {

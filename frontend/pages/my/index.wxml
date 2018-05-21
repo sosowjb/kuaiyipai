@@ -17,10 +17,10 @@
   </view>
   <view style="height:20rpx;background: #eee;width:100%;"></view>  
   <view class="order-block">
-    <navigator class="my-order" url="/pages/orderlist/index?status=-1">我的订单</navigator>
+    <navigator class="my-order" url="/pages/order/order?status=-1">我的订单</navigator>
     <view class="flex-row">
         <view class="flex-grow-1">
-            <navigator class="nav-item" url="/pages/orderlist/index?status=0">
+            <navigator class="nav-item" url="/pages/order/order?status=0">
                 <view>
                    <i class="iconfont icon-fm-notpaid" style="font-size:20px;" />
                 </view>
@@ -31,7 +31,7 @@
             </navigator>
         </view>
         <view class="flex-grow-1">
-            <navigator class="nav-item" url="/pages/orderlist/index?status=1">
+            <navigator class="nav-item" url="/pages/order/order?status=1">
                 <view>
                    <i class="iconfont icon-fm-waitdelivery" style="font-size:20px;" />
                 </view>
@@ -42,7 +42,7 @@
             </navigator>
         </view>
         <view class="flex-grow-1">
-            <navigator class="nav-item" url="/pages/orderlist/index?status=2">
+            <navigator class="nav-item" url="/pages/order/order?status=2">
                 <view>
                    <i class="iconfont icon-fm-notreceipt" style="font-size:20px;" />
                 </view>
@@ -53,7 +53,7 @@
             </navigator>
         </view>
         <view class="flex-grow-1">
-            <navigator class="nav-item" url="/pages/orderlist/index?status=3">
+            <navigator class="nav-item" url="/pages/order/order?status=3">
                 <view>
                    <i class="iconfont icon-fm-seeorder" style="font-size:20px;" />  
                 </view>

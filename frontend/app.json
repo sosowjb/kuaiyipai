@@ -14,8 +14,7 @@
     "pages/notice/show",
     "pages/setting/index",
     "pages/select-address/index",
-    "pages/address-add/index",
-    "pages/orderlist/index"
+    "pages/address-add/index"
   ],
   "tabBar": {
     "selectedColor": "#1296db",

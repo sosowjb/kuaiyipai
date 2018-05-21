@@ -307,29 +307,5 @@ namespace Kuaiyipai.Auction.Order
                 throw e;
             }
         }
-        public async Task<PagedResultDto<GetCompletedOrdersOutputDto>> GetCompletedOrders(GetCompletedOrdersInputDto input)
-        {
-            var query = _completedRepository.GetAll().Where(o => o.BuyerId == AbpSession.UserId.Value || o.SellerId == AbpSession.UserId.Value);
-            if (!input.Sorting.IsNullOrEmpty())
-            {
-                query = query.OrderBy(input.Sorting);
-            }
-
-            var count = await query.CountAsync();
-            var list = await query.PageBy(input).Select(o => new GetCompletedOrdersOutputDto
-            {
-                Code = o.Code,
-                BuyerId = o.BuyerId,
-                SellerId = o.SellerId,
-                AddressId = o.AddressId,
-                DeliveryId = o.DeliveryId,
-                OrderTime = o.OrderTime,
-                Amount = o.Amount,
-                ItemPriceAmount = o.ItemPriceAmount,
-                ExpressCostAmount = o.ExpressCostAmount
-            }).ToListAsync();
-
-            return new PagedResultDto<GetCompletedOrdersOutputDto>(count, list);
-        }
     }
 }

@@ -24,13 +24,9 @@ Page({
       success: function (res) {
         if (res.confirm) {
           wx.request({
-            url: app.globalData.apiLink + '/api/services/app/Address/DeleteAddress',
-            method: "POST",
-            header: {
-              "Authorization": wx.getStorageSync("accessToken"),
-              "Content-Type": "application/json"
-            },
+            url: 'http://localhost:22742/api/services/app/Address/DeleteAddress',
             data: {
+              token: app.globalData.token,
               id: id
             },
             success: (res) => {
@@ -47,12 +43,7 @@ Page({
   setDefault:function(e){
     //console.info(e.currentTarget.dataset.id);
     wx.request({
-      url: app.globalData.apiLink + '/api/services/app/Address/SetDefault', 
-      method: "POST",
-      header: {
-        "Authorization": wx.getStorageSync("accessToken"),
-        "Content-Type": "application/json"
-      },
+      url: 'http://localhost:22742/api/services/app/Address/SetDefault',
       data: {
         token: app.globalData.token,
         id: e.currentTarget.dataset.id
@@ -76,12 +67,7 @@ Page({
   getUserAddressList:function(){
     var that = this;
     wx.request({
-      url: app.globalData.apiLink + '/api/services/app/Address/GetAddress', 
-      method: "POST",
-      header: {
-        "Authorization": wx.getStorageSync("accessToken"),
-        "Content-Type": "application/json"
-      },
+      url: 'http://localhost:22742/api/services/app/Address/GetAddress',
       data: {
         token: app.globalData.token,
         userId: 0,

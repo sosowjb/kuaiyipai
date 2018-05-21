@@ -26,14 +26,7 @@
           <input class="weui-input" name="stepPrice" value='{{formdata.stepPrice}}' placeholder="请输入加价幅度"/>
         </view>
       </view>
-      <view class="weui-cell weui-cell_input">
-        <view class="weui-cell__hd">
-          <view class="weui-label">最高价</view>
-        </view>
-        <view class="weui-cell__bd">
-          <input class="weui-input" name="priceLimit" value='{{formdata.priceLimit}}'  placeholder="请输入最高价"/>
-        </view>
-      </view>
+
       <view class="weui-cell weui-cell_input">
         <view class="weui-cell__hd">
           <view class="weui-label">结束日期</view>
@@ -55,6 +48,26 @@
         </view>
       </view>
       <view class="weui-cell">
+       <view class="weui-cell__hd">
+          <view class="weui-label">分类</view>
+        </view>
+        <view class="weui-cell__bd">
+       <picker bindchange="bindPickerChangeP" value="{{pillarsIndex}}" range="{{pillars}}">
+              {{pillars[pillarsIndex]}}
+            </picker>
+        </view>
+      </view>
+      <view class="weui-cell">
+       <view class="weui-cell__hd">
+          <view class="weui-label">子分类</view>
+        </view>
+        <view class="weui-cell__bd">
+       <picker bindchange="bindPickerChangeC" value="{{categoriesIndex}}" range="{{categories}}">
+              {{categories[categoriesIndex]}}
+            </picker>
+        </view>
+      </view>
+      <view class="weui-cell">
         <view class="weui-cell__bd">
           <textarea bindinput='textchange' class="weui-textarea" name="description" value='{{formdata.description}}' placeholder="请输入描述" style="height: 3.3em" />
             <view class="weui-textarea-counter">{{formdata.description.length}}/140</view>
@@ -65,12 +78,12 @@
         <view class="weui-uploader">
           <view class="weui-uploader__hd">
             <view class="weui-uploader__title">图片上传</view>
-              <view class="weui-uploader__info">{{formdata.length}}/9</view>
+              <view class="weui-uploader__info">{{img_arr.length}}/9</view>
             </view>
           <view class="weui-uploader__bd">
             <view class="weui-uploader__files" id="uploaderFiles">
-              <block wx:for="{{files}}" wx:key="*this">
-                <view class="weui-uploader__file" bindtap="previewImage" id="{{item}}">
+              <block wx:for="{{img_arr}}" wx:key="*this">
+                <view class="weui-uploader__file" bindtap="previewImage">
                   <image class="weui-uploader__img" src="{{item}}" mode="aspectFill" />
                 </view>
               </block>
@@ -82,14 +95,14 @@
         </view>
         </view>
       </view>
-
-       
-  
     </view>
-
+      <view class="weui-cell">
+        <view class="weui-cell__bd">
     <view class="page__bd page__bd_spacing">
        <button class="weui-btn"  formType="submit" type="primary">发布</button>
 </view>
+  </view>
+  </view>
   </view>
   </form>
 </view>
