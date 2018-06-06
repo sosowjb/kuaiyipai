@@ -11,7 +11,9 @@ namespace Kuaiyipai.Auction.Balance
 
         Task<PagedResultDto<GetMyBalanceRecordsOutputDto>> GetMyBalanceRecords(GetMyBalanceRecordsInputDto input);
 
-        Task Charge(ChargeInputDto input);
+        Task<string> Charge(ChargeInputDto input);
+
+        Task CompleteCharge();
 
         Task Withdraw(WithdrawInputDto input);
     }
