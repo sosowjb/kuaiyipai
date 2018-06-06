@@ -30,7 +30,7 @@
         <view class='info'>
           <view class='title'>{{item.title}}</view>
             <view class='weui-flex'>
-              <text class='weui-flex__item bids'>{{item.biddingCount}}人已出价1</text>
+              <text class='weui-flex__item bids'>{{item.biddingCount}}人已出价</text>
               <text class='weui-flex__item price'>￥{{item.currentPrice}}</text>
             </view>
         </view>
@@ -42,7 +42,7 @@
         <view class='info'>
           <view class='title'>{{item.title}}</view>
             <view class='weui-flex'>
-              <text class='weui-flex__item bids'>{{item.biddingCount}}人已出价1</text>
+              <text class='weui-flex__item bids'>{{item.biddingCount}}人已出价</text>
               <text class='weui-flex__item price'>￥{{item.currentPrice}}</text>
             </view>
         </view>

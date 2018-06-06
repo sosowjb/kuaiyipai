@@ -6,6 +6,7 @@ Page({
    * 页面的初始数据
    */
   data: {
+    canIUse: wx.canIUse('button.open-type.getUserInfo'),
     imageLink: app.globalData.imageLink,
     djs:{//倒计时
       t: "",
@@ -23,7 +24,7 @@ Page({
     vendor: { 
       id:123,//id
       nickname: "天河珠宝",//名称
-      hpic: app.globalData.imageLink+"/avatar/96.jpg",//头像
+      hpic: app.globalData.imageLink+"/avatar/96.jpg"//头像
      // credit:4.8,//信用值
      // increase:true,//信用值是否增加
      // amountInAll:4000,
@@ -41,36 +42,6 @@ Page({
   onLoad: function (options) {
     var that=this;
     var statu = 0;
-    wx.request({
-      url: app.globalData.apiLink + '/api/services/app/Item/GetItem?id=' + options.id,
-      header: { 'Abp.TenantId': '1', 'Content-Type': 'application/json' },
-      method: 'GET',
-      dataType: 'json',
-      responseType: 'text',
-      success: function (res) {
-        if (res.data.success)
-        {
-        console.log(new Date(res.data.result.deadline).format("yyyy-MM-dd hh:mm"));
-        if (res.data.result.status =='Auctioning'){
-          statu =1;
-        }
-        that.setData({
-          goodsInfo:{
-            goodsId: res.data.result.id,
-            rPrice: 78168,//参考价
-            bPrice: res.data.result.startPrice,//起价
-            addPrice: res.data.result.stepPrice,//加价幅度
-            pPrice: 100,//保证金
-            desc: res.data.result.description,//描述
-            status: statu,//拍卖状态【1，正在拍卖，0是还未开始,2结束】
-            endTime: new Date(res.data.result.deadline).format("yyyy-MM-dd hh:mm"),
-            goodsPic: [{ pic: "", smallpic:""}]
-          }
-        });
-        countdown(that);
-      }
-      }
-    });
     wx.request({
       url: app.globalData.apiLink + '/api/services/app/Item/GetItemPictures?id=' + options.id,
       header: { 'Abp.TenantId': '1', 'Content-Type': 'application/json' },
@@ -100,8 +71,37 @@ Page({
           });
         }
       }
-    })
-
+    });
+    wx.request({
+      url: app.globalData.apiLink + '/api/services/app/Item/GetItem?id=' + options.id,
+      method: 'GET',
+      dataType: 'json',
+      responseType: 'text',
+      success: function (res) {
+        if (res.data.success) {
+          console.log(res.data.result);
+          if (res.data.result.status == 'Auctioning') {
+            statu = 1;
+          }
+          that.setData({
+            goodsInfo: {
+              goodsId: res.data.result.id,
+              rPrice: 78168,//参考价
+              bPrice: res.data.result.startPrice,//起价
+              addPrice: res.data.result.stepPrice,//加价幅度
+              pPrice: 100,//保证金
+              desc: res.data.result.description,//描述
+              status: statu,//拍卖状态【1，正在拍卖，0是还未开始,2结束】
+              endTime: new Date(res.data.result.deadline).format("yyyy-MM-dd hh:mm"),
+              goodsPic: [{ pic: "", smallpic: "" }],
+              avator: res.data.result.avator,
+              nikename: res.data.result.nikeName
+            }
+          });
+          countdown(that);
+        }
+      }
+    });
   },
 
   /**
@@ -267,6 +267,9 @@ closefixednum: function () {//关闭弹窗
         }
       }
     })
+  },
+  bindGetUserInfo: function (e) {
+    console.log(e.detail.userInfo)
   }
 })
 function countdown(that) {

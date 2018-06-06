@@ -30,7 +30,7 @@
       <view wx:for="{{item.categories}}" wx:key="id"  wx:for-item="categories" class='categoryItem'>
         <view class="categoryIcon"></view>
         <view class="cursorArea">
-        <image src='{{imageLink}}/application/classify/1_1001.jpg'></image>
+        <image src='{{imageLink}}/application/classify/1_{{categories.id}}.jpg'></image>
         </view>
         <view class="text">{{categories.name}}</view>
       </view>

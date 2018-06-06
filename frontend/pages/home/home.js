@@ -136,7 +136,6 @@ Page({
             this.setData({
               currentpage:currentpage+1
             });
-            console.log(res)
           },
           fail: function(res) {},
           complete: function(res) {},
@@ -196,7 +195,6 @@ Page({
         dataType: 'json',
         responseType: 'text',
         success: function (res) {
-          console.log(res)
           if (res.data.success)
           {
             let images = res.data.result.items;

@@ -13,6 +13,7 @@ using Abp.UI;
 using Castle.Core.Internal;
 using Kuaiyipai.Auction.Entities;
 using Kuaiyipai.Auction.Item.Dto;
+using Kuaiyipai.Authorization.Users;
 using Kuaiyipai.Configuration;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -30,10 +31,11 @@ namespace Kuaiyipai.Auction.Item
         private readonly IRepository<ItemPic, Guid> _itemPicRepository;
         private readonly IRepository<Entities.Pillar> _pillarRepository;
         private readonly IRepository<Entities.Category> _categoryRepository;
+        private readonly IRepository<User, long> _userRepository;
         private readonly IConfigurationRoot _appConfiguration;
         private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public ItemAppService(IHostingEnvironment env, IRepository<ItemDrafting, Guid> itemDraftingRepository, IRepository<ItemAuctioning, Guid> itemAuctioningRepository, IRepository<ItemCompleted, Guid> itemCompletedRepository, IRepository<ItemTerminated, Guid> itemTerminatedRepository, IRepository<Entities.Pillar> pillarRepository, IRepository<Entities.Category> categoryRepository, IRepository<ItemPic, Guid> itemPicRepository, IHttpContextAccessor httpContextAccessor)
+        public ItemAppService(IHostingEnvironment env, IRepository<ItemDrafting, Guid> itemDraftingRepository, IRepository<ItemAuctioning, Guid> itemAuctioningRepository, IRepository<ItemCompleted, Guid> itemCompletedRepository, IRepository<ItemTerminated, Guid> itemTerminatedRepository, IRepository<Entities.Pillar> pillarRepository, IRepository<Entities.Category> categoryRepository, IRepository<ItemPic, Guid> itemPicRepository, IHttpContextAccessor httpContextAccessor, IRepository<User, long> userRepository)
         {
             _itemDraftingRepository = itemDraftingRepository;
             _itemAuctioningRepository = itemAuctioningRepository;
@@ -44,6 +46,7 @@ namespace Kuaiyipai.Auction.Item
             _pillarRepository = pillarRepository;
             _categoryRepository = categoryRepository;
             _appConfiguration = env.GetAppConfiguration();
+            _userRepository = userRepository;
         }
 
         public async Task<Guid> CreateItem(CreateItemInputDto input)
@@ -478,16 +481,16 @@ namespace Kuaiyipai.Auction.Item
 
         public async Task<GetItemOutputDto> GetItem(EntityDto<Guid> input)
         {
-            var item1 = await _itemDraftingRepository.FirstOrDefaultAsync(input.Id);
+            var item1 =await _itemDraftingRepository.GetAll().Join(_userRepository.GetAll(),item => item.CreatorUserId, user => user.Id, (item, user) => new { item, user }).FirstOrDefaultAsync(o=>o.item.Id==input.Id);
             if (item1 == null)
             {
-                var item2 = await _itemAuctioningRepository.FirstOrDefaultAsync(input.Id);
+                var item2 =await _itemAuctioningRepository.GetAll().Join(_userRepository.GetAll(), item => item.CreatorUserId, user => user.Id, (item, user) => new { item, user }).FirstOrDefaultAsync(o => o.item.Id == input.Id);
                 if (item2 == null)
                 {
-                    var item3 = await _itemCompletedRepository.FirstOrDefaultAsync(input.Id);
+                    var item3 =await _itemCompletedRepository.GetAll().Join(_userRepository.GetAll(), item => item.CreatorUserId, user => user.Id, (item, user) => new { item, user }).FirstOrDefaultAsync(o => o.item.Id == input.Id);
                     if (item3 == null)
                     {
-                        var item4 = await _itemTerminatedRepository.FirstOrDefaultAsync(input.Id);
+                        var item4 =await _itemTerminatedRepository.GetAll().Join(_userRepository.GetAll(), item => item.CreatorUserId, user => user.Id, (item, user) => new { item, user }).FirstOrDefaultAsync(o => o.item.Id == input.Id);
                         if (item4 == null)
                         {
                             throw new UserFriendlyException("商品不存在");
@@ -495,78 +498,99 @@ namespace Kuaiyipai.Auction.Item
 
                         return new GetItemOutputDto
                         {
-                            Id = item4.Id,
-                            Code = item4.Code,
-                            PillarId = item4.PillarId,
-                            CategoryId = item4.CategoryId,
-                            StartPrice = item4.StartPrice,
-                            StartTime = item4.StartTime,
-                            StepPrice = item4.StepPrice,
-                            PriceLimit = item4.PriceLimit,
-                            Deadline = item4.Deadline,
-                            Title = item4.Title,
-                            Description = item4.Description,
+                            Id = item4.item.Id,
+                            Code = item4.item.Code,
+                            PillarId = item4.item.PillarId,
+                            CategoryId = item4.item.CategoryId,
+                            StartPrice = item4.item.StartPrice,
+                            StartTime = item4.item.StartTime,
+                            StepPrice = item4.item.StepPrice,
+                            PriceLimit = item4.item.PriceLimit,
+                            Deadline = item4.item.Deadline,
+                            Title = item4.item.Title,
+                            Description = item4.item.Description,
                             Status = "Terminated",
-                            BiddingCount = item4.BiddingCount,
-                            HighestBiddingPrice = item4.HighestBiddingPrice
+                            BiddingCount = item4.item.BiddingCount,
+                            HighestBiddingPrice = item4.item.HighestBiddingPrice,
+                            CreatorUserId=item4.item.CreatorUserId,
+                            Avator = item4.user.AvatarLink,
+                            NikeName =item4.user.NickName
                         };
                     }
 
                     return new GetItemOutputDto
                     {
-                        Id = item3.Id,
-                        Code = item3.Code,
-                        PillarId = item3.PillarId,
-                        CategoryId = item3.CategoryId,
-                        StartPrice = item3.StartPrice,
-                        StartTime = item3.StartTime,
-                        StepPrice = item3.StepPrice,
-                        PriceLimit = item3.PriceLimit,
-                        Deadline = item3.Deadline,
-                        Title = item3.Title,
-                        Description = item3.Description,
+                        Id = item3.item.Id,
+                        Code = item3.item.Code,
+                        PillarId = item3.item.PillarId,
+                        CategoryId = item3.item.CategoryId,
+                        StartPrice = item3.item.StartPrice,
+                        StartTime = item3.item.StartTime,
+                        StepPrice = item3.item.StepPrice,
+                        PriceLimit = item3.item.PriceLimit,
+                        Deadline = item3.item.Deadline,
+                        Title = item3.item.Title,
+                        Description = item3.item.Description,
                         Status = "Completed",
-                        BiddingCount = item3.BiddingCount,
-                        HighestBiddingPrice = item3.HighestBiddingPrice
+                        BiddingCount = item3.item.BiddingCount,
+                        HighestBiddingPrice = item3.item.HighestBiddingPrice,
+                        CreatorUserId = item3.item.CreatorUserId,
+                        Avator=item3.user.AvatarLink,
+                        NikeName = item3.user.NickName
+
                     };
                 }
 
                 return new GetItemOutputDto
                 {
-                    Id = item2.Id,
-                    Code = item2.Code,
-                    PillarId = item2.PillarId,
-                    CategoryId = item2.CategoryId,
-                    StartPrice = item2.StartPrice,
-                    StartTime = item2.StartTime,
-                    StepPrice = item2.StepPrice,
-                    PriceLimit = item2.PriceLimit,
-                    Deadline = item2.Deadline,
-                    Title = item2.Title,
-                    Description = item2.Description,
+                    Id = item2.item.Id,
+                    Code = item2.item.Code,
+                    PillarId = item2.item.PillarId,
+                    CategoryId = item2.item.CategoryId,
+                    StartPrice = item2.item.StartPrice,
+                    StartTime = item2.item.StartTime,
+                    StepPrice = item2.item.StepPrice,
+                    PriceLimit = item2.item.PriceLimit,
+                    Deadline = item2.item.Deadline,
+                    Title = item2.item.Title,
+                    Description = item2.item.Description,
                     Status = "Auctioning",
-                    BiddingCount = item2.BiddingCount,
-                    HighestBiddingPrice = item2.HighestBiddingPrice
+                    BiddingCount = item2.item.BiddingCount,
+                    HighestBiddingPrice = item2.item.HighestBiddingPrice,
+                    CreatorUserId = item2.item.CreatorUserId,
+                    Avator = item2.user.AvatarLink,
+                    NikeName = item2.user.NickName
                 };
             }
-
-            return new GetItemOutputDto
+            try
             {
-                Id = item1.Id,
-                Code = item1.Code,
-                PillarId = item1.PillarId,
-                CategoryId = item1.CategoryId,
-                StartPrice = item1.StartPrice,
-                StartTime = item1.StartTime,
-                StepPrice = item1.StepPrice,
-                PriceLimit = item1.PriceLimit,
-                Deadline = item1.Deadline,
-                Title = item1.Title,
-                Description = item1.Description,
-                Status = "Drafting",
-                BiddingCount = item1.BiddingCount,
-                HighestBiddingPrice = item1.HighestBiddingPrice
-            };
+                return new GetItemOutputDto
+                {
+                    Id = item1.item.Id,
+                    Code = item1.item.Code,
+                    PillarId = item1.item.PillarId,
+                    CategoryId = item1.item.CategoryId,
+                    StartPrice = item1.item.StartPrice,
+                    StartTime = item1.item.StartTime,
+                    StepPrice = item1.item.StepPrice,
+                    PriceLimit = item1.item.PriceLimit,
+                    Deadline = item1.item.Deadline,
+                    Title = item1.item.Title,
+                    Description = item1.item.Description,
+                    Status = "Drafting",
+                    BiddingCount = item1.item.BiddingCount,
+                    HighestBiddingPrice = item1.item.HighestBiddingPrice,
+                    CreatorUserId = item1.item.CreatorUserId,
+                    Avator = item1.user.AvatarLink,
+                    NikeName = item1.user.NickName
+                };
+            }
+            catch (Exception wx)
+            {
+                var message = wx;
+                throw;
+            }
+            
         }
 
         public async Task<UploadPictureOutputDto> UploadPicture()
@@ -689,67 +713,6 @@ namespace Kuaiyipai.Auction.Item
                              biddingCount = itemss.items.item.BiddingCount
                          }).ToListAsync();
             return new PagedResultDto<GetAuctionItemsOutputDto>(count,list);
-<<<<<<< HEAD
-//            var list = await query.PageBy(input).Join(pillarQuery, item => item.PillarId, pillar => pillar.Id, (item, pillar) => new
-//            {
-//                item.Id,
-//                Pillar = pillar.Name,
-//                fengmian = itempicQuery.Where(i => i.ItemId == item.Id).First(),
-//                item.CategoryId,
-//                item.Title,
-//                item.StartPrice,
-//                item.StepPrice,
-//                item.StartTime,
-//                item.Deadline
-//            })
-//                .Join(categoryQuery, item => item.CategoryId, category => category.Id, (item, category) => new GetAuctionItemsOutputDto
-//                {
-//                    Id = item.Id,
-//                    Pillar = item.Pillar,
-//                    Category = category.Name,
-//                    Title = item.Title,
-//                    StartPrice = item.StartPrice,
-//                    StepPrice = item.StepPrice,
-//                    StartTime = item.StartTime,
-//                    Deadline = item.Deadline,
-//                    CoverPic = item.fengmian == null ? "" : item.fengmian.Path,
-//                    CoverPicWidth = item.fengmian == null ? 0 : item.fengmian.Width,
-//                    CoverPicHeight = item.fengmian == null ? 0 : item.fengmian.Height
-//                }).ToListAsync();
-            
-//            return new PagedResultDto<GetAuctionItemsOutputDto>(count, list);
-
-            //var list = await query.PageBy(input).Join(pillarQuery, item => item.PillarId, pillar => pillar.Id, (item, pillar) => new
-            //{
-            //    item.Id,
-            //    Pillar = pillar.Name,
-            //    fengmian = itempicQuery.Where(i => i.ItemId == item.Id).First(),
-            //    item.CategoryId,
-            //    item.Title,
-            //    item.StartPrice,
-            //    item.StepPrice,
-            //    item.StartTime,
-            //    item.Deadline
-            //})
-            //    .Join(categoryQuery, item => item.CategoryId, category => category.Id, (item, category) => new GetAuctionItemsOutputDto
-            //    {
-            //        Id = item.Id,
-            //        Pillar = item.Pillar,
-            //        Category = category.Name,
-            //        Title = item.Title,
-            //        StartPrice = item.StartPrice,
-            //        StepPrice = item.StepPrice,
-            //        StartTime = item.StartTime,
-            //        Deadline = item.Deadline,
-            //        CoverPic = item.fengmian == null ? "" : item.fengmian.Path,
-            //        CoverPicWidth = item.fengmian == null ? 0 : item.fengmian.Width,
-            //        CoverPicHeight = item.fengmian == null ? 0 : item.fengmian.Height
-            //    }).ToListAsync();
-            
-            return new PagedResultDto<GetAuctionItemsOutputDto>(count, list);
-=======
-
->>>>>>> ddc2297e5dc8e7fdbfaf3a072bdfa8eb545142e6
         }
     }
 }
