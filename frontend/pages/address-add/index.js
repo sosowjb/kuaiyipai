@@ -174,6 +174,7 @@ Page({
           "Content-Type": "application/json"
         },
         data: {
+          token: app.globalData.token,
           id: id
         },
         success: function (res) {

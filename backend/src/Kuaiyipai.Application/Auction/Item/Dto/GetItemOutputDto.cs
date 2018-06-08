@@ -30,5 +30,11 @@ namespace Kuaiyipai.Auction.Item.Dto
         public int BiddingCount { get; set; }
 
         public double HighestBiddingPrice { get; set; }
+
+        public long? CreatorUserId { get; set; }
+
+        public string Avator { get; set; }
+
+        public string NikeName { get; set; } 
     }
 }

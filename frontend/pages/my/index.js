@@ -61,7 +61,7 @@ Page({
   getUserOrder:function(){
     var that = this;
     wx.request({
-      url: app.globalData.apiLink + '/api/services/app/Order/GetEachTypeOrderCount',                       method: "POST",
+      url: app.globalData.apiLink + '/api/services/app/Order/GetEachTypeOrderCount',               method: "POST",
       header: {
         "Authorization": wx.getStorageSync("accessToken"),
         "Content-Type": "application/json"

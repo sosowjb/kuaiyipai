@@ -24,13 +24,14 @@ Page({
       success: function (res) {
         if (res.confirm) {
           wx.request({
-            url: app.globalData.apiLink + '/api/services/app/Address/DeleteAddress',
+            url: app.globalData.apiLink + '/api/services/app/Address/DeleteAddress', 
             method: "POST",
             header: {
               "Authorization": wx.getStorageSync("accessToken"),
               "Content-Type": "application/json"
             },
             data: {
+              token: app.globalData.token,
               id: id
             },
             success: (res) => {

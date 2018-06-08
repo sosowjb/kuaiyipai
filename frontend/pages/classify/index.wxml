@@ -1,5 +1,5 @@
 <view class='page'>
-    <view class="weui-search-bar">
+    <view bindtap='search' class="weui-search-bar">
         <view class="weui-search-bar__form">
             <view class="weui-search-bar__box">
                 <icon class="weui-icon-search_in-box" type="search" size="14"></icon>
@@ -27,10 +27,10 @@
           {{item.name}}
       <!--<view class="all">查看全部<i class="iconfont icon-fm-arrowright"></i></view>--> 
       </view>
-      <view wx:for="{{item.categories}}" wx:key="id"  wx:for-item="categories" class='categoryItem'>
+      <view wx:for="{{item.categories}}" wx:key="id"  wx:for-item="categories" class='categoryItem' bindtap="search2" data-text="{{categories.id}}">
         <view class="categoryIcon"></view>
         <view class="cursorArea">
-        <image src='{{imageLink}}/application/classify/1_1001.jpg'></image>
+        <image src='{{imageLink}}/application/classify/1_{{categories.id}}.jpg'></image>
         </view>
         <view class="text">{{categories.name}}</view>
       </view>

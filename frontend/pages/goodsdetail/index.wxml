@@ -3,8 +3,8 @@
    <view class='page_goodsetail'>
    <view class='contentbox'>
        <view class='head'><!--商品详情页头部-->
-            <view class='name'>{{vendor.nickname}}</view>
-            <view class='avator'><image class="widget_arrow" src="{{vendor.hpic}}" mode="aspectFill"></image></view>
+            <view class='name'>{{goodsInfo.nikename}}</view>
+            <view class='avator'><image class="widget_arrow" src="{{goodsInfo.avator}}" mode="aspectFill"></image></view>
             <view class='tip'></view>
        </view>
        <view><!--商品详情页内容-->
@@ -111,7 +111,7 @@
                     <view wx:if='{{djs.clock=="已经结束" || goodsInfo.status==2}}' class='endTime'>距离结束：已经结束
                     </view>
            </view>
-             <view wx:if='{{!(djs.clock=="已经结束" || goodsInfo.status==2)}}' class='bidBtns'><button bindtap='bid'>出价</button></view>
+             <view wx:if='{{!(djs.clock=="已经结束" || goodsInfo.status==2)}}' class='bidBtns'><button wx:if="{{canIUse}}" open-type="getUserInfo" bindgetuserinfo="bindGetUserInfo">出价</button><button wx:if="{{!canIUse}}" bindtap='bid'>出价</button></view>
              <view wx:if='{{djs.clock=="已经结束" || goodsInfo.status==2}}' class='bidBtns isgray'><button>结束</button></view>
             <view class='moneyInfo'>
                       <view><i class='iconfont .icon-fm-saleqi'></i>￥{{goodsInfo.bPrice}}元</view>
