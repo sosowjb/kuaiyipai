@@ -112,7 +112,7 @@
 </view>
 <view style="height:20rpx;background: #eee;width:100%;"></view>
 <view class="option-list">
-  <navigator class="option-item" url='/pages/notice/show'>
+  <navigator class="option-item" url='/pages/seller/index'>
       <view class="flex-row option-content">
           <view class="flex-grow-1 flex-row">
               <view class="flex-grow-0 flex-y-center">
