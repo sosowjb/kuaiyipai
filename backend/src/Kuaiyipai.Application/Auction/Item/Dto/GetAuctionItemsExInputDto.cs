@@ -20,5 +20,7 @@ namespace Kuaiyipai.Auction.Item.Dto
         public double? PriceStart { get; set; }
 
         public double? PriceEnd { get; set; }
+
+        public string Title { get; set; }
     }
 }

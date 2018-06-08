@@ -197,6 +197,8 @@ Page({
         success: function (res) {
           if (res.data.success)
           {
+            if (res.data.result.items.length>0)
+            {
             let images = res.data.result.items;
             cpage = cpage+1
             let baseId = "img-" + (+new Date());
@@ -205,6 +207,7 @@ Page({
               images: images,
               currentpage: cpage
             });
+            }
           }
         },
         fail: function (res) { },

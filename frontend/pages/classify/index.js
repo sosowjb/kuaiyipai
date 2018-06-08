@@ -124,5 +124,10 @@ Page({
     wx.navigateTo({
       url: '/pages/search/index',
     })
+  },
+  search2:function(e){
+    wx.navigateTo({
+      url: '/pages/search/index?CategoryId=' + e.currentTarget.dataset.text,
+    })
   }
 })

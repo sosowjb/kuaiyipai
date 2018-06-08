@@ -602,7 +602,8 @@ namespace Kuaiyipai.Auction.Item
                     (!input.DeadlineStart.HasValue || i.Deadline >= input.DeadlineStart) &&
                     (!input.DeadlineEnd.HasValue || i.Deadline <= input.DeadlineEnd) &&
                     (!input.PriceStart.HasValue || i.StartPrice >= input.PriceStart) &&
-                    (!input.PriceEnd.HasValue || i.StartPrice <= input.PriceEnd));
+                    (!input.PriceEnd.HasValue || i.StartPrice <= input.PriceEnd)&&
+                    (string.IsNullOrEmpty(input.Title) || i.Title.Contains(input.Title)));
             var pillarQuery = _pillarRepository.GetAll();
             var categoryQuery = _categoryRepository.GetAll();
             var itempicQuery = _itemPicRepository.GetAll().Where(o => o.IsCover);
@@ -727,7 +728,6 @@ namespace Kuaiyipai.Auction.Item
             var query = _itemAuctioningRepository.GetAll();
             var pillarQuery = _pillarRepository.GetAll();
             var categoryQuery = _categoryRepository.GetAll();
-            var itempicQuery = _itemPicRepository.GetAll().Where(o=>o.IsCover);
             var itempicQuery = _itemPicRepository.GetAll().Where(o => o.IsCover);
             if (!input.Sorting.IsNullOrEmpty())
             {
@@ -738,7 +738,6 @@ namespace Kuaiyipai.Auction.Item
             var list = await query.PageBy(input)
                          .Join(pillarQuery, item => item.PillarId, pillar => pillar.Id, (item, pillar) => new { item, pillar })
                          .Join(categoryQuery, items => items.item.CategoryId, category => category.Id, (items, category) => new { items, category })
-                         .Join(itempicQuery, itemss => itemss.items.item.Id, itempic => itempic.ItemId,(itemss, itempic) => new GetAuctionItemsOutputDto
                          .Join(itempicQuery, itemss => itemss.items.item.Id, itempic => itempic.ItemId, (itemss, itempic) => new GetAuctionItemsOutputDto
                          {
 
@@ -750,9 +749,6 @@ namespace Kuaiyipai.Auction.Item
                              StepPrice = itemss.items.item.StepPrice,
                              StartTime = itemss.items.item.StartTime,
                              Deadline = itemss.items.item.Deadline,
-                             CoverPic= new Uri(new Uri(_appConfiguration["App:ImageUrlPrefix"]), Path.Combine(itempic.Path, itempic.FileName + itempic.Extension)).ToString(),
-                             CoverPicHeight=itempic.Height,
-                             CoverPicWidth=itempic.Width,
                              CoverPic = new Uri(new Uri(_appConfiguration["App:ImageUrlPrefix"]), Path.Combine(itempic.Path, itempic.FileName + itempic.Extension)).ToString(),
                              CoverPicHeight = itempic.Height,
                              CoverPicWidth = itempic.Width,

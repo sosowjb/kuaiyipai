@@ -1,0 +1,6 @@
+<!--pages/login/index.wxml-->
+<view class='page'>
+<open-data type="userAvatarUrl"></open-data>
+<open-data type="userNickName"></open-data>
+<button wx:if="{{canIUse}}" class="weui-btn" type="primary" bindgetuserinfo="bindGetUserInfo"  open-type="getUserInfo">授权登录</button>
+</view>
