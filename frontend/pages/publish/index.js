@@ -1,6 +1,7 @@
 // pages/publish/index.js
+import WxValidate from '../../content/utils/wxValidate'
 const app = getApp();
-var utils=require("../../content/utils/util.js");
+var utils = require("../../content/utils/util.js");
 Page({
 
   /**
@@ -39,7 +40,12 @@ Page({
       }
     });
   },
-
+  showModal(msg) {
+    wx.showModal({
+      content: msg,
+      showCancel: false,
+    })
+  },
   /**
    * 生命周期函数--监听页面初次渲染完成
    */
@@ -180,6 +186,43 @@ Page({
   /*  console.log(this.data.pictureList);
    console.log(this.data.getPillars[this.data.pillarsIndex]);
    console.log(this.data.getPillars[this.data.pillarsIndex].categories[this.data.categoriesIndex]);*/
+    if (!e.detail.value.title)
+    {
+      this.showModal("请输入标题");
+      return false
+    }
+    if (!e.detail.value.startPrice) {
+      this.showModal("请输入起拍价");
+      return false
+    }
+    if (isNaN(e.detail.value.startPrice)){
+      this.showModal("起拍价必须是数字");
+      return false
+    }
+    if (!e.detail.value.stepPrice) {
+      this.showModal("请输入加价幅度");
+      return false
+    }
+    if (isNaN(e.detail.value.stepPrice)) {
+      this.showModal("加价幅度必须是数字");
+      return false
+    }
+    var nowdate = new Date();
+    var d1 = new Date((this.data.date + " " + this.data.time).replace(/\-/g, "\/"));
+    if (nowdate >= d1) {
+      this.showModal("结束日期不能等于小于当前日期");
+      return false
+    }
+    if (!e.detail.value.description) {
+      this.showModal("请输入描述");
+      return false
+    }
+    if (this.data.pictureList.length<=0) {
+      this.showModal("请至少上传一张图片");
+      return false
+    }
+
+
     wx.request({
       url: app.globalData.apiLink + '/api/services/app/Item/CreateItem',
       data: { 
@@ -207,7 +250,6 @@ Page({
    that.setData({
       "formdata.description": e.detail.value
     });
-    
   },
   getCategory: function (Pillars) {
     var that = this;
@@ -267,5 +309,10 @@ Page({
     this.setData({
       categoriesIndex: e.detail.value
     })  
-  }
+  },
+  regValidator: function (source, regFormat) {
+    var result = source.match(regFormat);
+    if (result == null) return false;
+    else return true;
+  },
 })
