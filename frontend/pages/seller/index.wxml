@@ -17,43 +17,43 @@
   </view>
 <view style="height:20rpx;background: #eee;width:100%;"></view>  
 <view class="order-block">
-  <navigator class="my-order" url="/pages/order/order?status=-1">我的订单</navigator>
+  <navigator class="my-order" url="/pages/orderlist/index?status=-1">我的订单</navigator>
   <view class="flex-row">
       <view class="flex-grow-1">
-          <navigator class="nav-item" url="/pages/order/order?status=0">
+          <navigator class="nav-item" url="/pages/orderlist/index?status=0">
               <view>
                    <i class="iconfont icon-fm-notpaid" style="font-size:20px;" />
               </view>
               <view>待付款</view>
-              <view class="num-icon" wx:if="{{count_data.status_0 && count_data.status_0 > 0}}">
-                  {{count_data.status_0}}
+              <view class="num-icon" wx:if="{{waitPay > 0}}">
+                  {{waitPay}}
               </view>
           </navigator>
       </view>
       <view class="flex-grow-1">
-          <navigator class="nav-item" url="/pages/order/order?status=1">
+          <navigator class="nav-item" url="/pages/orderlist/index?status=1">
               <view>
                    <i class="iconfont icon-fm-waitdelivery" style="font-size:20px;" />
               </view>
               <view>待发货</view>
-              <view class="num-icon" wx:if="{{count_data.status_1 && count_data.status_1 > 0}}">
-                  {{count_data.status_1}}
+              <view class="num-icon" wx:if="{{waitSend > 0}}">
+                    {{waitSend}}
               </view>
           </navigator>
       </view>
       <view class="flex-grow-1">
-          <navigator class="nav-item" url="/pages/order/order?status=2">
+          <navigator class="nav-item" url="/pages/orderlist/index?status=2">
               <view>
                    <i class="iconfont icon-fm-notreceipt" style="font-size:20px;" />
               </view>
               <view>待收货</view>
-              <view class="num-icon" wx:if="{{count_data.status_2 && count_data.status_2 > 0}}">
-                  {{count_data.status_2}}
-              </view>
+                <view class="num-icon" wx:if="{{waitReceive > 0}}">
+                    {{waitReceive}}
+                </view>
           </navigator>
       </view>
       <view class="flex-grow-1">
-          <navigator class="nav-item" url="/pages/order/order?status=3">
+          <navigator class="nav-item" url="/pages/orderlist/index?status=3">
               <view>
                    <i class="iconfont icon-fm-seeorder" style="font-size:20px;" />  
               </view>
@@ -112,7 +112,7 @@
           </view>
       </view>
   </navigator>
-    <navigator class="option-item" url='/pages/select-address/index'>
+  <!--<navigator class="option-item" url='/pages/select-address/index'>
       <view class="flex-row option-content">
           <view class="flex-grow-1 flex-row">
               <view class="flex-grow-0 flex-y-center">
@@ -127,6 +127,7 @@
           </view>
       </view>
   </navigator>
+  -->
 </view>
 <view class="my-item" style="border:none;padding:0rpx;margin:0rpx;background:none;border:none;height:auto;line-height:auto;">
   <button type="warn" bindtap="relogin">重新登录</button>

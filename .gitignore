@@ -1,6 +1,9 @@
 
 backend/src/Kuaiyipai.Web.Host/appsettings.json
 backend/src/Kuaiyipai.Web.Host/appsettings.json
+<<<<<<< HEAD
+backend/src/Kuaiyipai.Web.Host/appsettings.json
+=======
 backend/src/Kuaiyipai.EntityFrameworkCore/Migrations/20180503130903_20180503.cs
 backend/src/Kuaiyipai.EntityFrameworkCore/Migrations/20180503130903_20180503.cs
 backend/src/Kuaiyipai.EntityFrameworkCore/Migrations/20180503130903_20180503.Designer.cs
@@ -12,3 +15,4 @@ backend/src/Kuaiyipai.EntityFrameworkCore/Migrations/20180513162617_Initial.Desi
 backend/src/Kuaiyipai.EntityFrameworkCore/Migrations/20180513162617_Initial.cs
 backend/src/Kuaiyipai.EntityFrameworkCore/Migrations/20180511101639_Initialize.Designer.cs
 frontend/app.json
+>>>>>>> 80e61fec0bc2e277322e655b8e20e25590a0a995
