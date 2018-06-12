@@ -51,7 +51,20 @@ namespace Kuaiyipai.Auction.Balance
 
         public async Task<GetMyBalanceOutputDto> GetMyBalance()
         {
+            if (!AbpSession.UserId.HasValue)
+            {
+                throw new UserFriendlyException("没有登录");
+            }
             var balance = await _balanceRepository.FirstOrDefaultAsync(b => b.UserId == AbpSession.UserId);
+            if (balance == null)
+            {
+                return new GetMyBalanceOutputDto
+                {
+                    Total = 0,
+                    Frozen = 0,
+                    Available = 0
+                };
+            }
             return new GetMyBalanceOutputDto
             {
                 Total = balance.TotalBalance,
