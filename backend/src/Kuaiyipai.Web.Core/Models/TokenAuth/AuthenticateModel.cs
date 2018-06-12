@@ -25,13 +25,10 @@ namespace Kuaiyipai.Web.Models.TokenAuth
 
         //public string ReturnUrl { get; set; }
         
-        [Required]
         public string Name { get; set; }
         
-        [Required]
         public string Code { get; set; }
-
-        [Required]
+        
         public string AvatarLink { get; set; }
     }
 }
