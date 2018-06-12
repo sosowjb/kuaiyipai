@@ -114,85 +114,118 @@ namespace Kuaiyipai.Auction.Balance
                 throw new UserFriendlyException("获取OpenID失败，可能是Code已过期");
             }
 
-            // 修改账户余额
-            Guid recordId;
+            // 创建充值订单记录(余额变化记录)
+            UserBalanceRecord balanceRecord;
             if (AbpSession.UserId.HasValue)
             {
-                var balance = await _balanceRepository.FirstOrDefaultAsync(b => b.UserId == AbpSession.UserId);
-                if (balance == null)
+                balanceRecord = new UserBalanceRecord
                 {
-                    await _balanceRepository.InsertAsync(new UserBalance
-                    {
-                        TotalBalance = input.Amount,
-                        FrozenBalance = 0,
-                        UserId = AbpSession.UserId.Value
-                    });
-                }
-                else
-                {
-                    balance.TotalBalance += input.Amount;
-                    await _balanceRepository.UpdateAsync(balance);
-                }
-
-                recordId = await _balanceRecordRepository.InsertAndGetIdAsync(new UserBalanceRecord
-                {
+                    Id = Guid.NewGuid(),
                     Amount = input.Amount,
                     RecordTime = DateTime.Now,
                     Remarks = "充值",
                     UserId = AbpSession.UserId.Value
-                });
+                };
             }
             else
             {
                 throw new UserFriendlyException("用户未登录");
             }
 
-            // 调用统一下单接口
-            var paramsDict = new Dictionary<string, string>
+            try
             {
-                {"appid", appId},
-                {"mch_id", merchantId},
-                {"nonce_str", GetRandomString(32, true, false, true, false, "")},
-                {"body", "快微拍-余额充值"},
-                {"out_trade_no", recordId.ToString().Replace("-", "").ToUpper()},
-                {"total_fee", input.Amount.ToString(CultureInfo.InvariantCulture)},
-                {"spbill_create_ip", "192.168.0.1"},
-                {"notify_url", notifyUrl},
-                {"trade_type", "JSAPI"},
-                {"openid", openId}
-            };
-            paramsDict.Add("sign", GetSign(paramsDict, paymentApiKey));
-            var sb = new StringBuilder();
-            sb.Append("<xml>");
-            foreach (var d in paramsDict)
-            {
-                sb.Append("<" + d.Key + ">" + d.Value + "</" + d.Key + ">");
-            }
-            sb.Append("</xml>");
+                // 调用统一下单接口
+                var paramsDict = new Dictionary<string, string>
+                {
+                    {"appid", appId},
+                    {"mch_id", merchantId},
+                    {"nonce_str", GetRandomString(32, true, false, true, false, "")},
+                    {"body", "快微拍-余额充值"},
+                    {"out_trade_no", balanceRecord.Id.ToString().Replace("-", "").ToUpper()},
+                    {"total_fee", input.Amount.ToString(CultureInfo.InvariantCulture)},
+                    {"spbill_create_ip", remoteIp},
+                    {"notify_url", notifyUrl},
+                    {"trade_type", "JSAPI"},
+                    {"openid", openId}
+                };
+                paramsDict.Add("sign", GetSign(paramsDict, paymentApiKey));
+                var sb = new StringBuilder();
+                sb.Append("<xml>");
+                foreach (var d in paramsDict)
+                {
+                    sb.Append("<" + d.Key + ">" + d.Value + "</" + d.Key + ">");
+                }
+                sb.Append("</xml>");
 
-            var result = await HttpHelper.Post(OrderApi, sb.ToString());
+                var result = await HttpHelper.Post(OrderApi, sb.ToString());
+
+                DataSet ds = new DataSet();
+                StringReader stram = new StringReader(result);
+                XmlTextReader reader = new XmlTextReader(stram);
+                ds.ReadXml(reader);
+                string returnCode = ds.Tables[0].Rows[0]["return_code"].ToString();
+                string prepayId = "";
+                if (returnCode.ToUpper() == "SUCCESS")
+                {
+                    string resultCode = ds.Tables[0].Rows[0]["result_code"].ToString();
+                    if (resultCode.ToUpper() == "SUCCESS")
+                    {
+                        prepayId = ds.Tables[0].Rows[0]["prepay_id"].ToString();
+                    }
+                }
+
+                // 保存充值订单记录(余额变化记录)
+                await _balanceRecordRepository.InsertAndGetIdAsync(balanceRecord);
+
+                return prepayId;
+            }
+            catch
+            {
+                throw new UserFriendlyException("充值失败");
+            }
+        }
+
+        public async Task<string> CompleteCharge()
+        {
+            // for test
+            var result =
+                "<xml><appid><![CDATA[wx2421b1c4370ec43b]]></appid><attach><![CDATA[支付测试]]></attach><bank_type><![CDATA[CFT]]></bank_type><fee_type><![CDATA[CNY]]></fee_type><is_subscribe><![CDATA[Y]]></is_subscribe><mch_id><![CDATA[10000100]]></mch_id><nonce_str><![CDATA[5d2b6c2a8db53831f7eda20af46e531c]]></nonce_str><openid><![CDATA[oUpF8uMEb4qRXf22hE3X68TekukE]]></openid><out_trade_no><![CDATA[1409811653]]></out_trade_no><result_code><![CDATA[SUCCESS]]></result_code><return_code><![CDATA[SUCCESS]]></return_code><sign><![CDATA[B552ED6B279343CB493C5DD0D78AB241]]></sign><sub_mch_id><![CDATA[10000100]]></sub_mch_id><time_end><![CDATA[20140903131540]]></time_end><total_fee>1</total_fee><coupon_fee><![CDATA[10]]></coupon_fee><coupon_count><![CDATA[1]]></coupon_count><coupon_type><![CDATA[CASH]]></coupon_type><coupon_id><![CDATA[10000]]></coupon_id><coupon_fee><![CDATA[100]]></coupon_fee><trade_type><![CDATA[JSAPI]]></trade_type><transaction_id><![CDATA[1004400740201409030005092168]]></transaction_id></xml>";
 
             DataSet ds = new DataSet();
             StringReader stram = new StringReader(result);
             XmlTextReader reader = new XmlTextReader(stram);
             ds.ReadXml(reader);
-            string returnCode = ds.Tables[0].Rows[0]["return_code"].ToString();
-            string prepayId = "";
-            if (returnCode.ToUpper() == "SUCCESS")
+
+            var amount = ds.Tables[0].Rows[0]["total_fee"].ToString();
+            var recordId = ds.Tables[0].Rows[0]["out_trade_no"].ToString();
+            var timeEnd = ds.Tables[0].Rows[0]["time_end"].ToString();
+            var resultCode = ds.Tables[0].Rows[0]["result_code"].ToString();
+
+            var record = await _balanceRecordRepository.GetAsync(Guid.Parse(recordId));
+            record.WechatPayId = ds.Tables[0].Rows[0]["transaction_id"].ToString();
+            record.PaymentCompleteTime = new DateTime(Int32.Parse(timeEnd.Substring(0, 4)), Int32.Parse(timeEnd.Substring(4, 2)), Int32.Parse(timeEnd.Substring(6, 2)),
+                Int32.Parse(timeEnd.Substring(8, 2)), Int32.Parse(timeEnd.Substring(10, 2)), Int32.Parse(timeEnd.Substring(12, 2)));
+            record.IsPaidSuccessfully = resultCode == "SUCCESS";
+            await _balanceRecordRepository.UpdateAsync(record);
+
+
+            var balance = await _balanceRepository.FirstOrDefaultAsync(b => b.UserId == AbpSession.UserId);
+            if (balance == null)
             {
-                string resultCode = ds.Tables[0].Rows[0]["result_code"].ToString();
-                if (resultCode.ToUpper() == "SUCCESS")
+                await _balanceRepository.InsertAsync(new UserBalance
                 {
-                    prepayId = ds.Tables[0].Rows[0]["prepay_id"].ToString();
-                }
+                    TotalBalance = double.Parse(amount),
+                    FrozenBalance = 0,
+                    UserId = record.UserId
+                });
+            }
+            else
+            {
+                balance.TotalBalance += double.Parse(amount);
+                await _balanceRepository.UpdateAsync(balance);
             }
 
-            return prepayId;
-        }
-
-        public Task CompleteCharge()
-        {
-            return Task.CompletedTask;
+            return "<xml><return_code><![CDATA[SUCCESS]]></return_code><return_msg><![CDATA[OK]]></return_msg></xml>";
         }
 
         [UnitOfWork]
