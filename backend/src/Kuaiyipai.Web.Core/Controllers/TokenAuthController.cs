@@ -93,7 +93,9 @@ namespace Kuaiyipai.Web.Controllers
                     AccessToken = accessToken,
                     EncryptedAccessToken = GetEncrpyedAccessToken(accessToken),
                     ExpireInSeconds = (int)_configuration.Expiration.TotalSeconds,
-                    UserId = loginResult.User.Id
+                    UserId = loginResult.User.Id,
+                    NickName = loginResult.User.NickName,
+                    AvatarLink = loginResult.User.AvatarLink
                 };
             }
 
@@ -115,7 +117,9 @@ namespace Kuaiyipai.Web.Controllers
                     AccessToken = accessToken,
                     EncryptedAccessToken = GetEncrpyedAccessToken(accessToken),
                     ExpireInSeconds = (int)_configuration.Expiration.TotalSeconds,
-                    UserId = loginResult.User.Id
+                    UserId = loginResult.User.Id,
+                    NickName = loginResult.User.NickName,
+                    AvatarLink = loginResult.User.AvatarLink
                 };
             }
 

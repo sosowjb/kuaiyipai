@@ -23,5 +23,9 @@ namespace Kuaiyipai.Web.Models.TokenAuth
         public string TwoFactorRememberClientToken { get; set; }
 
         public string ReturnUrl { get; set; }
+
+        public string NickName { get; set; }
+
+        public string AvatarLink { get; set; }
     }
 }
