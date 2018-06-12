@@ -84,7 +84,15 @@ namespace Kuaiyipai.Web.Controllers
             var loginResult = await _logInManager.LoginAsync(openId, openId, GetTenancyNameOrNull());
             if (loginResult.Result == AbpLoginResultType.Success)
             {
-                await UpdateUser(loginResult.User, model.Name, model.AvatarLink);
+                if (!model.NickName.IsNullOrEmpty() && model.AvatarLink.IsNullOrEmpty() || model.NickName.IsNullOrEmpty() && !model.AvatarLink.IsNullOrEmpty())
+                {
+                    throw new UserFriendlyException("昵称和头像必需都为空，或都不为空");
+                }
+
+                if (!model.NickName.IsNullOrEmpty() && !model.AvatarLink.IsNullOrEmpty())
+                {
+                    await UpdateUser(loginResult.User, model.NickName, model.AvatarLink);
+                }
 
                 //get access code
                 var accessToken = CreateAccessToken(CreateJwtClaims(loginResult.Identity));
@@ -100,12 +108,12 @@ namespace Kuaiyipai.Web.Controllers
             }
 
             // login failed then register
-            await CreateUser(model.Name, openId, model.AvatarLink);
-            return await ReAuthenticate(model.Name, openId, model.AvatarLink);
+            await CreateUser(model.NickName, openId, model.AvatarLink);
+            return await ReAuthenticate(model.NickName, openId, model.AvatarLink);
         }
 
         [UnitOfWork(IsDisabled = true)]
-        private async Task<AuthenticateResultModel> ReAuthenticate(string name, string openId, string avatarLink)
+        private async Task<AuthenticateResultModel> ReAuthenticate(string nickName, string openId, string avatarLink)
         {
             var loginResult = await _logInManager.LoginAsync(openId, openId, GetTenancyNameOrNull());
             if (loginResult.Result == AbpLoginResultType.Success)
@@ -124,11 +132,11 @@ namespace Kuaiyipai.Web.Controllers
             }
 
             // login failed then register
-            await CreateUser(name, openId, avatarLink);
-            return await ReAuthenticate(name, openId, avatarLink);
+            await CreateUser(nickName, openId, avatarLink);
+            return await ReAuthenticate(nickName, openId, avatarLink);
         }
 
-        private async Task CreateUser(string name, string openId, string avatarLink)
+        private async Task CreateUser(string nickName, string openId, string avatarLink)
         {
             var user = new User
             {
@@ -140,7 +148,7 @@ namespace Kuaiyipai.Web.Controllers
                 UserName = openId,
                 IsEmailConfirmed = true,
                 Roles = new List<UserRole>(),
-                NickName = name,
+                NickName = nickName,
                 AvatarLink = avatarLink
             };
             user.SetNormalizedNames();
@@ -148,10 +156,9 @@ namespace Kuaiyipai.Web.Controllers
             await _userRepository.InsertAsync(user);
         }
 
-        private async Task UpdateUser(User user, string name, string avatarLink)
+        private async Task UpdateUser(User user, string nickName, string avatarLink)
         {
-            user.Name = name;
-            user.Surname = name;
+            user.NickName = nickName;
             user.AvatarLink = avatarLink;
             await _userRepository.UpdateAsync(user);
         }

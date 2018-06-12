@@ -25,7 +25,7 @@ namespace Kuaiyipai.Web.Models.TokenAuth
 
         //public string ReturnUrl { get; set; }
         
-        public string Name { get; set; }
+        public string NickName { get; set; }
         
         public string Code { get; set; }
         
