@@ -39,6 +39,11 @@ namespace Kuaiyipai.Auction
                 var bidding = await _biddingRepository.GetAll().Where(b => b.ItemId == itemAuctioning.Id)
                     .OrderByDescending(b => b.CreationTime).FirstOrDefaultAsync();
 
+                if (bidding == null)
+                {
+                    continue;
+                }
+
                 // get buyer and seller
                 User buyer = null, seller = null;
                 if (bidding.CreatorUserId != null)
