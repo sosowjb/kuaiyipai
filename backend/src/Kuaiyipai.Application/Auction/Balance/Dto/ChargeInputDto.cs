@@ -4,6 +4,6 @@
     {
         public double Amount { get; set; }
 
-        public string LoginCode { get; set; }
+        //public string LoginCode { get; set; }
     }
 }

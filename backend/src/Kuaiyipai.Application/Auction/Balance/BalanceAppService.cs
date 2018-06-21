@@ -24,14 +24,12 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 
 namespace Kuaiyipai.Auction.Balance
 {
     public class BalanceAppService : KuaiyipaiAppServiceBase, IBalanceAppService
     {
-        private const string LoginApi = "https://api.weixin.qq.com/sns/jscode2session?appid=APPID&secret=SECRET&js_code=JSCODE&grant_type=authorization_code";
+        //private const string LoginApi = "https://api.weixin.qq.com/sns/jscode2session?appid=APPID&secret=SECRET&js_code=JSCODE&grant_type=authorization_code";
         private const string OrderApi = "https://api.mch.weixin.qq.com/pay/unifiedorder";
 
         private readonly IRepository<UserBalance, long> _balanceRepository;
@@ -104,14 +102,14 @@ namespace Kuaiyipai.Auction.Balance
         public async Task<string> Charge(ChargeInputDto input)
         {
             var appId = _appConfiguration["WeChat:AppId"];
-            var appSecret = _appConfiguration["WeChat:AppSecret"];
+            //var appSecret = _appConfiguration["WeChat:AppSecret"];
             var merchantId = _appConfiguration["WeChat:PayMerchantId"];
             var paymentApiKey = _appConfiguration["WeChat:PaymentApiKey"];
             var remoteIp = _httpContextAccessor.HttpContext.Connection.RemoteIpAddress.ToString();
             var notifyUrl = new Uri(new Uri(_appConfiguration["App:ServerRootAddress"]), "/api/services/app/Balance/CompleteCharge").ToString();
 
             // 获取OpenID
-            var api = LoginApi
+            /*var api = LoginApi
                 .Replace("APPID", appId)
                 .Replace("SECRET", appSecret)
                 .Replace("JSCODE", input.LoginCode);
@@ -125,25 +123,29 @@ namespace Kuaiyipai.Auction.Balance
             catch
             {
                 throw new UserFriendlyException("获取OpenID失败，可能是Code已过期");
-            }
-
-            // 创建充值订单记录(余额变化记录)
-            UserBalanceRecord balanceRecord;
-            if (AbpSession.UserId.HasValue)
-            {
-                balanceRecord = new UserBalanceRecord
-                {
-                    Id = Guid.NewGuid(),
-                    Amount = input.Amount,
-                    RecordTime = DateTime.Now,
-                    Remarks = "充值",
-                    UserId = AbpSession.UserId.Value
-                };
-            }
-            else
+            }*/
+            if (!AbpSession.UserId.HasValue)
             {
                 throw new UserFriendlyException("用户未登录");
             }
+
+            var user = await _userRepository.GetAsync(AbpSession.UserId.Value);
+            if (user == null)
+            {
+                throw new UserFriendlyException("未找到用户");
+            }
+
+            var openId = user.UserName;
+
+            // 创建充值订单记录(余额变化记录)
+            var balanceRecord = new UserBalanceRecord
+            {
+                Id = Guid.NewGuid(),
+                Amount = input.Amount,
+                RecordTime = DateTime.Now,
+                Remarks = "充值",
+                UserId = AbpSession.UserId.Value
+            };
 
             try
             {
