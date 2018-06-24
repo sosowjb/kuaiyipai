@@ -78,11 +78,11 @@ Page({
       url: url,
       method:"POST",
       header: {
-        "Authorization": wx.getStorageSync("accessToken"),
+        "Abp.TenantId": "1",
+        "Authorization": "Bearer " + wx.getStorageSync("accessToken"),
         "Content-Type": "application/json"
       },
       data: {
-        token: wx.getStorageSync("accessToken"),
         id: that.data.id,
         provinceId: commonCityData.cityData[this.data.selProvinceIndex].id,
         cityId: cityId,
@@ -170,11 +170,11 @@ Page({
         url: app.globalData.apiLink + '/api/services/app/Address/GetAddress',
         method: "POST",
         header: {
-          "Authorization": wx.getStorageSync("accessToken"),
+          "Abp.TenantId": "1",
+          "Authorization": "Bearer " + wx.getStorageSync("accessToken"),
           "Content-Type": "application/json"
         },
         data: {
-          token: app.globalData.token,
           id: id
         },
         success: function (res) {

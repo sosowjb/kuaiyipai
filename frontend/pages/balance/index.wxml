@@ -18,7 +18,7 @@
   <view class="flex-row">
       <view class="flex-grow-1">
           <navigator class="nav-item" url="/pages/order/order?status=0">
-              <view>待付款</view>
+              <view class='fs15p'>待付款</view>
               <view class='money'>
                   {{obligation}}
               </view>
@@ -26,7 +26,7 @@
       </view>
       <view class="flex-grow-1">
           <navigator class="nav-item" url="/pages/order/order?status=1">
-              <view>待发货</view>
+              <view class='fs15p'>待发货</view>
               <view class='money'>
                   {{waitsend}}
               </view>
@@ -34,7 +34,7 @@
       </view>
       <view class="flex-grow-1">
           <navigator class="nav-item" url="/pages/order/order?status=2">
-              <view>待收货</view>
+              <view class='fs15p'>待收货</view>
               <view class='money'>
                   {{waitget}}
               </view>
@@ -48,7 +48,7 @@
         <view class="flex-row option-content">
             <view class="flex-grow-1 flex-row">
                 <view class="flex-grow-0 flex-y-center">
-                    <i class="option-icon iconfont icon-fm-recharge fi-499bf7" />
+                    <i class="icoFontSize15 option-icon iconfont icon-fm-recharge fi-499bf7" />
                 </view>
                 <view class="flex-grow-1 flex-y-center">
                     充值
@@ -63,7 +63,7 @@
         <view class="flex-row option-content">
             <view class="flex-grow-1 flex-row">
                 <view class="flex-grow-0 flex-y-center">
-                    <i class="option-icon iconfont icon-fm-withdraw fi-499bf7" />
+                    <i class="icoFontSize15 option-icon iconfont icon-fm-withdraw fi-499bf7" />
                 </view>
                 <view class="flex-grow-1 flex-y-center">
                     提现

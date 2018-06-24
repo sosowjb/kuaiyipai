@@ -71,6 +71,7 @@ Page({
     var that = this;
     // 获取订单列表
     wx.showLoading();
+    console.log(that.data);
     var status = that.data.status;
 
     var url = app.globalData.apiLink + '/api/services/app/Order/GetCompletedOrders';
@@ -83,25 +84,19 @@ Page({
       url = app.globalData.apiLink + '/api/services/app/Order/GetWaitingForReceivingOrdersAsBuyer';
     }
     wx.request({
-      url: url,
-      method: "POST",
+      url: url + "?skipCount=" + (that.data.currentPage * that.data.pageSize) + "&maxResultCount=" + that.data.pageSize,
+      method: "get",
       header: {
-        "Authorization": wx.getStorageSync("accessToken"),
-        "Content-Type": "application/json"
-      },
-      data: {
-        skipCount: that.data.currentPage * that.data.pageSize,
-        maxResultCount: that.data.pageSize
+       'Abp.TenantId': '1',
+       'Content-Type': 'application/json',
+       'Authorization': "Bearer " + wx.getStorageSync("accessToken")
       },
       success: (res) => {
+        console.log(res);
         wx.hideLoading();
-        if (res.data.code == 0) {
+        if (res.data.success) {
           that.setData({
-            orderList: res.data.data.items
-          });
-        } else {
-          this.setData({
-            orderList: null
+            orderList: res.data.result.items
           });
         }
       }

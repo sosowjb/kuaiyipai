@@ -76,18 +76,24 @@
     padding: 24rpx 0;
     position: relative;
 }
+.icoFontSize15{
+  font-size: 25px !important;
+}
+.fs15p{
+  font-size:15px;
+}
 .order-block .nav-item .num-icon{
     position: absolute;
-    top: 8rpx;
-    left: 50%;
+    top: 23rpx;
+    left: 45%;
     margin-left: 12rpx;
     display: inline-block;
     background: #f00;
     color: #fff;
     border-radius: 999rpx;
-    padding: 0 8rpx;
+    padding: 1 8rpx;
     min-width: 40rpx;
-    font-size: 7pt;
+    font-size: 10pt;
 }
 .order-block .nav-item image{
     width: 60rpx;
@@ -120,7 +126,7 @@
 
 .option-item .option-icon{
     width: 50rpx;
-    height: 50rpx;
+   /* height: 50rpx;*/
     margin-right: 24rpx;
 }
 .option-item .option-jisntou{

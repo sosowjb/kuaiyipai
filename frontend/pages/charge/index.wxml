@@ -1,8 +1,10 @@
+<form bindsubmit="charge" bindreset="formReset">  
 <view style="height:200rpx;">
   <text style='margin:30rpx 20rpx;'>充值金额:</text>
   <input type='number' class='input' name="chargemoney" placeholder="请输入金额" placeholder-style="margin-left:10px;"></input>
 </view>
 <view style="height:20rpx;background: #eee;width:100%;"></view>
 <view>
-  <button type="primary" bindtap="charge">下一步</button>
+  <button type="primary"  formType="submit">下一步</button>
 </view>
+</form>

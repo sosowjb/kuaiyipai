@@ -2,6 +2,7 @@
 var app = getApp()
 Page({
   data: {
+    userInfo:null,
     nameModal:true,
     telModal:true,
   },
@@ -9,7 +10,7 @@ Page({
     this.getUserInfo();
   },
   getUserInfo: function (cb) {
-    var that = this
+    var that = this;
     wx.login({
       success: function () {
         wx.getUserInfo({

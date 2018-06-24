@@ -27,7 +27,8 @@ Page({
             url: app.globalData.apiLink + '/api/services/app/Address/DeleteAddress', 
             method: "POST",
             header: {
-              "Authorization": wx.getStorageSync("accessToken"),
+              "Abp.TenantId": "1",
+              "Authorization": "Bearer " + wx.getStorageSync("accessToken"),
               "Content-Type": "application/json"
             },
             data: {
@@ -46,23 +47,23 @@ Page({
     console.info(e.currentTarget.dataset.id);
   },
   setDefault:function(e){
+    var that=this;
     //console.info(e.currentTarget.dataset.id);
     wx.request({
       url: app.globalData.apiLink + '/api/services/app/Address/SetDefault', 
       method: "POST",
       header: {
-        "Authorization": wx.getStorageSync("accessToken"),
+        "Abp.TenantId": "1",
+        "Authorization": "Bearer " + wx.getStorageSync("accessToken"),
         "Content-Type": "application/json"
       },
       data: {
-        token: app.globalData.token,
         id: e.currentTarget.dataset.id
       },
       success: function (res) {
+        console.log(res);
         if (res.data.success) {
-          that.setData({
-            addressList: res.data.result
-          });
+          that.getUserAddressList();
         }
       }
     })
@@ -78,20 +79,17 @@ Page({
     var that = this;
     wx.request({
       url: app.globalData.apiLink + '/api/services/app/Address/GetAddress', 
-      method: "POST",
+      method: "get",
       header: {
-        "Authorization": wx.getStorageSync("accessToken"),
+        "Abp.TenantId": "1",
+        "Authorization": "Bearer " + wx.getStorageSync("accessToken"),
         "Content-Type": "application/json"
       },
-      data: {
-        token: app.globalData.token,
-        userId: 0,
-        userType: 0
-      },
       success: function (res) {
+        console.log(res);
         if (res.data.success) {
           that.setData({
-            addressList: res.data.result
+            addressList: res.data.result.items
           });
         }
       }

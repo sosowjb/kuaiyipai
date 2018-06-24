@@ -2,6 +2,8 @@ const app = getApp()
 
 Page({
 	data: {
+    imageLink: app.globalData.imageLink,
+    userInfo:null,
     balance:0,
     freeze:0,
     score:0,
@@ -11,7 +13,7 @@ Page({
     waitRevice: 0
   },
 	onLoad() {
-    
+   // console.log(app.globalData.userInfo);
 	},	
   onShow() {
     this.getUserInfo();
@@ -19,40 +21,53 @@ Page({
     this.getUserAmount();
   },	
   getUserInfo: function (cb) {
-    var that = this
-    wx.login({
-      success: function (loginRes) {
-        //console.info(loginRes);
-        // 获取用户基础信息
-        wx.getUserInfo({
-          success: function (res) {
-            that.setData({
-              userInfo: res.userInfo
-            });
-            if (!wx.getStorageInfoSync("accessToken")){ 
-              app.Logins(loginRes.code);
-            }
-          }
+    var that = this;
+    console.log(wx.getStorageSync("accessToken"));
+    if (!wx.getStorageSync("accessToken")) {
+      wx.showToast({
+        title: '正在登陆...',
+        icon: 'loading',
+        mask: true,
+        duration: 100000
+      })
+        wx.login({
+        success: function (loginRes) {
+          //console.log("accessToken:" + wx.getStorageSync("accessToken"));
+          app.Logins(loginRes.code, null);
+        }
         })
+      }else
+      {
+      //console.log(userInfo);
+      //通过token获取用户信息
       }
-    })
   },
   // 获取用户账户信息
   getUserAmount: function () {
     var that = this;
     wx.request({
       url: app.globalData.apiLink +'/api/services/app/Balance/GetMyBalance',
-      method: "POST",
+      method: "GET",
       header: {
-        "Authorization": wx.getStorageSync("accessToken"),
+        "Abp.TenantId": "1",
+        "Authorization": "Bearer "+wx.getStorageSync("accessToken"),
         "Content-Type": "application/json"
       },
       success: function (res) {
         console.info(res);
-        if (res.data.code == 0) {
+        if (res.data.success) {
           that.setData({
             balance: res.available
           });
+        }
+        else
+        {
+          wx.login({
+            success: function (loginRes) {
+              //console.log("accessToken:" + wx.getStorageSync("accessToken"));
+              app.Logins(loginRes.code, null);
+            }
+          })
         }
       }
     })
@@ -61,9 +76,10 @@ Page({
   getUserOrder:function(){
     var that = this;
     wx.request({
-      url: app.globalData.apiLink + '/api/services/app/Order/GetEachTypeOrderCount',               method: "POST",
+      url: app.globalData.apiLink + '/api/services/app/Order/GetEachTypeOrderCount',                       method: "Get",
       header: {
-        "Authorization": wx.getStorageSync("accessToken"),
+        "Abp.TenantId": "1",
+        "Authorization": "Bearer "+wx.getStorageSync("accessToken"),
         "Content-Type": "application/json"
       },
       data: {

@@ -1,63 +1,64 @@
 <view class="user-info flex-row">
-    <image class="user-info-bg" mode="aspectFill" src="/images/img-user-bg.png"/>
+    <image class="user-info-bg" mode="aspectFill" src="/content/images/img-user-bg.png"/>
     <view class="flex-grow-1 flex-y-center flex-row">
         <view class="flex-grow-0">
           <image wx:if="{{userInfo && userInfo.avatarUrl}}" class="avatar" src="{{userInfo.avatarUrl}}"/>
+          <image wx:if="{{!userInfo && !userInfo.avatarUrl}}" class="avatar" src="{{imageLink}}/application/User/default.jpg"/>
         </view>
         <view class="flex-grow-1">
-            <text class="user-name">Lv.{{userInfo.level}}\n{{userInfo.nickName}}\n{{userInfo.phoneNumber}}</text>
+            <text class="user-name">{{userInfo.nickName}}\n{{userInfo.phoneNumber}}</text>
         </view>
     </view>
-    <view class="flex-grow-0 flex-y-center">
+    <!--<view class="flex-grow-0 flex-y-center">
         <navigator class="my-address flex-y-center" url="/pages/setting/index">
             <i class="iconfont icon-fm-arrowright" />
             <text >设置</text>        
         </navigator>
-    </view>
+    </view>-->
   </view>
   <view style="height:20rpx;background: #eee;width:100%;"></view>  
   <view class="order-block">
     <navigator class="my-order" url="/pages/order/order?status=-1">我的订单</navigator>
     <view class="flex-row">
         <view class="flex-grow-1">
-            <navigator class="nav-item" url="/pages/order/order?status=0">
+            <navigator class="nav-item" url="/pages/orderlist/index?status=0">
                 <view>
-                   <i class="iconfont icon-fm-notpaid" style="font-size:20px;" />
+                   <i class="iconfont icon-fm-notpaid" style="font-size:30px;" />
                 </view>
-                <view>待付款</view>
+                <view class='fs15p'>待付款</view>
                 <view class="num-icon" wx:if="{{waitPay > 0}}">
                     {{waitPay}}
                 </view>
             </navigator>
         </view>
         <view class="flex-grow-1">
-            <navigator class="nav-item" url="/pages/order/order?status=1">
+            <navigator class="nav-item" url="/pages/orderlist/index?status=1">
                 <view>
-                   <i class="iconfont icon-fm-waitdelivery" style="font-size:20px;" />
+                   <i class="iconfont icon-fm-waitdelivery" style="font-size:30px;" />
                 </view>
-                <view>待发货</view>
+                <view class='fs15p'>待发货</view>
                 <view class="num-icon" wx:if="{{waitSend > 0}}">
                     {{waitSend}}
                 </view>
             </navigator>
         </view>
         <view class="flex-grow-1">
-            <navigator class="nav-item" url="/pages/order/order?status=2">
+            <navigator class="nav-item" url="/pages/orderlist/index?status=2">
                 <view>
-                   <i class="iconfont icon-fm-notreceipt" style="font-size:20px;" />
+                   <i class="iconfont icon-fm-notreceipt" style="font-size:30px;" />
                 </view>
-                <view>待收货</view>
+                <view class='fs15p'>待收货</view>
                 <view class="num-icon" wx:if="{{waitReceive > 0}}">
                     {{waitReceive}}
                 </view>
             </navigator>
         </view>
         <view class="flex-grow-1">
-            <navigator class="nav-item" url="/pages/order/order?status=3">
+            <navigator class="nav-item" url="/pages/orderlist/index?status=3">
                 <view>
-                   <i class="iconfont icon-fm-seeorder" style="font-size:20px;" />  
+                   <i class="iconfont icon-fm-seeorder" style="font-size:30px;" />  
                 </view>
-                <view>所有订单</view>
+                <view class='fs15p'>所有订单</view>
             </navigator>
         </view>
     </view>
@@ -68,7 +69,7 @@
         <view class="flex-row option-content">
             <view class="flex-grow-1 flex-row">
                 <view class="flex-grow-0 flex-y-center">
-                    <i class='option-icon iconfont icon-fm-address fi-499bf7'/>                    
+                    <i class='icoFontSize15 option-icon iconfont icon-fm-address fi-499bf7'/>       
                 </view>
                 <view class="flex-grow-1 flex-y-center">                    
                   地址管理
@@ -83,7 +84,7 @@
         <view class="flex-row option-content">
             <view class="flex-grow-1 flex-row">
                 <view class="flex-grow-0 flex-y-center">
-                    <i class='option-icon iconfont icon-fm-balance fi-499bf7'/>
+                    <i class='icoFontSize15 option-icon iconfont icon-fm-balance fi-499bf7'/>
                 </view>
                 <view class="flex-grow-1 flex-y-center">
                   可用余额 {{balance}} 元
@@ -98,7 +99,7 @@
         <view class="flex-row option-content">
             <view class="flex-grow-1 flex-row">
                 <view class="flex-grow-0 flex-y-center">
-                    <i class='option-icon iconfont icon-fm-message fi-499bf7'/>
+                    <i class='icoFontSize15 option-icon iconfont icon-fm-message fi-499bf7'/>
                 </view>
                 <view class="flex-grow-1 flex-y-center">
                   消息中心
@@ -116,7 +117,7 @@
       <view class="flex-row option-content">
           <view class="flex-grow-1 flex-row">
               <view class="flex-grow-0 flex-y-center">
-                  <i class="option-icon iconfont icon-fm-shopicon fi-499bf7" />
+                  <i class="icoFontSize15 option-icon iconfont icon-fm-shopicon fi-499bf7" />
               </view>
               <view class="flex-grow-1 flex-y-center">                    
                 卖家中心-邀您入驻
@@ -124,8 +125,4 @@
           </view>
       </view>
   </navigator>
-</view>
-<view style="height:20rpx;background: #eee;width:100%;"></view>
-<view class="my-item" style="border:none;padding:0rpx;margin:0rpx;background:none;border:none;height:auto;line-height:auto;">
-  <button type="warn" bindtap="relogin">重新登录</button>
 </view>

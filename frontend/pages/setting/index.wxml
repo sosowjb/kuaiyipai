@@ -8,6 +8,7 @@
           </view>
           <view class="flex-grow-0 flex-y-center headerAvater">
               <image wx:if="{{userInfo && userInfo.avatarUrl}}" class="avatar" src="{{userInfo.avatarUrl}}"/>
+              <image wx:if="{{!userInfo && !userInfo.avatarUrl}}" class="avatar" src="{{imageLink}}/application/User/default.jpg"/>
               <i class="iconfont icon-fm-arrowright" />
           </view>
       </view>
@@ -37,7 +38,7 @@
       </view>
   </view>
 </view>
-
+ <button open-type="getUserInfo">使用微信头像和昵称</button>
 <modal hidden="{{nameModal}}" title="修改昵称" confirm-text="提交" cancel-text="重置" bindcancel="nikCancel" bindconfirm="nikConfirm">  
     <input type='text'placeholder="请输入昵称" auto-focus/>  
 </modal>  
