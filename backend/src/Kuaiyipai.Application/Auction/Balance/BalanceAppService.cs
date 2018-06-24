@@ -99,31 +99,15 @@ namespace Kuaiyipai.Auction.Balance
         }
 
         [UnitOfWork]
-        public async Task<string> Charge(ChargeInputDto input)
+        public async Task<ChargeOutputDto> Charge(ChargeInputDto input)
         {
             var appId = _appConfiguration["WeChat:AppId"];
-            //var appSecret = _appConfiguration["WeChat:AppSecret"];
             var merchantId = _appConfiguration["WeChat:PayMerchantId"];
             var paymentApiKey = _appConfiguration["WeChat:PaymentApiKey"];
             var remoteIp = _httpContextAccessor.HttpContext.Connection.RemoteIpAddress.ToString();
             var notifyUrl = new Uri(new Uri(_appConfiguration["App:ServerRootAddress"]), "/api/services/app/Balance/CompleteCharge").ToString();
 
             // 获取OpenID
-            /*var api = LoginApi
-                .Replace("APPID", appId)
-                .Replace("SECRET", appSecret)
-                .Replace("JSCODE", input.LoginCode);
-            var s = await HttpHelper.Get(api, string.Empty);
-            var jo = (JObject)JsonConvert.DeserializeObject(s);
-            string openId;
-            try
-            {
-                openId = jo["openid"].ToString();
-            }
-            catch
-            {
-                throw new UserFriendlyException("获取OpenID失败，可能是Code已过期");
-            }*/
             if (!AbpSession.UserId.HasValue)
             {
                 throw new UserFriendlyException("用户未登录");
@@ -144,7 +128,8 @@ namespace Kuaiyipai.Auction.Balance
                 Amount = input.Amount,
                 RecordTime = DateTime.Now,
                 Remarks = "充值",
-                UserId = AbpSession.UserId.Value
+                UserId = AbpSession.UserId.Value,
+                PaymentCompleteTime = new DateTime(1990, 1, 1)
             };
 
             try
@@ -179,20 +164,28 @@ namespace Kuaiyipai.Auction.Balance
                 XmlTextReader reader = new XmlTextReader(stram);
                 ds.ReadXml(reader);
                 string returnCode = ds.Tables[0].Rows[0]["return_code"].ToString();
-                string prepayId = "";
+                string prepayId = "", sign = "", noncestr = "";
                 if (returnCode.ToUpper() == "SUCCESS")
                 {
                     string resultCode = ds.Tables[0].Rows[0]["result_code"].ToString();
                     if (resultCode.ToUpper() == "SUCCESS")
                     {
                         prepayId = ds.Tables[0].Rows[0]["prepay_id"].ToString();
+                        sign = ds.Tables[0].Rows[0]["sign"].ToString();
+                        noncestr = ds.Tables[0].Rows[0]["nonce_str"].ToString();
                     }
                 }
 
                 // 保存充值订单记录(余额变化记录)
                 await _balanceRecordRepository.InsertAndGetIdAsync(balanceRecord);
 
-                return prepayId;
+                return new ChargeOutputDto
+                {
+                    PrepayId = prepayId,
+                    Sign = sign,
+                    NonceStr = noncestr,
+                    TimeStamp = DateTime.Now.Ticks
+                };
             }
             catch
             {
