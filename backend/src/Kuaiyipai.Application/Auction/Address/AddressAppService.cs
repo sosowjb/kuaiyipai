@@ -107,35 +107,14 @@ namespace Kuaiyipai.Auction.Address
             var cityQuery = _areaRepository.GetAll().Where(a => a.Level == 2);
             var districtQuery = _areaRepository.GetAll().Where(a => a.Level == 3);
 
-            var list = await query.PageBy(input)
-                .Join(provinceQuery, address => address.ProvinceId, province => province.Id, (address, province) => new
-                {
-                    address.Id,
-                    address.Street,
-                    address.IsDefault,
-                    Province = province.Name,
-                    address.CityId,
-                    address.DistrictId,
-                    address.Receiver,
-                    address.ContactPhoneNumber
-                }).Join(cityQuery, address => address.CityId, city => city.Id, (address, city) => new
-                {
-                    address.Id,
-                    address.Street,
-                    address.IsDefault,
-                    address.Province,
-                    City = city.Name,
-                    address.DistrictId,
-                    address.Receiver,
-                    address.ContactPhoneNumber
-                }).Join(districtQuery, address => address.DistrictId, district => district.Id, (address, district) => new GetAddressesOutputDto
+            var list = await query.PageBy(input).Select(address => new GetAddressesOutputDto
                 {
                     Id = address.Id,
                     Street = address.Street,
                     IsDefault = address.IsDefault,
-                    Province = address.Province,
-                    City = address.City,
-                    District = district.Name,
+                    Province = address.ProvinceId.ToString(),
+                    City = address.CityId.ToString(),
+                    District = address.DistrictId.ToString(),
                     Receiver = address.Receiver,
                     ContactPhoneNumber = address.ContactPhoneNumber
                 }).ToListAsync();
