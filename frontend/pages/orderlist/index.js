@@ -8,15 +8,17 @@ Page({
     height:'',
     currentPage:0,
     pageSize:3,
-    status:3
+    status:2
   },
   statusTap:function(e){
+    var that = this;
      var curType =  e.currentTarget.dataset.index;
-     this.data.currentType = curType
-     this.setData({
-       currentType:curType
+     console.log(curType);
+     that.setData({
+       currentType:curType,
+       status: curType
      });
-     this.onLoad(null);
+     this.getData();
   },
   orderDetail : function (e) {
     var orderId = e.currentTarget.dataset.id;
@@ -27,7 +29,8 @@ Page({
   toPayTap:function(e){
     var orderId = e.currentTarget.dataset.id;
     var money = e.currentTarget.dataset.money;
-    wxpay.wxpay(app, money, orderId, "/pages/orderlist/index");
+    
+   // wxpay.wxpay(app, money, orderId, "/pages/orderlist/index");
   },  
   onLoad: function (e){
     var that = this;

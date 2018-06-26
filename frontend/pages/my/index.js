@@ -22,7 +22,7 @@ Page({
   },	
   getUserInfo: function (cb) {
     var that = this;
-    console.log(wx.getStorageSync("accessToken"));
+   // console.log(wx.getStorageSync("accessToken"));
     if (!wx.getStorageSync("accessToken")) {
       wx.showToast({
         title: '正在登陆...',
@@ -54,7 +54,7 @@ Page({
         "Content-Type": "application/json"
       },
       success: function (res) {
-        console.info(res);
+       // console.info(res);
         if (res.data.success) {
           that.setData({
             balance: res.available

@@ -19,8 +19,8 @@ using System;
 namespace Kuaiyipai.Migrations
 {
     [DbContext(typeof(KuaiyipaiDbContext))]
-    [Migration("20180612102223_AddFieldsBalanceRecord")]
-    partial class AddFieldsBalanceRecord
+    [Migration("20180625165745_Initial")]
+    partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {

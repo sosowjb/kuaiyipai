@@ -23,7 +23,7 @@
             </view>
             <view class="price-box">
                 <view class="total-price">合计：¥ {{item.itemPriceAmount}}</view>
-                <view class="btn topay-btn" hidden="{{item.status==0? false : true}}" bindtap="toPayTap" data-id="{{item.id}}" data-money="{{item.amountReal}}">马上付款</view>        
+                <view class="btn topay-btn" hidden="{{status==0? false : true}}" bindtap="toPayTap" data-id="{{item.id}}" data-money="{{item.amountReal}}">马上付款</view>        
             </view>  
         </view>
       </view>

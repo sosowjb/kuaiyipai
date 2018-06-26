@@ -8,6 +8,7 @@
     "pages/balance-detail/index", 
     "pages/charge/index",
     "pages/my/index",
+    "pages/search/index",
     "pages/seller/index",
     "pages/withdraw/index",
     "pages/publish/index",

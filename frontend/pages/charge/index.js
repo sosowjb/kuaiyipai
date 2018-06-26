@@ -35,18 +35,26 @@ Page({
       },
       success: function (res) {
         console.log(res);
-      /* wx.requestPayment(
-          {
-           'timeStamp': this.createTimeStamp(),
-            'nonceStr': this.createNonceStr(),
-            'package': '',
-            'signType': 'MD5',
-            'paySign': '',
-            'success': function (res) { },
-            'fail': function (res) { },
-            'complete': function (res) { }
-          })*/
-
+        if (res.data.success)
+        {
+        wx.requestPayment(
+            {
+            'timeStamp':''+res.data.result.timeStamp+'',
+            'nonceStr': res.data.result.nonceStr,
+            'package': "prepay_id=" + res.data.result.prepayId,
+              'signType': 'MD5',
+              'paySign': res.data.result.sign,
+              'success': function (res) {
+                console.log(res);
+              },
+              'fail': function (res) { 
+                console.log(res);
+              },
+              'complete': function (res) {
+                console.log(res);
+              }
+            })
+        }
         if (res.data.success) {
           wx.showModal({
             title: '提示',
