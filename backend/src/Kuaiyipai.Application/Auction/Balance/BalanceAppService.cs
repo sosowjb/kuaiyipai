@@ -104,7 +104,8 @@ namespace Kuaiyipai.Auction.Balance
             var appId = _appConfiguration["WeChat:AppId"];
             var merchantId = _appConfiguration["WeChat:PayMerchantId"];
             var paymentApiKey = _appConfiguration["WeChat:PaymentApiKey"];
-            var remoteIp = _httpContextAccessor.HttpContext.Connection.RemoteIpAddress.ToString();
+            //var remoteIp = _httpContextAccessor.HttpContext.Connection.RemoteIpAddress.ToString();
+            var remoteIp = "192.168.1.1";
             var notifyUrl = new Uri(new Uri(_appConfiguration["App:ServerRootAddress"]), "/api/services/app/Balance/CompleteCharge").ToString();
 
             // 获取OpenID
@@ -164,27 +165,37 @@ namespace Kuaiyipai.Auction.Balance
                 XmlTextReader reader = new XmlTextReader(stram);
                 ds.ReadXml(reader);
                 string returnCode = ds.Tables[0].Rows[0]["return_code"].ToString();
-                string prepayId = "", sign = "", noncestr = "";
+                string prepayId = "";
                 if (returnCode.ToUpper() == "SUCCESS")
                 {
                     string resultCode = ds.Tables[0].Rows[0]["result_code"].ToString();
                     if (resultCode.ToUpper() == "SUCCESS")
                     {
                         prepayId = ds.Tables[0].Rows[0]["prepay_id"].ToString();
-                        sign = ds.Tables[0].Rows[0]["sign"].ToString();
-                        noncestr = ds.Tables[0].Rows[0]["nonce_str"].ToString();
                     }
                 }
 
                 // 保存充值订单记录(余额变化记录)
                 await _balanceRecordRepository.InsertAndGetIdAsync(balanceRecord);
 
+                // 二次签名返回
+                var tick = DateTime.Now.Ticks;
+                var signDict = new Dictionary<string, string>
+                {
+                    {"appid", appId},
+                    {"noncestr", GetRandomString(32, true, false, true, false, "")},
+                    {"package", "prepay_id=" + prepayId},
+                    {"signtype", "MD5"},
+                    {"timestamp", tick.ToString()}
+                };
+                var secondSign = GetSign(signDict, paymentApiKey);
+
                 return new ChargeOutputDto
                 {
                     PrepayId = prepayId,
-                    Sign = sign,
-                    NonceStr = noncestr,
-                    TimeStamp = DateTime.Now.Ticks
+                    Sign = secondSign,
+                    NonceStr = GetRandomString(32, true, false, true, false, ""),
+                    TimeStamp = tick
                 };
             }
             catch
