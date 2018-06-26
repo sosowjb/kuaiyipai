@@ -7,7 +7,6 @@ namespace Kuaiyipai.Auction.Entities
     [Table("AUC_Orders_WaitingForSending")]
     public class OrderWaitingForSending : OrderBase
     {
-        [Required]
-        public DateTime SentTime { get; set; }
+        public DateTime? SentTime { get; set; }
     }
 }

@@ -48,5 +48,8 @@ namespace Kuaiyipai.Auction.Entities
         /// 快递费
         /// </summary>
         public double ExpressCostAmount { get; set; }
+
+        [Required]
+        public Guid ItemId { get; set; }
     }
 }

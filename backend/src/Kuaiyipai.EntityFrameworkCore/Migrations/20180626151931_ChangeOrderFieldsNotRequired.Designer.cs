@@ -19,9 +19,10 @@ using System;
 namespace Kuaiyipai.Migrations
 {
     [DbContext(typeof(KuaiyipaiDbContext))]
-    partial class KuaiyipaiDbContextModelSnapshot : ModelSnapshot
+    [Migration("20180626151931_ChangeOrderFieldsNotRequired")]
+    partial class ChangeOrderFieldsNotRequired
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -1225,8 +1226,6 @@ namespace Kuaiyipai.Migrations
 
                     b.Property<double>("ExpressCostAmount");
 
-                    b.Property<Guid>("ItemId");
-
                     b.Property<double>("ItemPriceAmount");
 
                     b.Property<DateTime>("OrderTime");
@@ -1261,8 +1260,6 @@ namespace Kuaiyipai.Migrations
 
                     b.Property<double>("ExpressCostAmount");
 
-                    b.Property<Guid>("ItemId");
-
                     b.Property<double>("ItemPriceAmount");
 
                     b.Property<DateTime>("OrderTime");
@@ -1294,8 +1291,6 @@ namespace Kuaiyipai.Migrations
                     b.Property<string>("DeliveryId");
 
                     b.Property<double>("ExpressCostAmount");
-
-                    b.Property<Guid>("ItemId");
 
                     b.Property<double>("ItemPriceAmount");
 
@@ -1331,8 +1326,6 @@ namespace Kuaiyipai.Migrations
 
                     b.Property<double>("ExpressCostAmount");
 
-                    b.Property<Guid>("ItemId");
-
                     b.Property<double>("ItemPriceAmount");
 
                     b.Property<DateTime>("OrderTime");
@@ -1366,8 +1359,6 @@ namespace Kuaiyipai.Migrations
                     b.Property<string>("DeliveryId");
 
                     b.Property<double>("ExpressCostAmount");
-
-                    b.Property<Guid>("ItemId");
 
                     b.Property<double>("ItemPriceAmount");
 
