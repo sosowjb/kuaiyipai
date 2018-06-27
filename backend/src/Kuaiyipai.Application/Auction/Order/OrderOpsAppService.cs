@@ -152,6 +152,28 @@ namespace Kuaiyipai.Auction.Order
                 ExpressCostAmount = order.ExpressCostAmount
             };
             await _evaluatingRepository.InsertAsync(evaluatingOrder);
+
+            // 余额变化
+            var buyerBalance = await _balanceRepository.FirstOrDefaultAsync(b => b.UserId == order.BuyerId);
+            var sellerBalance = await _balanceRepository.FirstOrDefaultAsync(b => b.UserId == order.SellerId);
+
+            buyerBalance.FrozenBalance -= order.Amount;
+            await _balanceRepository.UpdateAsync(buyerBalance);
+            if (sellerBalance == null)
+            {
+                sellerBalance = new UserBalance
+                {
+                    UserId = order.SellerId,
+                    FrozenBalance = 0,
+                    TotalBalance = order.Amount
+                };
+                await _balanceRepository.InsertAsync(sellerBalance);
+            }
+            else
+            {
+                sellerBalance.TotalBalance += order.Amount;
+                await _balanceRepository.UpdateAsync(sellerBalance);
+            }
         }
 
         public async Task Evaluate(EvaluateInputDto input)
