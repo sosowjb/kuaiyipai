@@ -65,7 +65,8 @@ namespace Kuaiyipai.Auction
                         ItemPriceAmount = bidding.Price,
                         BuyerId = buyer.Id,
                         SellerId = seller.Id,
-                        OrderTime = DateTime.Now
+                        OrderTime = DateTime.Now,
+                        ItemId = itemAuctioning.Id
                     };
                     await _orderRepository.InsertAsync(order);
                 }

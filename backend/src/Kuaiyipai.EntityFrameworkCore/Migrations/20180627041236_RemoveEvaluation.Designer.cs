@@ -19,9 +19,10 @@ using System;
 namespace Kuaiyipai.Migrations
 {
     [DbContext(typeof(KuaiyipaiDbContext))]
-    partial class KuaiyipaiDbContextModelSnapshot : ModelSnapshot
+    [Migration("20180627041236_RemoveEvaluation")]
+    partial class RemoveEvaluation
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -1220,8 +1221,6 @@ namespace Kuaiyipai.Migrations
                     b.Property<DateTime>("CompletedTime");
 
                     b.Property<string>("DeliveryId");
-
-                    b.Property<string>("EvaluationContent");
 
                     b.Property<int?>("EvaluationLevel");
 

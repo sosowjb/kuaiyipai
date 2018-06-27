@@ -10,6 +10,8 @@ namespace Kuaiyipai.Auction.Entities
         [Range(1, 5)]
         public int? EvaluationLevel { get; set; }
 
+        public string EvaluationContent { get; set; }
+
         [Required]
         public DateTime CompletedTime { get; set; }
     }
