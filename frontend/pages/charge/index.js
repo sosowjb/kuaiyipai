@@ -34,36 +34,63 @@ Page({
         amount: e.detail.value.chargemoney
       },
       success: function (res) {
-        console.log(res);
+        
         if (res.data.success)
         {
-        wx.requestPayment(
+            wx.requestPayment(
             {
-            'timeStamp':''+res.data.result.timeStamp+'',
+            'timeStamp':res.data.result.timeStamp,
             'nonceStr': res.data.result.nonceStr,
             'package': "prepay_id=" + res.data.result.prepayId,
               'signType': 'MD5',
               'paySign': res.data.result.sign,
               'success': function (res) {
-                console.log(res);
+                if (res.errMsg =="requestPayment:ok")
+                {
+                  this.CompleteCharge();
+                }
               },
               'fail': function (res) { 
-                console.log(res);
+                if (res.errMsg=="requestPayment:fail cancel")
+                {
+                wx.showModal({
+                  title: '提示',
+                  content: '取消支付！',
+                  showCancel: false
+                })
+                }
+                if (res.errMsg =="requestPayment:fail")
+                {
+                  wx.showModal({
+                    title: '提示',
+                    content: res.err_desc,
+                    showCancel: false
+                  })
+                }
               },
               'complete': function (res) {
                 console.log(res);
               }
             })
         }
-        if (res.data.success) {
+       /* if (res.data.success) {
           wx.showModal({
             title: '提示',
             content: '充值成功！',
             showCancel: false
           })
           wx.navigateBack;
-        }
+       }*/
+      },
+      'fail': function (res) {
+        console.log("请求签名错误"+res);
+      },
+      'complete': function (res) {
+        console.log(res);
       }
     })
+  },
+  CompleteCharge:function(){
+
   }
 })

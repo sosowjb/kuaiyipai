@@ -2,3 +2,25 @@ var cityData = [{"name":"北京市","id":110000,"cityList":[{"districtList":[],"
 module.exports = {
   cityData: cityData
 }
+
+function getCityName(cityData,p,c,s)
+{
+  var dizhi="";
+  for (var i = 0; i <= cityData.length;i++){
+    if (cityData[i].id==p)
+    {
+      dizhi += cityData[i].name;
+    }
+    for (var j = 0; j <= cityData[i].cityList.length; i++) {
+      if (cityData[i].cityList[j].id == c) {
+        dizhi += cityData[i].cityList[j].name;
+      }
+      for (var k= 0; k <= cityData[i].cityList[j].districtList.length; k++) {
+        if (cityData[i].cityList[j].districtList[k].id == s) {
+          dizhi += cityData[i].cityList[j].districtList[k].name;
+        }
+      }
+    }
+  }
+  return dizhi;
+}

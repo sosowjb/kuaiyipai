@@ -10,7 +10,7 @@
       </view>
   </view>  
   <view class='flex-row margin-inner'>
-      <text>{{item.province}}{{item.city}}{{item.district}}{{item.street}}</text>    
+      <text>{{item.pcd}}{{item.street}}</text>    
   </view>
   <view style='border-bottom:1px #eee solid;height:2px;'></view>
   <view class='flex-row margin-inner'>
@@ -39,6 +39,6 @@
   </view>  
   <view style="height:20rpx;background: #eee;width:100%;"></view>  
 </view>
-  <view>
-    <button type='primary' size='default' bindtap="addAddress">新增收货地址</button>
+  <view class='btn-view-cell'>
+    <button class='btn address-add' type='primary' size='default' bindtap="addAddress">新增收货地址</button>
   </view>

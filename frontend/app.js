@@ -5,8 +5,12 @@ App({
     // 获取用户信息
     wx.getSetting({
       success: res => {
+
+
+
+
           // 已经授权，可以直接调用 getUserInfo 获取头像昵称，不会弹框
-          wx.getUserInfo({
+       /*  wx.getUserInfo({
             withCredentials:true,
             success: res => {
               // 可以将 res 发送给后台解码出 unionId
@@ -23,20 +27,31 @@ App({
                 this.userInfoReadyCallback(res)
               }
             }
-          })
+          })*/
         
       }
     })
   },
   Logins:function(code,callback){
+    var that=this;
     wx.request({
       url: this.globalData.apiLink + '/api/TokenAuth/Authenticate',
       header: { 'Abp.TenantId': '1', 'Content-Type': 'application/json' },
       method: 'POST',
+      data: {code: code},
       dataType: 'json',
       responseType: 'text',
       success: function (res) {
-        console.log("用户ID"+res.data.result.userId)
+        if(res.data.success)
+        {
+            wx.showToast({
+              title: '登陆成功...',
+              icon: 'loading',
+              mask: true,
+              duration: 500
+            })
+          that.globalData.userInfo = res.data.result;
+          console.log(res.data.result.accessToken);
         wx.setStorage({
           key: "accessToken",
           data: res.data.result.accessToken
@@ -49,6 +64,7 @@ App({
           {
             callback();
           }
+        }
       },
       fail: function (res) { },
       complete: function (res) { },

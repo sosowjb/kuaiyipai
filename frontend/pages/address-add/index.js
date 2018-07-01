@@ -94,7 +94,7 @@ Page({
       },
       success: function(res) {
         // 跳转到结算页面
-        //wx.navigateBack({})
+        wx.navigateBack({})
       }
     })
   },
@@ -167,27 +167,25 @@ Page({
       // 初始化原数据
       wx.showLoading();
       wx.request({
-        url: app.globalData.apiLink + '/api/services/app/Address/GetAddress',
-        method: "POST",
+        url: app.globalData.apiLink + '/api/services/app/Address/GetAddress?Id='+id,
+        method: "GET",
         header: {
           "Abp.TenantId": "1",
           "Authorization": "Bearer " + wx.getStorageSync("accessToken"),
           "Content-Type": "application/json"
         },
-        data: {
-          id: id
-        },
         success: function (res) {
+          console.log(res);
           wx.hideLoading();
-          if (res.data.code == 0) {
+          if (res.data.success) {
             that.setData({
-              id:id,
-              addressData: res.data.data,
-              selProvince: res.data.data.provinceStr,
-              selCity: res.data.data.cityStr,
-              selDistrict: res.data.data.areaStr
+              id: res.data.result.items[0].id,
+              addressData: res.data.result.items[0].street,
+              selProvince: res.data.result.items[0].province,
+              selCity: res.data.result.items[0].city,
+              selDistrict: res.data.result.items[0].district
               });
-            that.setDBSaveAddressId(res.data.data);
+            that.setDBSaveAddressId(res.data.result.items[0]);
             return;
           } else {
             wx.showModal({
@@ -203,13 +201,13 @@ Page({
   setDBSaveAddressId: function(data) {
     var retSelIdx = 0;
     for (var i = 0; i < commonCityData.cityData.length; i++) {
-      if (data.provinceId == commonCityData.cityData[i].id) {
+      if (data.province == commonCityData.cityData[i].id) {
         this.data.selProvinceIndex = i;
         for (var j = 0; j < commonCityData.cityData[i].cityList.length; j++) {
-          if (data.cityId == commonCityData.cityData[i].cityList[j].id) {
+          if (data.city == commonCityData.cityData[i].cityList[j].id) {
             this.data.selCityIndex = j;
             for (var k = 0; k < commonCityData.cityData[i].cityList[j].districtList.length; k++) {
-              if (data.districtId == commonCityData.cityData[i].cityList[j].districtList[k].id) {
+              if (data.district == commonCityData.cityData[i].cityList[j].districtList[k].id) {
                 this.data.selDistrictIndex = k;
               }
             }
@@ -217,8 +215,5 @@ Page({
         }
       }
     }
-   },
-  selectCity: function () {
-    
-  }  
+   }
 })

@@ -2,6 +2,7 @@ const app = getApp()
 
 Page({
   data: {
+    imageLink: app.globalData.imageLink,
     balance: 0,
     freeze: 0,
     score: 0,
@@ -42,9 +43,10 @@ Page({
     var that = this;
     wx.request({
       url: app.globalData.apiLink + '/api/services/app/Balance/GetMyBalance',
-      method: "POST",
+      method: "GET",
       header: {
-        "Authorization": wx.getStorageSync("accessToken"),
+        "Abp.TenantId": "1",
+        "Authorization": "Bearer " + wx.getStorageSync("accessToken"),
         "Content-Type": "application/json"
       },
       success: function (res) {
@@ -61,12 +63,11 @@ Page({
   getUserOrder: function () {
     var that = this;
     wx.request({
-      url: app.globalData.apiLink + '/api/services/app/Order/GetEachTypeOrderCount', method: "POST",
+      url: app.globalData.apiLink + '/api/services/app/Order/GetEachTypeOrderCountAsSeller', method: "Get",
       header: {
-        "Authorization": wx.getStorageSync("accessToken"),
+        "Abp.TenantId": "1",
+        "Authorization": "Bearer " + wx.getStorageSync("accessToken"),
         "Content-Type": "application/json"
-      },
-      data: {
       },
       success: function (res) {
         if (res.data.success) {

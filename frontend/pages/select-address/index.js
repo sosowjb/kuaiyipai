@@ -1,5 +1,6 @@
 //index.js
 //获取应用实例
+var commonCityData = require('../../content/utils/city.js')
 var app = getApp()
 Page({
   data: {
@@ -44,7 +45,7 @@ Page({
         }
       }
     })
-    console.info(e.currentTarget.dataset.id);
+   // console.info(e.currentTarget.dataset.id);
   },
   setDefault:function(e){
     var that=this;
@@ -69,7 +70,6 @@ Page({
     })
   } ,
   onLoad: function () {
-    console.log('onLoad')   
   },
   onShow : function () {
     this.getUserAddressList();
@@ -86,13 +86,36 @@ Page({
         "Content-Type": "application/json"
       },
       success: function (res) {
-        console.log(res);
         if (res.data.success) {
+          for (var i = 0; i < res.data.result.items.length;i++)
+          {
+            res.data.result.items[i]["pcd"] = that.getCityName(commonCityData.cityData,res.data.result.items[i].province, res.data.result.items[i].city, res.data.result.items[i].district);// that.getCityName();
+            console.log(res.data.result.items[i]);
+          }
           that.setData({
             addressList: res.data.result.items
           });
         }
       }
     })
+  },
+  getCityName: function (cityData,p,c,s){
+    var dizhi = "";
+    for (var i = 0; i < cityData.length; i++) {
+      if (cityData[i].id == p) {
+        dizhi += cityData[i].name;
+      }
+      for (var j = 0; j < cityData[i].cityList.length; j++) {
+        if (cityData[i].cityList[j].id == c) {
+          dizhi +='-'+cityData[i].cityList[j].name;
+        }
+        for (var k = 0; k < cityData[i].cityList[j].districtList.length; k++) {
+          if (cityData[i].cityList[j].districtList[k].id == s) {
+            dizhi += '-' +cityData[i].cityList[j].districtList[k].name;
+          }
+        }
+      }
+    }
+    return dizhi;
   }
 })

@@ -13,35 +13,7 @@
       </navigator>
   </view>
 </view>
-<view style="height:20rpx;background: #eee;width:100%;"></view>  
-<view class="order-block">
-  <view class="flex-row">
-      <view class="flex-grow-1">
-          <navigator class="nav-item" url="/pages/order/order?status=0">
-              <view class='fs15p'>待付款</view>
-              <view class='money'>
-                  {{obligation}}
-              </view>
-          </navigator>
-      </view>
-      <view class="flex-grow-1">
-          <navigator class="nav-item" url="/pages/order/order?status=1">
-              <view class='fs15p'>待发货</view>
-              <view class='money'>
-                  {{waitsend}}
-              </view>
-          </navigator>
-      </view>
-      <view class="flex-grow-1">
-          <navigator class="nav-item" url="/pages/order/order?status=2">
-              <view class='fs15p'>待收货</view>
-              <view class='money'>
-                  {{waitget}}
-              </view>
-          </navigator>
-      </view>
-  </view>
-</view>
+
 <view style="height:20rpx;background: #eee;width:100%;"></view>
 <view class="option-list">
     <navigator class="option-item" url="/pages/charge/index">

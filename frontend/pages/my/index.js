@@ -54,10 +54,10 @@ Page({
         "Content-Type": "application/json"
       },
       success: function (res) {
-       // console.info(res);
+       console.log(res);
         if (res.data.success) {
           that.setData({
-            balance: res.available
+            balance: res.data.result.available
           });
         }
         else
@@ -65,7 +65,7 @@ Page({
           wx.login({
             success: function (loginRes) {
               //console.log("accessToken:" + wx.getStorageSync("accessToken"));
-              app.Logins(loginRes.code, null);
+             app.Logins(loginRes.code, null);
             }
           })
         }
@@ -76,7 +76,7 @@ Page({
   getUserOrder:function(){
     var that = this;
     wx.request({
-      url: app.globalData.apiLink + '/api/services/app/Order/GetEachTypeOrderCount',                       method: "Get",
+      url: app.globalData.apiLink + '/api/services/app/Order/GetEachTypeOrderCountAsBuyer',                       method: "Get",
       header: {
         "Abp.TenantId": "1",
         "Authorization": "Bearer "+wx.getStorageSync("accessToken"),

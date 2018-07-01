@@ -8,7 +8,8 @@ Page({
     height:'',
     currentPage:0,
     pageSize:3,
-    status:2
+    status:2,
+    isSeller:0
   },
   statusTap:function(e){
     var that = this;
@@ -27,19 +28,54 @@ Page({
     })
   },
   toPayTap:function(e){
+    console.log(e);
     var orderId = e.currentTarget.dataset.id;
     var money = e.currentTarget.dataset.money;
+    wx.showModal({
+      title: '支付确认',
+      content: '将扣除您' + money+'元 您确认支付吗？',
+      confirmText: "确认",
+      cancelText: "取消",
+      success: function (res) {
+        console.log(res);
+        if (res.confirm) {
+          wx.request({
+            url: app.globalData.apiLink + "/api/services/app/OrderOps/Pay",
+            method: "POST",
+            header: {
+              'Abp.TenantId': '1',
+              'Content-Type': 'application/json',
+              'Authorization': "Bearer " + wx.getStorageSync("accessToken")
+            },
+            data: {
+              "orderId": orderId
+            },
+            success: (res) => {
+              console.log(res);
+
+            }
+          }) 
+        } else {
+           console.log("用户已经取消操作");
+        }
+      }
+    });
+  },
+  toSend:function(e){
     
-   // wxpay.wxpay(app, money, orderId, "/pages/orderlist/index");
-  },  
+  },
   onLoad: function (e){
+    console.log(e);
+    
     var that = this;
     var tabClass = that.data.tabClass;
 
     // 标记颜色
     if (e.status) {
       that.setData({
-        status: e.status,
+        status:e.status,
+        currentType:e.status,
+        isSeller:e.isSeller
       });
     }
     // 计算页面高度，用以加载列表
@@ -76,15 +112,22 @@ Page({
     wx.showLoading();
     console.log(that.data);
     var status = that.data.status;
-
+    var isSeller = that.data.isSeller;
     var url = app.globalData.apiLink + '/api/services/app/Order/GetCompletedOrders';
+    var urltype =""
+    if (isSeller==0){
+      urltype ="AsBuyer"
+    }
+    else{
+      urltype = "AsSeller"
+    }
     // 待付款
     if (status == 0) {
-      url = app.globalData.apiLink + '/api/services/app/Order/GetWaitingForPaymentOrdersAsBuyer';
+      url = app.globalData.apiLink + '/api/services/app/Order/GetWaitingForPaymentOrders'+urltype;
     } else if (status == 1) { // 待发货
-      url = app.globalData.apiLink + '/api/services/app/Order/GetWaitingForSendingOrdersAsSeller';
+      url = app.globalData.apiLink + '/api/services/app/Order/GetWaitingForSendingOrders' + urltype;
     } else if (status == 2) { // 待收货
-      url = app.globalData.apiLink + '/api/services/app/Order/GetWaitingForReceivingOrdersAsBuyer';
+      url = app.globalData.apiLink + '/api/services/app/Order/GetWaitingForReceivingOrders' + urltype;
     }
     wx.request({
       url: url + "?skipCount=" + (that.data.currentPage * that.data.pageSize) + "&maxResultCount=" + that.data.pageSize,
