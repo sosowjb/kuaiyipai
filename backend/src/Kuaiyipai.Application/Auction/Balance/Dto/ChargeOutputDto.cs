@@ -8,6 +8,6 @@
 
         public string NonceStr { get; set; }
 
-        public long TimeStamp { get; set; }
+        public string TimeStamp { get; set; }
     }
 }

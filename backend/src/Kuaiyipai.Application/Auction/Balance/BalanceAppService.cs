@@ -180,13 +180,14 @@ namespace Kuaiyipai.Auction.Balance
 
                 // 二次签名返回
                 var tick = DateTime.Now.Ticks;
+                var nonceStr = GetRandomString(32, true, false, true, false, "");
                 var signDict = new Dictionary<string, string>
                 {
-                    {"appid", appId},
-                    {"noncestr", GetRandomString(32, true, false, true, false, "")},
+                    {"appId", appId},
+                    {"nonceStr", nonceStr },
                     {"package", "prepay_id=" + prepayId},
-                    {"signtype", "MD5"},
-                    {"timestamp", tick.ToString()}
+                    {"signType", "MD5"},
+                    {"timeStamp", tick.ToString()}
                 };
                 var secondSign = GetSign(signDict, paymentApiKey);
 
@@ -194,8 +195,8 @@ namespace Kuaiyipai.Auction.Balance
                 {
                     PrepayId = prepayId,
                     Sign = secondSign,
-                    NonceStr = GetRandomString(32, true, false, true, false, ""),
-                    TimeStamp = tick
+                    NonceStr = nonceStr,
+                    TimeStamp = tick.ToString()
                 };
             }
             catch

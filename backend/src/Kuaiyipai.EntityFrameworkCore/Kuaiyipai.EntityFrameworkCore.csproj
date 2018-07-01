@@ -10,6 +10,10 @@
     <GenerateBindingRedirectsOutputType>true</GenerateBindingRedirectsOutputType>
     <GenerateRuntimeConfigurationFiles>true</GenerateRuntimeConfigurationFiles>
   </PropertyGroup>
+ 
+  <ItemGroup>
+    <Compile Remove="Migrations\20180625165539_Initial.cs" />
+  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="2.0.2" />
@@ -33,6 +37,10 @@
 
   <ItemGroup Condition=" '$(TargetFramework)' == 'net461' ">
     <Reference Include="System.Transactions" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Migrations\Seed\" />
   </ItemGroup>
 
 </Project>

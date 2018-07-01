@@ -95,12 +95,18 @@ namespace Kuaiyipai.Auction.Address
 
         public async Task<PagedResultDto<GetAddressesOutputDto>> GetAddress(GetAddressesInputDto input)
         {
+
+
             var query = _addressRepository.GetAll().Where(a => a.CreatorUserId == AbpSession.UserId);
             if (!input.Sorting.IsNullOrEmpty())
             {
                 query = query.OrderBy(input.Sorting);
             }
-
+            if (!input.Id.IsNullOrEmpty())
+            {
+                Guid guid = new Guid(input.Id);
+                query = query.Where(a => a.Id == guid);
+            }
             var count = await query.CountAsync();
 
             var provinceQuery = _areaRepository.GetAll().Where(a => a.Level == 1);

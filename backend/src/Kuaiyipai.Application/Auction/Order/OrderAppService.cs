@@ -37,7 +37,7 @@ namespace Kuaiyipai.Auction.Order
 
         public async Task<PagedResultDto<GetWaitingForPaymentOrdersOutputDto>> GetWaitingForPaymentOrdersAsBuyer(GetWaitingForPaymentOrdersInputDto input)
         {
-            var query = _paymentRepository.GetAll().Where(o => o.BuyerId == AbpSession.UserId.Value);
+            var query = _paymentRepository.GetAll().Where(o => o.BuyerId == AbpSession.UserId.Value && o.PaidTime==null);
             if (!input.Sorting.IsNullOrEmpty())
             {
                 query = query.OrderBy(input.Sorting);
@@ -46,6 +46,7 @@ namespace Kuaiyipai.Auction.Order
             var count = await query.CountAsync();
             var list = await query.PageBy(input).Select(o => new GetWaitingForPaymentOrdersOutputDto
             {
+                Id=o.Id,
                 Code = o.Code,
                 BuyerId = o.BuyerId,
                 SellerId = o.SellerId,
@@ -71,6 +72,7 @@ namespace Kuaiyipai.Auction.Order
             var count = await query.CountAsync();
             var list = await query.PageBy(input).Select(o => new GetWaitingForSendingOrdersOutputDto
             {
+                Id = o.Id,
                 Code = o.Code,
                 BuyerId = o.BuyerId,
                 SellerId = o.SellerId,
@@ -96,6 +98,7 @@ namespace Kuaiyipai.Auction.Order
             var count = await query.CountAsync();
             var list = await query.PageBy(input).Select(o => new GetWaitingForReceivingOrdersOutputDto
             {
+                Id = o.Id,
                 Code = o.Code,
                 BuyerId = o.BuyerId,
                 SellerId = o.SellerId,
@@ -121,6 +124,7 @@ namespace Kuaiyipai.Auction.Order
             var count = await query.CountAsync();
             var list = await query.PageBy(input).Select(o => new GetWaitingForEvaluatingOrdersOutputDto
             {
+                Id = o.Id,
                 Code = o.Code,
                 BuyerId = o.BuyerId,
                 SellerId = o.SellerId,
@@ -146,6 +150,7 @@ namespace Kuaiyipai.Auction.Order
             var count = await query.CountAsync();
             var list = await query.PageBy(input).Select(o => new GetCompletedOrdersOutputDto
             {
+                Id = o.Id,
                 Code = o.Code,
                 BuyerId = o.BuyerId,
                 SellerId = o.SellerId,
@@ -171,6 +176,7 @@ namespace Kuaiyipai.Auction.Order
             var count = await query.CountAsync();
             var list = await query.PageBy(input).Select(o => new GetWaitingForPaymentOrdersOutputDto
             {
+                Id = o.Id,
                 Code = o.Code,
                 BuyerId = o.BuyerId,
                 SellerId = o.SellerId,
@@ -196,6 +202,7 @@ namespace Kuaiyipai.Auction.Order
             var count = await query.CountAsync();
             var list = await query.PageBy(input).Select(o => new GetWaitingForSendingOrdersOutputDto
             {
+                Id = o.Id,
                 Code = o.Code,
                 BuyerId = o.BuyerId,
                 SellerId = o.SellerId,
@@ -221,6 +228,7 @@ namespace Kuaiyipai.Auction.Order
             var count = await query.CountAsync();
             var list = await query.PageBy(input).Select(o => new GetWaitingForReceivingOrdersOutputDto
             {
+                Id = o.Id,
                 Code = o.Code,
                 BuyerId = o.BuyerId,
                 SellerId = o.SellerId,
@@ -246,6 +254,7 @@ namespace Kuaiyipai.Auction.Order
             var count = await query.CountAsync();
             var list = await query.PageBy(input).Select(o => new GetWaitingForEvaluatingOrdersOutputDto
             {
+                Id = o.Id,
                 Code = o.Code,
                 BuyerId = o.BuyerId,
                 SellerId = o.SellerId,
@@ -271,6 +280,7 @@ namespace Kuaiyipai.Auction.Order
             var count = await query.CountAsync();
             var list = await query.PageBy(input).Select(o => new GetCompletedOrdersOutputDto
             {
+                Id = o.Id,
                 Code = o.Code,
                 BuyerId = o.BuyerId,
                 SellerId = o.SellerId,
@@ -285,7 +295,7 @@ namespace Kuaiyipai.Auction.Order
             return new PagedResultDto<GetCompletedOrdersOutputDto>(count, list);
         }
 
-        public async Task<GetEachTypeOrderCountOutputDto> GetEachTypeOrderCount()
+        public async Task<GetEachTypeOrderCountOutputDto> GetEachTypeOrderCountAsSeller()
         {
             try
             {
@@ -296,9 +306,9 @@ namespace Kuaiyipai.Auction.Order
 
                 var output = new GetEachTypeOrderCountOutputDto();
 
-                output.WaitPay = await _paymentRepository.CountAsync(t => t.SellerId == AbpSession.UserId.Value || t.BuyerId == AbpSession.UserId.Value);
-                output.WaitReceive = await _receivingRepository.CountAsync(t => t.SellerId == AbpSession.UserId.Value || t.BuyerId == AbpSession.UserId.Value);
-                output.WaitSend = await _sendingRepository.CountAsync(t => t.SellerId == AbpSession.UserId.Value || t.BuyerId == AbpSession.UserId.Value);
+                output.WaitPay = await _paymentRepository.CountAsync(t => t.SellerId == AbpSession.UserId.Value && t.PaidTime==null);
+                output.WaitReceive = await _receivingRepository.CountAsync(t => t.SellerId == AbpSession.UserId.Value);
+                output.WaitSend = await _sendingRepository.CountAsync(t => t.SellerId == AbpSession.UserId.Value);
 
                 return output;
             }
@@ -307,6 +317,30 @@ namespace Kuaiyipai.Auction.Order
                 throw e;
             }
         }
+
+        public async Task<GetEachTypeOrderCountOutputDto> GetEachTypeOrderCountAsBuyer()
+        {
+            try
+            {
+                if (!AbpSession.UserId.HasValue)
+                {
+                    throw new UserFriendlyException("用户未登录");
+                }
+
+                var output = new GetEachTypeOrderCountOutputDto();
+
+                output.WaitPay = await _paymentRepository.CountAsync(t => t.BuyerId == AbpSession.UserId.Value && t.PaidTime == null);
+                output.WaitReceive = await _receivingRepository.CountAsync(t => t.BuyerId == AbpSession.UserId.Value);
+                output.WaitSend = await _sendingRepository.CountAsync(t =>t.BuyerId == AbpSession.UserId.Value);
+
+                return output;
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
+        }
+
         public async Task<PagedResultDto<GetCompletedOrdersOutputDto>> GetCompletedOrders(GetCompletedOrdersInputDto input)
         {
             var query = _completedRepository.GetAll().Where(o => o.BuyerId == AbpSession.UserId.Value || o.SellerId == AbpSession.UserId.Value);
