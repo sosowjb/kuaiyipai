@@ -1,6 +1,6 @@
 <view class="user-info flex-row">
     <image class="user-info-bg" mode="aspectFill" src="/content/images/img-user-bg.png"/>
-    <view class="flex-grow-1 flex-y-center flex-row">
+   <!-- <view class="flex-grow-1 flex-y-center flex-row">
         <view class="flex-grow-0">
           <image wx:if="{{userInfo && userInfo.avatarUrl}}" class="avatar" src="{{userInfo.avatarUrl}}"/>
           <image wx:if="{{!userInfo && !userInfo.avatarUrl}}" class="avatar" src="{{imageLink}}/application/User/default.jpg"/>
@@ -8,7 +8,14 @@
         <view class="flex-grow-1">
             <text class="user-name">{{userInfo.nickName}}\n{{userInfo.phoneNumber}}</text>
         </view>
+    </view>-->
+    <view class="userinfo">
+      <view class="userinfo-avatar">
+        <open-data  type="userAvatarUrl"></open-data>
+      </view>
+        <open-data type="userNickName"></open-data>
     </view>
+
     <!--<view class="flex-grow-0 flex-y-center">
         <navigator class="my-address flex-y-center" url="/pages/setting/index">
             <i class="iconfont icon-fm-arrowright" />

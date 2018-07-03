@@ -1,6 +1,6 @@
 <view class="user-info flex-row">
     <image class="user-info-bg" mode="aspectFill" src="/content/images/img-user-bg.png"/>
-    <view class="flex-grow-1 flex-y-center flex-row">
+    <!--<view class="flex-grow-1 flex-y-center flex-row">
         <view class="flex-grow-0">
                     <image wx:if="{{userInfo && userInfo.avatarUrl}}" class="avatar" src="{{userInfo.avatarUrl}}"/>
           <image wx:if="{{!userInfo && !userInfo.avatarUrl}}" class="avatar" src="{{imageLink}}/application/User/default.jpg"/>
@@ -8,13 +8,19 @@
         <view class="flex-grow-1">
             <text class="user-name">{{userInfo.nickName}}\n{{userInfo.phoneNumber}}</text>
         </view>
-    </view>
+    </view>-->
     <!--<view class="flex-grow-0 flex-y-center">
         <navigator class="my-address flex-y-center" url="/pages/setting/index">
             <i class="iconfont icon-fm-arrowright" />
             <text >设置</text>        
         </navigator>
     </view>-->
+     <view class="userinfo">
+      <view class="userinfo-avatar">
+        <open-data  type="userAvatarUrl"></open-data>
+      </view>
+        <open-data type="userNickName"></open-data>
+    </view>
   </view>
 <view style="height:20rpx;background: #eee;width:100%;"></view>  
 <view class="order-block">
@@ -113,11 +119,11 @@
           </view>
       </view>
   </navigator>
-  <!--<navigator class="option-item" url='/pages/select-address/index'>
+<navigator class="option-item" url='/pages/select-address/index'>
       <view class="flex-row option-content">
           <view class="flex-grow-1 flex-row">
               <view class="flex-grow-0 flex-y-center">
-                  <i class='option-icon iconfont icon-fm-pd fi-499bf7'/>
+                  <i class='icoFontSize15 option-icon iconfont icon-fm-pd fi-499bf7'/>
               </view>
               <view class="flex-grow-1 flex-y-center">                    
                 货架管理
@@ -128,5 +134,5 @@
           </view>
       </view>
   </navigator>
-  -->
+
 </view>
