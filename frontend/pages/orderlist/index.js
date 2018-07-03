@@ -9,7 +9,10 @@ Page({
     currentPage:0,
     pageSize:3,
     status:2,
-    isSeller:0
+    isSeller:0,
+    Deliveryhidden:true,
+    DeliveryId:"",
+    orderid:""
   },
   statusTap:function(e){
     var that = this;
@@ -61,8 +64,95 @@ Page({
       }
     });
   },
+  showModel:function(e){
+    var orderId = e.currentTarget.dataset.id;
+    console.log(orderId);
+    this.setData({
+      Deliveryhidden:false,
+      orderid: orderId
+    });
+  },
+  hiddenModel: function (e) {
+    this.setData({
+      Deliveryhidden: true
+    });
+  },
+  showModal: function(msg) {
+    wx.showModal({
+      content: msg,
+      showCancel: false,
+    })
+  },
+  toReceived:function(e){//确认收货
+    var orderId = e.currentTarget.dataset.id;
+    if (orderId == "") {
+      that.showModal("订单号不能为空");
+      return;
+    }
+    wx.showLoading();
+    wx.request({
+      url: app.globalData.apiLink + "/api/services/app/OrderOps/Receive",
+      method: "POST",
+      header: {
+        'Abp.TenantId': '1',
+        'Content-Type': 'application/json',
+        'Authorization': "Bearer " + wx.getStorageSync("accessToken")
+      },
+      data: {
+        "orderId": orderId
+      },
+      success: (res) => {
+        wx.hideLoading();
+        if (res.data.success) {
+          that.showModal("收货成功！");
+        }
+      }
+    }) 
+  },
+  toEvaluation: function (e) {//立即评价
+
+  },
   toSend:function(e){
-    
+    var that = this;
+   // console.log(e.target.dataset.deliverid);
+   // console.log(that.data.orderid);
+    if(e.target.dataset.deliverid=="")
+    {
+      that.showModal("快递单号不能为空");
+      return;
+    }
+    if (that.data.orderId == "") {
+      that.showModal("订单号不能为空");
+      return;
+    }
+    wx.showLoading();
+    wx.request({
+      url: app.globalData.apiLink + "/api/services/app/OrderOps/Send",
+      method: "POST",
+      header: {
+        'Abp.TenantId': '1',
+        'Content-Type': 'application/json',
+        'Authorization': "Bearer " + wx.getStorageSync("accessToken")
+      },
+      data: {
+        "orderId": that.data.orderid,
+        "deliveryId": e.target.dataset.deliverid 
+      },
+      success: (res) => {
+        wx.hideLoading();
+        if (res.data.success)
+        {
+          that.showModal("发货成功！");
+        }
+      }
+    }) 
+  },
+  GetDeliveryId:function(e){
+    console.log(e);
+    var that = this;
+    that.setData({
+      DeliveryId: e.detail.value
+    });
   },
   onLoad: function (e){
     console.log(e);

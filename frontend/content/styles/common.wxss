@@ -134,8 +134,8 @@
     height: 22rpx;
 }
 .address-add{position: fixed;bottom:0;width: 100%;}
-.address-list {margin-bottom: 46px;}
-.btn{
+.address-list {margin-bottom: 16px;}
+.btn-dongjie{
   display: block;
     width: 690rpx;
     height: 80rpx;

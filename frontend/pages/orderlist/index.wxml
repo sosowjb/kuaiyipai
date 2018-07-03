@@ -24,9 +24,14 @@
             </view>
             <view class="price-box">
                 <view class="total-price">合计：¥ {{item.itemPriceAmount+item.expressCostAmount}}</view>
-                <view class="btn topay-btn" hidden="{{status==0? false : true}}" bindtap="toPayTap" data-id="{{item.id}}" data-money="{{(item.itemPriceAmount+item.expressCostAmount)}}">马上付款</view>               <view class="btn topay-btn" hidden="{{status==1 && isSeller==1? false : true}}" bindtap="toSend" data-id="{{item.id}}" >立即发货</view> 
+                <view class="btn topay-btn" hidden="{{status==0? false : true}}" bindtap="toPayTap" data-id="{{item.id}}" data-money="{{(item.itemPriceAmount+item.expressCostAmount)}}">马上付款</view>
+                <view class="btn topay-btn" hidden="{{status==1 && isSeller==1? false : true}}" bindtap="showModel" data-id="{{item.id}}" >立即发货</view> 
+                 <view class="btn topay-btn" hidden="{{status==2 && isSeller==0? false : true}}" bindtap="toReceived" data-id="{{item.id}}" >确认收货</view> 
             </view>  
         </view>
       </view>
     </scroll-view>
 </view>
+<modal hidden="{{Deliveryhidden}}" data-DeliverId='{{DeliveryId}}'  data-OrderId='{{orderid}}' confirm-text="确定" cancel-text="取消" bindcancel="hiddenModel" bindconfirm="toSend" >
+    <input name="title" class="inputborder weui-input" placeholder="请输入快递单号" type="text"  value='{{DeliveryId}}' bindinput="GetDeliveryId" confirm-type="next"  />
+</modal>
