@@ -67,7 +67,7 @@ namespace Kuaiyipai.Auction.Order
 
         public async Task<PagedResultDto<GetWaitingForSendingOrdersOutputDto>> GetWaitingForSendingOrdersAsBuyer(GetWaitingForSendingOrdersInputDto input)
         {
-            var query = _sendingRepository.GetAll().Where(o => o.BuyerId == AbpSession.UserId.Value);
+            var query = _sendingRepository.GetAll().Where(o => o.BuyerId == AbpSession.UserId.Value && o.SentTime == null);
             if (!input.Sorting.IsNullOrEmpty())
             {
                 query = query.OrderBy(input.Sorting);
@@ -93,7 +93,7 @@ namespace Kuaiyipai.Auction.Order
 
         public async Task<PagedResultDto<GetWaitingForReceivingOrdersOutputDto>> GetWaitingForReceivingOrdersAsBuyer(GetWaitingForReceivingOrdersInputDto input)
         {
-            var query = _receivingRepository.GetAll().Where(o => o.BuyerId == AbpSession.UserId.Value);
+            var query = _receivingRepository.GetAll().Where(o => o.BuyerId == AbpSession.UserId.Value && o.ReceivedTime == null);
             if (!input.Sorting.IsNullOrEmpty())
             {
                 query = query.OrderBy(input.Sorting);
@@ -119,7 +119,7 @@ namespace Kuaiyipai.Auction.Order
 
         public async Task<PagedResultDto<GetWaitingForEvaluatingOrdersOutputDto>> GetWaitingForEvaluatingOrdersAsBuyer(GetWaitingForEvaluatingOrdersInputDto input)
         {
-            var query = _evaluatingRepository.GetAll().Where(o => o.BuyerId == AbpSession.UserId.Value);
+            var query = _evaluatingRepository.GetAll().Where(o => o.BuyerId == AbpSession.UserId.Value && o.EvaluatedTime == null);
             if (!input.Sorting.IsNullOrEmpty())
             {
                 query = query.OrderBy(input.Sorting);
