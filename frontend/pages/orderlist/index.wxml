@@ -22,6 +22,14 @@
                    <view wx:if="{{item.remark && item.remark != ''}}">备注： {{item.remark}}</view>
                 </view>
             </view>
+            <view class="goods-info" bindtap="orderDetail" data-id="{{item.id}}">
+                <view class="goods-des">
+                   <view>拍品名称:{{item.itemTitle}} </view>
+                </view>
+                <view class="goods-img">
+                  <image src="{{item.itemPicUrl}}" style="width:60rpx;height:60rpx;"></image>
+                </view>
+            </view>
             <view class="price-box">
                 <view class="total-price">合计：¥ {{item.itemPriceAmount+item.expressCostAmount}}</view>
                 <view class="btn topay-btn" hidden="{{status==0? false : true}}" bindtap="toPayTap" data-id="{{item.id}}" data-money="{{(item.itemPriceAmount+item.expressCostAmount)}}">马上付款</view>
