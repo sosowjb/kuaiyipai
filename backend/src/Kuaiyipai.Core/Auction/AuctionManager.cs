@@ -83,7 +83,9 @@ namespace Kuaiyipai.Auction
                     PriceLimit = itemAuctioning.PriceLimit,
                     StartTime = itemAuctioning.StartTime,
                     Title = itemAuctioning.Title,
-                    Description = itemAuctioning.Description
+                    Description = itemAuctioning.Description,
+                    BiddingCount = itemAuctioning.BiddingCount,
+                    HighestBiddingPrice = itemAuctioning.HighestBiddingPrice
                 };
                 await _itemCompleteRepository.InsertAsync(itemComplete);
                 await _itemAuctioningRepository.DeleteAsync(itemAuctioning.Id);

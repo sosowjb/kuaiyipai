@@ -369,6 +369,7 @@ namespace Kuaiyipai.Auction.Order
                             order.OrderStatus = 2;
                             order.OrderTime = order2.OrderTime;
                             order.Price = order2.Amount;
+                            order.PaidTime = order2.PaidTime;
                             order.AuctionNum = order2.Code;
                             order.DeliveryType = "快递";
                             order.DeliveryId = order2.DeliveryId;
@@ -383,6 +384,7 @@ namespace Kuaiyipai.Auction.Order
                         order.OrderStatus = 3;
                         order.OrderTime = order3.OrderTime;
                         order.Price = order3.Amount;
+                        order.PaidTime = order3.PaidTime;
                         order.AuctionNum = order3.Code;
                         order.DeliveryType = "快递";
                         order.DeliveryId = order3.DeliveryId;
@@ -397,6 +399,7 @@ namespace Kuaiyipai.Auction.Order
                     order.OrderStatus = 4;
                     order.OrderTime = order4.OrderTime;
                     order.Price = order4.Amount;
+                    order.PaidTime = order4.PaidTime;
                     order.AuctionNum = order4.Code;
                     order.DeliveryType = "快递";
                     order.DeliveryId = order4.DeliveryId;
@@ -411,6 +414,7 @@ namespace Kuaiyipai.Auction.Order
                 order.OrderStatus = 5;
                 order.OrderTime = order5.OrderTime;
                 order.Price = order5.Amount;
+                order.PaidTime = order5.PaidTime;
                 order.AuctionNum = order5.Code;
                 order.DeliveryType = "快递";
                 order.DeliveryId = order5.DeliveryId;

@@ -30,10 +30,13 @@ namespace Kuaiyipai.Auction.Item
         private readonly IRepository<Entities.Pillar> _pillarRepository;
         private readonly IRepository<Entities.Category> _categoryRepository;
         private readonly IRepository<User, long> _userRepository;
+        private readonly IRepository<UserBiddingRecord, Guid> _biddingRepository;
+        private readonly IRepository<Entities.Address, Guid> _addressRepository;
+        private readonly IRepository<OrderWaitingForPayment, Guid> _orderRepository;
         private readonly IConfigurationRoot _appConfiguration;
         private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public ItemAppService(IHostingEnvironment env, IRepository<ItemDrafting, Guid> itemDraftingRepository, IRepository<ItemAuctioning, Guid> itemAuctioningRepository, IRepository<ItemCompleted, Guid> itemCompletedRepository, IRepository<ItemTerminated, Guid> itemTerminatedRepository, IRepository<Entities.Pillar> pillarRepository, IRepository<Entities.Category> categoryRepository, IRepository<ItemPic, Guid> itemPicRepository, IHttpContextAccessor httpContextAccessor, IRepository<User, long> userRepository)
+        public ItemAppService(IHostingEnvironment env, IRepository<ItemDrafting, Guid> itemDraftingRepository, IRepository<ItemAuctioning, Guid> itemAuctioningRepository, IRepository<ItemCompleted, Guid> itemCompletedRepository, IRepository<ItemTerminated, Guid> itemTerminatedRepository, IRepository<Entities.Pillar> pillarRepository, IRepository<Entities.Category> categoryRepository, IRepository<ItemPic, Guid> itemPicRepository, IHttpContextAccessor httpContextAccessor, IRepository<User, long> userRepository, IRepository<UserBiddingRecord, Guid> biddingRepository, IRepository<Entities.Address, Guid> addressRepository, IRepository<OrderWaitingForPayment, Guid> orderRepository)
         {
             _itemDraftingRepository = itemDraftingRepository;
             _itemAuctioningRepository = itemAuctioningRepository;
@@ -45,6 +48,9 @@ namespace Kuaiyipai.Auction.Item
             _categoryRepository = categoryRepository;
             _appConfiguration = env.GetAppConfiguration();
             _userRepository = userRepository;
+            _biddingRepository = biddingRepository;
+            _addressRepository = addressRepository;
+            _orderRepository = orderRepository;
         }
 
         public async Task<Guid> CreateItem(CreateItemInputDto input)
@@ -111,29 +117,68 @@ namespace Kuaiyipai.Auction.Item
 
         public async Task CompleteAuction(EntityDto<Guid> input)
         {
-            var item = await _itemAuctioningRepository.FirstOrDefaultAsync(input.Id);
-            if (item == null)
+            // get bidding
+            var itemAuctioning = await _itemAuctioningRepository.FirstOrDefaultAsync(input.Id);
+            if (itemAuctioning == null)
             {
                 throw new UserFriendlyException("此ID的货品不存在");
             }
 
-            var itemCompleted = new ItemCompleted
+            var bidding = await _biddingRepository.GetAll().Where(b => b.ItemId == itemAuctioning.Id)
+                .OrderByDescending(b => b.CreationTime).FirstOrDefaultAsync();
+
+            if (bidding == null)
             {
-                Id = item.Id,
-                Code = item.Code,
-                PillarId = item.PillarId,
-                CategoryId = item.CategoryId,
-                StartPrice = item.StartPrice,
-                StepPrice = item.StepPrice,
-                StartTime = item.StartTime,
-                Deadline = item.Deadline,
-                Title = item.Title,
-                Description = item.Description,
-                BiddingCount = item.BiddingCount,
-                HighestBiddingPrice = item.HighestBiddingPrice
+                throw new UserFriendlyException("没有人出价，请手动流拍");
+            }
+
+
+            // get buyer and seller
+            User buyer = null, seller = null;
+            if (bidding.CreatorUserId != null)
+                buyer = await _userRepository.GetAsync(bidding.CreatorUserId.Value);
+            if (itemAuctioning.CreatorUserId != null)
+                seller = await _userRepository.GetAsync(itemAuctioning.CreatorUserId.Value);
+
+            // get address
+            var address = await _addressRepository.GetAll().Where(a => a.CreatorUserId.Value == buyer.Id && a.IsDefault).FirstOrDefaultAsync();
+
+            // create order
+            var random = new Random();
+            if (buyer != null && seller != null)
+            {
+                var order = new OrderWaitingForPayment
+                {
+                    Code = DateTime.Now.Ticks + random.Next(0, 99999).ToString().PadLeft(5, '0'),
+                    BuyerId = buyer.Id,
+                    SellerId = seller.Id,
+                    AddressId = address.Id,
+                    Amount = bidding.Price,
+                    ItemPriceAmount = bidding.Price,
+                    OrderTime = DateTime.Now,
+                    ItemId = itemAuctioning.Id
+                };
+                await _orderRepository.InsertAsync(order);
+            }
+
+            // change item status
+            var itemComplete = new ItemCompleted
+            {
+                Id = itemAuctioning.Id,
+                Code = itemAuctioning.Code,
+                PillarId = itemAuctioning.PillarId,
+                CategoryId = itemAuctioning.CategoryId,
+                StartPrice = itemAuctioning.StartPrice,
+                StepPrice = itemAuctioning.StepPrice,
+                PriceLimit = itemAuctioning.PriceLimit,
+                StartTime = itemAuctioning.StartTime,
+                Title = itemAuctioning.Title,
+                Description = itemAuctioning.Description,
+                BiddingCount = itemAuctioning.BiddingCount,
+                HighestBiddingPrice = itemAuctioning.HighestBiddingPrice
             };
-            await _itemAuctioningRepository.DeleteAsync(input.Id);
-            await _itemCompletedRepository.InsertAsync(itemCompleted);
+            await _itemCompletedRepository.InsertAsync(itemComplete);
+            await _itemAuctioningRepository.DeleteAsync(itemAuctioning.Id);
         }
 
         public async Task TerminateAuction(EntityDto<Guid> input)
@@ -479,16 +524,16 @@ namespace Kuaiyipai.Auction.Item
 
         public async Task<GetItemOutputDto> GetItem(EntityDto<Guid> input)
         {
-            var item1 =await _itemDraftingRepository.GetAll().Join(_userRepository.GetAll(),item => item.CreatorUserId, user => user.Id, (item, user) => new { item, user }).FirstOrDefaultAsync(o=>o.item.Id==input.Id);
+            var item1 = await _itemDraftingRepository.GetAll().Join(_userRepository.GetAll(), item => item.CreatorUserId, user => user.Id, (item, user) => new { item, user }).FirstOrDefaultAsync(o => o.item.Id == input.Id);
             if (item1 == null)
             {
-                var item2 =await _itemAuctioningRepository.GetAll().Join(_userRepository.GetAll(), item => item.CreatorUserId, user => user.Id, (item, user) => new { item, user }).FirstOrDefaultAsync(o => o.item.Id == input.Id);
+                var item2 = await _itemAuctioningRepository.GetAll().Join(_userRepository.GetAll(), item => item.CreatorUserId, user => user.Id, (item, user) => new { item, user }).FirstOrDefaultAsync(o => o.item.Id == input.Id);
                 if (item2 == null)
                 {
-                    var item3 =await _itemCompletedRepository.GetAll().Join(_userRepository.GetAll(), item => item.CreatorUserId, user => user.Id, (item, user) => new { item, user }).FirstOrDefaultAsync(o => o.item.Id == input.Id);
+                    var item3 = await _itemCompletedRepository.GetAll().Join(_userRepository.GetAll(), item => item.CreatorUserId, user => user.Id, (item, user) => new { item, user }).FirstOrDefaultAsync(o => o.item.Id == input.Id);
                     if (item3 == null)
                     {
-                        var item4 =await _itemTerminatedRepository.GetAll().Join(_userRepository.GetAll(), item => item.CreatorUserId, user => user.Id, (item, user) => new { item, user }).FirstOrDefaultAsync(o => o.item.Id == input.Id);
+                        var item4 = await _itemTerminatedRepository.GetAll().Join(_userRepository.GetAll(), item => item.CreatorUserId, user => user.Id, (item, user) => new { item, user }).FirstOrDefaultAsync(o => o.item.Id == input.Id);
                         if (item4 == null)
                         {
                             throw new UserFriendlyException("商品不存在");
@@ -510,9 +555,9 @@ namespace Kuaiyipai.Auction.Item
                             Status = "Terminated",
                             BiddingCount = item4.item.BiddingCount,
                             HighestBiddingPrice = item4.item.HighestBiddingPrice,
-                            CreatorUserId=item4.item.CreatorUserId,
+                            CreatorUserId = item4.item.CreatorUserId,
                             Avator = item4.user.AvatarLink,
-                            NikeName =item4.user.NickName
+                            NikeName = item4.user.NickName
                         };
                     }
 
@@ -533,7 +578,7 @@ namespace Kuaiyipai.Auction.Item
                         BiddingCount = item3.item.BiddingCount,
                         HighestBiddingPrice = item3.item.HighestBiddingPrice,
                         CreatorUserId = item3.item.CreatorUserId,
-                        Avator=item3.user.AvatarLink,
+                        Avator = item3.user.AvatarLink,
                         NikeName = item3.user.NickName
 
                     };
@@ -588,7 +633,7 @@ namespace Kuaiyipai.Auction.Item
                 var message = wx;
                 throw;
             }
-            
+
         }
 
         public async Task<PagedResultDto<GetAuctionItemsOutputDto>> GetAuctionItemsEx(GetAuctionItemsExInputDto input)
@@ -602,7 +647,7 @@ namespace Kuaiyipai.Auction.Item
                     (!input.DeadlineStart.HasValue || i.Deadline >= input.DeadlineStart) &&
                     (!input.DeadlineEnd.HasValue || i.Deadline <= input.DeadlineEnd) &&
                     (!input.PriceStart.HasValue || i.StartPrice >= input.PriceStart) &&
-                    (!input.PriceEnd.HasValue || i.StartPrice <= input.PriceEnd)&&
+                    (!input.PriceEnd.HasValue || i.StartPrice <= input.PriceEnd) &&
                     (string.IsNullOrEmpty(input.Title) || i.Title.Contains(input.Title)));
             var pillarQuery = _pillarRepository.GetAll();
             var categoryQuery = _categoryRepository.GetAll();
@@ -755,7 +800,7 @@ namespace Kuaiyipai.Auction.Item
                              CurrentPrice = itemss.items.item.HighestBiddingPrice,
                              biddingCount = itemss.items.item.BiddingCount
                          }).ToListAsync();
-            return new PagedResultDto<GetAuctionItemsOutputDto>(count,list);
+            return new PagedResultDto<GetAuctionItemsOutputDto>(count, list);
 
         }
     }

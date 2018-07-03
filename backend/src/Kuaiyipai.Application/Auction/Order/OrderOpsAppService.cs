@@ -72,10 +72,19 @@ namespace Kuaiyipai.Auction.Order
                 BuyerId = order.BuyerId,
                 SellerId = order.SellerId,
                 AddressId = order.AddressId,
-                OrderTime = order.OrderTime,
+                DeliveryId = order.DeliveryId,
                 Amount = order.Amount,
                 ItemPriceAmount = order.ItemPriceAmount,
-                ExpressCostAmount = order.ExpressCostAmount
+                ExpressCostAmount = order.ExpressCostAmount,
+                ItemId = order.ItemId,
+                EvaluationLevel = order.EvaluationLevel,
+                EvaluationContent = order.EvaluationContent,
+                OrderTime = order.OrderTime,
+                PaidTime = DateTime.Now,
+                SentTime = order.SentTime,
+                ReceivedTime = order.ReceivedTime,
+                EvaluatedTime = order.EvaluatedTime,
+                CompletedTime = order.CompletedTime
             };
             await _sendingRepository.InsertAsync(sendingOrder);
         }
@@ -109,10 +118,19 @@ namespace Kuaiyipai.Auction.Order
                 BuyerId = order.BuyerId,
                 SellerId = order.SellerId,
                 AddressId = order.AddressId,
-                OrderTime = order.OrderTime,
+                DeliveryId = input.DeliveryId,
                 Amount = order.Amount,
                 ItemPriceAmount = order.ItemPriceAmount,
-                ExpressCostAmount = order.ExpressCostAmount
+                ExpressCostAmount = order.ExpressCostAmount,
+                ItemId = order.ItemId,
+                EvaluationLevel = order.EvaluationLevel,
+                EvaluationContent = order.EvaluationContent,
+                OrderTime = order.OrderTime,
+                PaidTime = order.PaidTime,
+                SentTime = DateTime.Now,
+                ReceivedTime = order.ReceivedTime,
+                EvaluatedTime = order.EvaluatedTime,
+                CompletedTime = order.CompletedTime
             };
             await _receivingRepository.InsertAsync(receivingOrder);
         }
@@ -145,11 +163,19 @@ namespace Kuaiyipai.Auction.Order
                 BuyerId = order.BuyerId,
                 SellerId = order.SellerId,
                 AddressId = order.AddressId,
-                OrderTime = order.OrderTime,
-                Amount = order.Amount,
                 DeliveryId = order.DeliveryId,
+                Amount = order.Amount,
                 ItemPriceAmount = order.ItemPriceAmount,
-                ExpressCostAmount = order.ExpressCostAmount
+                ExpressCostAmount = order.ExpressCostAmount,
+                ItemId = order.ItemId,
+                EvaluationLevel = order.EvaluationLevel,
+                EvaluationContent = order.EvaluationContent,
+                OrderTime = order.OrderTime,
+                PaidTime = order.PaidTime,
+                SentTime = order.SentTime,
+                ReceivedTime = DateTime.Now,
+                EvaluatedTime = order.EvaluatedTime,
+                CompletedTime = order.CompletedTime
             };
             await _evaluatingRepository.InsertAsync(evaluatingOrder);
 
@@ -204,13 +230,19 @@ namespace Kuaiyipai.Auction.Order
                 BuyerId = order.BuyerId,
                 SellerId = order.SellerId,
                 AddressId = order.AddressId,
-                OrderTime = order.OrderTime,
+                DeliveryId = order.DeliveryId,
                 Amount = order.Amount,
                 ItemPriceAmount = order.ItemPriceAmount,
                 ExpressCostAmount = order.ExpressCostAmount,
-                DeliveryId = order.DeliveryId,
+                ItemId = order.ItemId,
                 EvaluationLevel = input.EvaluationLevel,
-                EvaluationContent = input.EvaluationContent
+                EvaluationContent = input.EvaluationContent,
+                OrderTime = order.OrderTime,
+                PaidTime = order.PaidTime,
+                SentTime = order.SentTime,
+                ReceivedTime = order.ReceivedTime,
+                EvaluatedTime = DateTime.Now,
+                CompletedTime = DateTime.Now
             };
             await _completedRepository.InsertAsync(completedOrder);
         }

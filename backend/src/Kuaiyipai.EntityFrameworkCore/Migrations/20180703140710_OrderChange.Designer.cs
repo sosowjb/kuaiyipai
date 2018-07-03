@@ -19,9 +19,10 @@ using System;
 namespace Kuaiyipai.Migrations
 {
     [DbContext(typeof(KuaiyipaiDbContext))]
-    partial class KuaiyipaiDbContextModelSnapshot : ModelSnapshot
+    [Migration("20180703140710_OrderChange")]
+    partial class OrderChange
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

@@ -32,8 +32,6 @@ namespace Kuaiyipai.Auction.Entities
         /// </summary>
         public string DeliveryId { get; set; }
 
-        public DateTime OrderTime { get; set; }
-
         /// <summary>
         /// 总价
         /// </summary>
@@ -51,5 +49,23 @@ namespace Kuaiyipai.Auction.Entities
 
         [Required]
         public Guid ItemId { get; set; }
+
+        [Range(1, 5)]
+        public int? EvaluationLevel { get; set; }
+
+        public string EvaluationContent { get; set; }
+
+        [Required]
+        public DateTime OrderTime { get; set; }
+
+        public DateTime? PaidTime { get; set; }
+
+        public DateTime? SentTime { get; set; }
+
+        public DateTime? ReceivedTime { get; set; }
+
+        public DateTime? EvaluatedTime { get; set; }
+
+        public DateTime? CompletedTime { get; set; }
     }
 }
