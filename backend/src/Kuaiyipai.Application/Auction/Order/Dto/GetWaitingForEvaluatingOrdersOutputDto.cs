@@ -22,5 +22,9 @@ namespace Kuaiyipai.Auction.Order.Dto
         public double ItemPriceAmount { get; set; }
 
         public double ExpressCostAmount { get; set; }
+
+        public string ItemTitle { get; set; }
+
+        public string ItemPicUrl { get; set; }
     }
 }

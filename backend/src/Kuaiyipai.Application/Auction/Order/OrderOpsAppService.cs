@@ -87,6 +87,7 @@ namespace Kuaiyipai.Auction.Order
                 CompletedTime = order.CompletedTime
             };
             await _sendingRepository.InsertAsync(sendingOrder);
+            await _paymentRepository.DeleteAsync(input.OrderId);
         }
 
         public async Task Send(SendInputDto input)
@@ -133,6 +134,7 @@ namespace Kuaiyipai.Auction.Order
                 CompletedTime = order.CompletedTime
             };
             await _receivingRepository.InsertAsync(receivingOrder);
+            await _sendingRepository.DeleteAsync(input.OrderId);
         }
 
         public async Task Receive(ReceiveInputDto input)
@@ -178,6 +180,7 @@ namespace Kuaiyipai.Auction.Order
                 CompletedTime = order.CompletedTime
             };
             await _evaluatingRepository.InsertAsync(evaluatingOrder);
+            await _receivingRepository.DeleteAsync(input.OrderId);
 
             // 余额变化
             var buyerBalance = await _balanceRepository.FirstOrDefaultAsync(b => b.UserId == order.BuyerId);
@@ -245,6 +248,7 @@ namespace Kuaiyipai.Auction.Order
                 CompletedTime = DateTime.Now
             };
             await _completedRepository.InsertAsync(completedOrder);
+            await _evaluatingRepository.DeleteAsync(input.OrderId);
         }
     }
 }

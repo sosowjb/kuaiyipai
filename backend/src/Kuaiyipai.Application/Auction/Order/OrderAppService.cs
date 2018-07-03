@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Dynamic.Core;
 using System.Threading.Tasks;
@@ -10,7 +11,10 @@ using Castle.Core.Internal;
 using Kuaiyipai.Auction.Entities;
 using Kuaiyipai.Auction.Order.Dto;
 using Kuaiyipai.Authorization.Users;
+using Kuaiyipai.Configuration;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 
 namespace Kuaiyipai.Auction.Order
 {
@@ -25,8 +29,9 @@ namespace Kuaiyipai.Auction.Order
         private readonly IRepository<Entities.Address, Guid> _addressRepository;
         private readonly IRepository<ItemCompleted, Guid> _itemRepository;
         private readonly IRepository<ItemPic, Guid> _itemPicRepository;
+        private readonly IConfigurationRoot _appConfiguration;
 
-        public OrderAppService(IRepository<OrderWaitingForPayment, Guid> paymentRepository, IRepository<OrderWaitingForSending, Guid> sendingRepository, IRepository<OrderWaitingForReceiving, Guid> receivingRepository, IRepository<OrderWaitingForEvaluating, Guid> evaluatingRepository, IRepository<OrderCompleted, Guid> completedRepository, IRepository<User, long> userRepository, IRepository<Entities.Address, Guid> addressRepository, IRepository<ItemCompleted, Guid> itemRepository, IRepository<ItemPic, Guid> itemPicRepository)
+        public OrderAppService(IHostingEnvironment env, IRepository<OrderWaitingForPayment, Guid> paymentRepository, IRepository<OrderWaitingForSending, Guid> sendingRepository, IRepository<OrderWaitingForReceiving, Guid> receivingRepository, IRepository<OrderWaitingForEvaluating, Guid> evaluatingRepository, IRepository<OrderCompleted, Guid> completedRepository, IRepository<User, long> userRepository, IRepository<Entities.Address, Guid> addressRepository, IRepository<ItemCompleted, Guid> itemRepository, IRepository<ItemPic, Guid> itemPicRepository)
         {
             _paymentRepository = paymentRepository;
             _sendingRepository = sendingRepository;
@@ -37,6 +42,7 @@ namespace Kuaiyipai.Auction.Order
             _addressRepository = addressRepository;
             _itemRepository = itemRepository;
             _itemPicRepository = itemPicRepository;
+            _appConfiguration = env.GetAppConfiguration();
         }
 
         public async Task<PagedResultDto<GetWaitingForPaymentOrdersOutputDto>> GetWaitingForPaymentOrdersAsBuyer(GetWaitingForPaymentOrdersInputDto input)
@@ -48,21 +54,55 @@ namespace Kuaiyipai.Auction.Order
             }
 
             var count = await query.CountAsync();
-            var list = await query.PageBy(input).Select(o => new GetWaitingForPaymentOrdersOutputDto
+            var list = await query.PageBy(input).Select(o => new
             {
-                Id = o.Id,
-                Code = o.Code,
-                BuyerId = o.BuyerId,
-                SellerId = o.SellerId,
-                AddressId = o.AddressId,
-                DeliveryId = o.DeliveryId,
-                OrderTime = o.OrderTime,
-                Amount = o.Amount,
-                ItemPriceAmount = o.ItemPriceAmount,
-                ExpressCostAmount = o.ExpressCostAmount
+                o.Id,
+                o.Code,
+                o.BuyerId,
+                o.SellerId,
+                o.AddressId,
+                o.DeliveryId,
+                o.OrderTime,
+                o.Amount,
+                o.ItemPriceAmount,
+                o.ExpressCostAmount,
+                o.ItemId
             }).ToListAsync();
 
-            return new PagedResultDto<GetWaitingForPaymentOrdersOutputDto>(count, list);
+            var itemIdList = list.Select(o => o.ItemId).ToList();
+
+            var items = await _itemRepository.GetAll().Where(i => itemIdList.Contains(i.Id)).Select(i => new
+            {
+                ItemId = i.Id,
+                ItemTitle = i.Title
+            }).ToListAsync();
+            var pics = await _itemPicRepository.GetAll().Where(i => itemIdList.Contains(i.ItemId) && i.IsCover).Select(i => new
+            {
+                i.ItemId,
+                Url = new Uri(new Uri(new Uri(_appConfiguration["App:ImageUrlPrefix"]), i.Path), i.FileName + i.Extension).ToString()
+            }).ToListAsync();
+
+            var newList = new List<GetWaitingForPaymentOrdersOutputDto>();
+            foreach (var o in list)
+            {
+                newList.Add(new GetWaitingForPaymentOrdersOutputDto
+                {
+                    Id = o.Id,
+                    Code = o.Code,
+                    BuyerId = o.BuyerId,
+                    SellerId = o.SellerId,
+                    AddressId = o.AddressId,
+                    DeliveryId = o.DeliveryId,
+                    OrderTime = o.OrderTime,
+                    Amount = o.Amount,
+                    ItemPriceAmount = o.ItemPriceAmount,
+                    ExpressCostAmount = o.ExpressCostAmount,
+                    ItemTitle = items.FirstOrDefault(i => i.ItemId == o.ItemId)?.ItemTitle,
+                    ItemPicUrl = pics.FirstOrDefault(i => i.ItemId == o.ItemId)?.Url
+                });
+            }
+
+            return new PagedResultDto<GetWaitingForPaymentOrdersOutputDto>(count, newList);
         }
 
         public async Task<PagedResultDto<GetWaitingForSendingOrdersOutputDto>> GetWaitingForSendingOrdersAsBuyer(GetWaitingForSendingOrdersInputDto input)
@@ -74,21 +114,55 @@ namespace Kuaiyipai.Auction.Order
             }
 
             var count = await query.CountAsync();
-            var list = await query.PageBy(input).Select(o => new GetWaitingForSendingOrdersOutputDto
+            var list = await query.PageBy(input).Select(o => new
             {
-                Id = o.Id,
-                Code = o.Code,
-                BuyerId = o.BuyerId,
-                SellerId = o.SellerId,
-                AddressId = o.AddressId,
-                DeliveryId = o.DeliveryId,
-                OrderTime = o.OrderTime,
-                Amount = o.Amount,
-                ItemPriceAmount = o.ItemPriceAmount,
-                ExpressCostAmount = o.ExpressCostAmount
+                o.Id,
+                o.Code,
+                o.BuyerId,
+                o.SellerId,
+                o.AddressId,
+                o.DeliveryId,
+                o.OrderTime,
+                o.Amount,
+                o.ItemPriceAmount,
+                o.ExpressCostAmount,
+                o.ItemId
             }).ToListAsync();
 
-            return new PagedResultDto<GetWaitingForSendingOrdersOutputDto>(count, list);
+            var itemIdList = list.Select(o => o.ItemId).ToList();
+
+            var items = await _itemRepository.GetAll().Where(i => itemIdList.Contains(i.Id)).Select(i => new
+            {
+                ItemId = i.Id,
+                ItemTitle = i.Title
+            }).ToListAsync();
+            var pics = await _itemPicRepository.GetAll().Where(i => itemIdList.Contains(i.ItemId) && i.IsCover).Select(i => new
+            {
+                i.ItemId,
+                Url = new Uri(new Uri(new Uri(_appConfiguration["App:ImageUrlPrefix"]), i.Path), i.FileName + i.Extension).ToString()
+            }).ToListAsync();
+
+            var newList = new List<GetWaitingForSendingOrdersOutputDto>();
+            foreach (var o in list)
+            {
+                newList.Add(new GetWaitingForSendingOrdersOutputDto
+                {
+                    Id = o.Id,
+                    Code = o.Code,
+                    BuyerId = o.BuyerId,
+                    SellerId = o.SellerId,
+                    AddressId = o.AddressId,
+                    DeliveryId = o.DeliveryId,
+                    OrderTime = o.OrderTime,
+                    Amount = o.Amount,
+                    ItemPriceAmount = o.ItemPriceAmount,
+                    ExpressCostAmount = o.ExpressCostAmount,
+                    ItemTitle = items.FirstOrDefault(i => i.ItemId == o.ItemId)?.ItemTitle,
+                    ItemPicUrl = pics.FirstOrDefault(i => i.ItemId == o.ItemId)?.Url
+                });
+            }
+
+            return new PagedResultDto<GetWaitingForSendingOrdersOutputDto>(count, newList);
         }
 
         public async Task<PagedResultDto<GetWaitingForReceivingOrdersOutputDto>> GetWaitingForReceivingOrdersAsBuyer(GetWaitingForReceivingOrdersInputDto input)
@@ -100,21 +174,55 @@ namespace Kuaiyipai.Auction.Order
             }
 
             var count = await query.CountAsync();
-            var list = await query.PageBy(input).Select(o => new GetWaitingForReceivingOrdersOutputDto
+            var list = await query.PageBy(input).Select(o => new
             {
-                Id = o.Id,
-                Code = o.Code,
-                BuyerId = o.BuyerId,
-                SellerId = o.SellerId,
-                AddressId = o.AddressId,
-                DeliveryId = o.DeliveryId,
-                OrderTime = o.OrderTime,
-                Amount = o.Amount,
-                ItemPriceAmount = o.ItemPriceAmount,
-                ExpressCostAmount = o.ExpressCostAmount
+                o.Id,
+                o.Code,
+                o.BuyerId,
+                o.SellerId,
+                o.AddressId,
+                o.DeliveryId,
+                o.OrderTime,
+                o.Amount,
+                o.ItemPriceAmount,
+                o.ExpressCostAmount,
+                o.ItemId
             }).ToListAsync();
 
-            return new PagedResultDto<GetWaitingForReceivingOrdersOutputDto>(count, list);
+            var itemIdList = list.Select(o => o.ItemId).ToList();
+
+            var items = await _itemRepository.GetAll().Where(i => itemIdList.Contains(i.Id)).Select(i => new
+            {
+                ItemId = i.Id,
+                ItemTitle = i.Title
+            }).ToListAsync();
+            var pics = await _itemPicRepository.GetAll().Where(i => itemIdList.Contains(i.ItemId) && i.IsCover).Select(i => new
+            {
+                i.ItemId,
+                Url = new Uri(new Uri(new Uri(_appConfiguration["App:ImageUrlPrefix"]), i.Path), i.FileName + i.Extension).ToString()
+            }).ToListAsync();
+
+            var newList = new List<GetWaitingForReceivingOrdersOutputDto>();
+            foreach (var o in list)
+            {
+                newList.Add(new GetWaitingForReceivingOrdersOutputDto
+                {
+                    Id = o.Id,
+                    Code = o.Code,
+                    BuyerId = o.BuyerId,
+                    SellerId = o.SellerId,
+                    AddressId = o.AddressId,
+                    DeliveryId = o.DeliveryId,
+                    OrderTime = o.OrderTime,
+                    Amount = o.Amount,
+                    ItemPriceAmount = o.ItemPriceAmount,
+                    ExpressCostAmount = o.ExpressCostAmount,
+                    ItemTitle = items.FirstOrDefault(i => i.ItemId == o.ItemId)?.ItemTitle,
+                    ItemPicUrl = pics.FirstOrDefault(i => i.ItemId == o.ItemId)?.Url
+                });
+            }
+
+            return new PagedResultDto<GetWaitingForReceivingOrdersOutputDto>(count, newList);
         }
 
         public async Task<PagedResultDto<GetWaitingForEvaluatingOrdersOutputDto>> GetWaitingForEvaluatingOrdersAsBuyer(GetWaitingForEvaluatingOrdersInputDto input)
@@ -126,21 +234,55 @@ namespace Kuaiyipai.Auction.Order
             }
 
             var count = await query.CountAsync();
-            var list = await query.PageBy(input).Select(o => new GetWaitingForEvaluatingOrdersOutputDto
+            var list = await query.PageBy(input).Select(o => new
             {
-                Id = o.Id,
-                Code = o.Code,
-                BuyerId = o.BuyerId,
-                SellerId = o.SellerId,
-                AddressId = o.AddressId,
-                DeliveryId = o.DeliveryId,
-                OrderTime = o.OrderTime,
-                Amount = o.Amount,
-                ItemPriceAmount = o.ItemPriceAmount,
-                ExpressCostAmount = o.ExpressCostAmount
+                o.Id,
+                o.Code,
+                o.BuyerId,
+                o.SellerId,
+                o.AddressId,
+                o.DeliveryId,
+                o.OrderTime,
+                o.Amount,
+                o.ItemPriceAmount,
+                o.ExpressCostAmount,
+                o.ItemId
             }).ToListAsync();
 
-            return new PagedResultDto<GetWaitingForEvaluatingOrdersOutputDto>(count, list);
+            var itemIdList = list.Select(o => o.ItemId).ToList();
+
+            var items = await _itemRepository.GetAll().Where(i => itemIdList.Contains(i.Id)).Select(i => new
+            {
+                ItemId = i.Id,
+                ItemTitle = i.Title
+            }).ToListAsync();
+            var pics = await _itemPicRepository.GetAll().Where(i => itemIdList.Contains(i.ItemId) && i.IsCover).Select(i => new
+            {
+                i.ItemId,
+                Url = new Uri(new Uri(new Uri(_appConfiguration["App:ImageUrlPrefix"]), i.Path), i.FileName + i.Extension).ToString()
+            }).ToListAsync();
+
+            var newList = new List<GetWaitingForEvaluatingOrdersOutputDto>();
+            foreach (var o in list)
+            {
+                newList.Add(new GetWaitingForEvaluatingOrdersOutputDto
+                {
+                    Id = o.Id,
+                    Code = o.Code,
+                    BuyerId = o.BuyerId,
+                    SellerId = o.SellerId,
+                    AddressId = o.AddressId,
+                    DeliveryId = o.DeliveryId,
+                    OrderTime = o.OrderTime,
+                    Amount = o.Amount,
+                    ItemPriceAmount = o.ItemPriceAmount,
+                    ExpressCostAmount = o.ExpressCostAmount,
+                    ItemTitle = items.FirstOrDefault(i => i.ItemId == o.ItemId)?.ItemTitle,
+                    ItemPicUrl = pics.FirstOrDefault(i => i.ItemId == o.ItemId)?.Url
+                });
+            }
+
+            return new PagedResultDto<GetWaitingForEvaluatingOrdersOutputDto>(count, newList);
         }
 
         public async Task<PagedResultDto<GetCompletedOrdersOutputDto>> GetCompletedOrdersAsBuyer(GetCompletedOrdersInputDto input)
@@ -152,125 +294,295 @@ namespace Kuaiyipai.Auction.Order
             }
 
             var count = await query.CountAsync();
-            var list = await query.PageBy(input).Select(o => new GetCompletedOrdersOutputDto
+            var list = await query.PageBy(input).Select(o => new
             {
-                Id = o.Id,
-                Code = o.Code,
-                BuyerId = o.BuyerId,
-                SellerId = o.SellerId,
-                AddressId = o.AddressId,
-                DeliveryId = o.DeliveryId,
-                OrderTime = o.OrderTime,
-                Amount = o.Amount,
-                ItemPriceAmount = o.ItemPriceAmount,
-                ExpressCostAmount = o.ExpressCostAmount
+                o.Id,
+                o.Code,
+                o.BuyerId,
+                o.SellerId,
+                o.AddressId,
+                o.DeliveryId,
+                o.OrderTime,
+                o.Amount,
+                o.ItemPriceAmount,
+                o.ExpressCostAmount,
+                o.ItemId
             }).ToListAsync();
 
-            return new PagedResultDto<GetCompletedOrdersOutputDto>(count, list);
+            var itemIdList = list.Select(o => o.ItemId).ToList();
+
+            var items = await _itemRepository.GetAll().Where(i => itemIdList.Contains(i.Id)).Select(i => new
+            {
+                ItemId = i.Id,
+                ItemTitle = i.Title
+            }).ToListAsync();
+            var pics = await _itemPicRepository.GetAll().Where(i => itemIdList.Contains(i.ItemId) && i.IsCover).Select(i => new
+            {
+                i.ItemId,
+                Url = new Uri(new Uri(new Uri(_appConfiguration["App:ImageUrlPrefix"]), i.Path), i.FileName + i.Extension).ToString()
+            }).ToListAsync();
+
+            var newList = new List<GetCompletedOrdersOutputDto>();
+            foreach (var o in list)
+            {
+                newList.Add(new GetCompletedOrdersOutputDto
+                {
+                    Id = o.Id,
+                    Code = o.Code,
+                    BuyerId = o.BuyerId,
+                    SellerId = o.SellerId,
+                    AddressId = o.AddressId,
+                    DeliveryId = o.DeliveryId,
+                    OrderTime = o.OrderTime,
+                    Amount = o.Amount,
+                    ItemPriceAmount = o.ItemPriceAmount,
+                    ExpressCostAmount = o.ExpressCostAmount,
+                    ItemTitle = items.FirstOrDefault(i => i.ItemId == o.ItemId)?.ItemTitle,
+                    ItemPicUrl = pics.FirstOrDefault(i => i.ItemId == o.ItemId)?.Url
+                });
+            }
+
+            return new PagedResultDto<GetCompletedOrdersOutputDto>(count, newList);
         }
 
         public async Task<PagedResultDto<GetWaitingForPaymentOrdersOutputDto>> GetWaitingForPaymentOrdersAsSeller(GetWaitingForPaymentOrdersInputDto input)
         {
-            var query = _paymentRepository.GetAll().Where(o => o.SellerId == AbpSession.UserId.Value);
+            var query = _paymentRepository.GetAll().Where(o => o.SellerId == AbpSession.UserId.Value && o.PaidTime == null);
             if (!input.Sorting.IsNullOrEmpty())
             {
                 query = query.OrderBy(input.Sorting);
             }
 
             var count = await query.CountAsync();
-            var list = await query.PageBy(input).Select(o => new GetWaitingForPaymentOrdersOutputDto
+            var list = await query.PageBy(input).Select(o => new
             {
-                Id = o.Id,
-                Code = o.Code,
-                BuyerId = o.BuyerId,
-                SellerId = o.SellerId,
-                AddressId = o.AddressId,
-                DeliveryId = o.DeliveryId,
-                OrderTime = o.OrderTime,
-                Amount = o.Amount,
-                ItemPriceAmount = o.ItemPriceAmount,
-                ExpressCostAmount = o.ExpressCostAmount
+                o.Id,
+                o.Code,
+                o.BuyerId,
+                o.SellerId,
+                o.AddressId,
+                o.DeliveryId,
+                o.OrderTime,
+                o.Amount,
+                o.ItemPriceAmount,
+                o.ExpressCostAmount,
+                o.ItemId
             }).ToListAsync();
 
-            return new PagedResultDto<GetWaitingForPaymentOrdersOutputDto>(count, list);
+            var itemIdList = list.Select(o => o.ItemId).ToList();
+
+            var items = await _itemRepository.GetAll().Where(i => itemIdList.Contains(i.Id)).Select(i => new
+            {
+                ItemId = i.Id,
+                ItemTitle = i.Title
+            }).ToListAsync();
+            var pics = await _itemPicRepository.GetAll().Where(i => itemIdList.Contains(i.ItemId) && i.IsCover).Select(i => new
+            {
+                i.ItemId,
+                Url = new Uri(new Uri(new Uri(_appConfiguration["App:ImageUrlPrefix"]), i.Path), i.FileName + i.Extension).ToString()
+            }).ToListAsync();
+
+            var newList = new List<GetWaitingForPaymentOrdersOutputDto>();
+            foreach (var o in list)
+            {
+                newList.Add(new GetWaitingForPaymentOrdersOutputDto
+                {
+                    Id = o.Id,
+                    Code = o.Code,
+                    BuyerId = o.BuyerId,
+                    SellerId = o.SellerId,
+                    AddressId = o.AddressId,
+                    DeliveryId = o.DeliveryId,
+                    OrderTime = o.OrderTime,
+                    Amount = o.Amount,
+                    ItemPriceAmount = o.ItemPriceAmount,
+                    ExpressCostAmount = o.ExpressCostAmount,
+                    ItemTitle = items.FirstOrDefault(i => i.ItemId == o.ItemId)?.ItemTitle,
+                    ItemPicUrl = pics.FirstOrDefault(i => i.ItemId == o.ItemId)?.Url
+                });
+            }
+
+            return new PagedResultDto<GetWaitingForPaymentOrdersOutputDto>(count, newList);
         }
 
         public async Task<PagedResultDto<GetWaitingForSendingOrdersOutputDto>> GetWaitingForSendingOrdersAsSeller(GetWaitingForSendingOrdersInputDto input)
         {
-            var query = _sendingRepository.GetAll().Where(o => o.SellerId == AbpSession.UserId.Value);
+            var query = _sendingRepository.GetAll().Where(o => o.SellerId == AbpSession.UserId.Value && o.SentTime == null);
             if (!input.Sorting.IsNullOrEmpty())
             {
                 query = query.OrderBy(input.Sorting);
             }
 
             var count = await query.CountAsync();
-            var list = await query.PageBy(input).Select(o => new GetWaitingForSendingOrdersOutputDto
+            var list = await query.PageBy(input).Select(o => new
             {
-                Id = o.Id,
-                Code = o.Code,
-                BuyerId = o.BuyerId,
-                SellerId = o.SellerId,
-                AddressId = o.AddressId,
-                DeliveryId = o.DeliveryId,
-                OrderTime = o.OrderTime,
-                Amount = o.Amount,
-                ItemPriceAmount = o.ItemPriceAmount,
-                ExpressCostAmount = o.ExpressCostAmount
+                o.Id,
+                o.Code,
+                o.BuyerId,
+                o.SellerId,
+                o.AddressId,
+                o.DeliveryId,
+                o.OrderTime,
+                o.Amount,
+                o.ItemPriceAmount,
+                o.ExpressCostAmount,
+                o.ItemId
             }).ToListAsync();
 
-            return new PagedResultDto<GetWaitingForSendingOrdersOutputDto>(count, list);
+            var itemIdList = list.Select(o => o.ItemId).ToList();
+
+            var items = await _itemRepository.GetAll().Where(i => itemIdList.Contains(i.Id)).Select(i => new
+            {
+                ItemId = i.Id,
+                ItemTitle = i.Title
+            }).ToListAsync();
+            var pics = await _itemPicRepository.GetAll().Where(i => itemIdList.Contains(i.ItemId) && i.IsCover).Select(i => new
+            {
+                i.ItemId,
+                Url = new Uri(new Uri(new Uri(_appConfiguration["App:ImageUrlPrefix"]), i.Path), i.FileName + i.Extension).ToString()
+            }).ToListAsync();
+
+            var newList = new List<GetWaitingForSendingOrdersOutputDto>();
+            foreach (var o in list)
+            {
+                newList.Add(new GetWaitingForSendingOrdersOutputDto
+                {
+                    Id = o.Id,
+                    Code = o.Code,
+                    BuyerId = o.BuyerId,
+                    SellerId = o.SellerId,
+                    AddressId = o.AddressId,
+                    DeliveryId = o.DeliveryId,
+                    OrderTime = o.OrderTime,
+                    Amount = o.Amount,
+                    ItemPriceAmount = o.ItemPriceAmount,
+                    ExpressCostAmount = o.ExpressCostAmount,
+                    ItemTitle = items.FirstOrDefault(i => i.ItemId == o.ItemId)?.ItemTitle,
+                    ItemPicUrl = pics.FirstOrDefault(i => i.ItemId == o.ItemId)?.Url
+                });
+            }
+
+            return new PagedResultDto<GetWaitingForSendingOrdersOutputDto>(count, newList);
         }
 
         public async Task<PagedResultDto<GetWaitingForReceivingOrdersOutputDto>> GetWaitingForReceivingOrdersAsSeller(GetWaitingForReceivingOrdersInputDto input)
         {
-            var query = _receivingRepository.GetAll().Where(o => o.SellerId == AbpSession.UserId.Value);
+            var query = _receivingRepository.GetAll().Where(o => o.SellerId == AbpSession.UserId.Value && o.ReceivedTime == null);
             if (!input.Sorting.IsNullOrEmpty())
             {
                 query = query.OrderBy(input.Sorting);
             }
 
             var count = await query.CountAsync();
-            var list = await query.PageBy(input).Select(o => new GetWaitingForReceivingOrdersOutputDto
+            var list = await query.PageBy(input).Select(o => new
             {
-                Id = o.Id,
-                Code = o.Code,
-                BuyerId = o.BuyerId,
-                SellerId = o.SellerId,
-                AddressId = o.AddressId,
-                DeliveryId = o.DeliveryId,
-                OrderTime = o.OrderTime,
-                Amount = o.Amount,
-                ItemPriceAmount = o.ItemPriceAmount,
-                ExpressCostAmount = o.ExpressCostAmount
+                o.Id,
+                o.Code,
+                o.BuyerId,
+                o.SellerId,
+                o.AddressId,
+                o.DeliveryId,
+                o.OrderTime,
+                o.Amount,
+                o.ItemPriceAmount,
+                o.ExpressCostAmount,
+                o.ItemId
             }).ToListAsync();
 
-            return new PagedResultDto<GetWaitingForReceivingOrdersOutputDto>(count, list);
+            var itemIdList = list.Select(o => o.ItemId).ToList();
+
+            var items = await _itemRepository.GetAll().Where(i => itemIdList.Contains(i.Id)).Select(i => new
+            {
+                ItemId = i.Id,
+                ItemTitle = i.Title
+            }).ToListAsync();
+            var pics = await _itemPicRepository.GetAll().Where(i => itemIdList.Contains(i.ItemId) && i.IsCover).Select(i => new
+            {
+                i.ItemId,
+                Url = new Uri(new Uri(new Uri(_appConfiguration["App:ImageUrlPrefix"]), i.Path), i.FileName + i.Extension).ToString()
+            }).ToListAsync();
+
+            var newList = new List<GetWaitingForReceivingOrdersOutputDto>();
+            foreach (var o in list)
+            {
+                newList.Add(new GetWaitingForReceivingOrdersOutputDto
+                {
+                    Id = o.Id,
+                    Code = o.Code,
+                    BuyerId = o.BuyerId,
+                    SellerId = o.SellerId,
+                    AddressId = o.AddressId,
+                    DeliveryId = o.DeliveryId,
+                    OrderTime = o.OrderTime,
+                    Amount = o.Amount,
+                    ItemPriceAmount = o.ItemPriceAmount,
+                    ExpressCostAmount = o.ExpressCostAmount,
+                    ItemTitle = items.FirstOrDefault(i => i.ItemId == o.ItemId)?.ItemTitle,
+                    ItemPicUrl = pics.FirstOrDefault(i => i.ItemId == o.ItemId)?.Url
+                });
+            }
+
+            return new PagedResultDto<GetWaitingForReceivingOrdersOutputDto>(count, newList);
         }
 
         public async Task<PagedResultDto<GetWaitingForEvaluatingOrdersOutputDto>> GetWaitingForEvaluatingOrdersAsSeller(GetWaitingForEvaluatingOrdersInputDto input)
         {
-            var query = _evaluatingRepository.GetAll().Where(o => o.SellerId == AbpSession.UserId.Value);
+            var query = _evaluatingRepository.GetAll().Where(o => o.SellerId == AbpSession.UserId.Value && o.EvaluatedTime == null);
             if (!input.Sorting.IsNullOrEmpty())
             {
                 query = query.OrderBy(input.Sorting);
             }
 
             var count = await query.CountAsync();
-            var list = await query.PageBy(input).Select(o => new GetWaitingForEvaluatingOrdersOutputDto
+            var list = await query.PageBy(input).Select(o => new
             {
-                Id = o.Id,
-                Code = o.Code,
-                BuyerId = o.BuyerId,
-                SellerId = o.SellerId,
-                AddressId = o.AddressId,
-                DeliveryId = o.DeliveryId,
-                OrderTime = o.OrderTime,
-                Amount = o.Amount,
-                ItemPriceAmount = o.ItemPriceAmount,
-                ExpressCostAmount = o.ExpressCostAmount
+                o.Id,
+                o.Code,
+                o.BuyerId,
+                o.SellerId,
+                o.AddressId,
+                o.DeliveryId,
+                o.OrderTime,
+                o.Amount,
+                o.ItemPriceAmount,
+                o.ExpressCostAmount,
+                o.ItemId
             }).ToListAsync();
 
-            return new PagedResultDto<GetWaitingForEvaluatingOrdersOutputDto>(count, list);
+            var itemIdList = list.Select(o => o.ItemId).ToList();
+
+            var items = await _itemRepository.GetAll().Where(i => itemIdList.Contains(i.Id)).Select(i => new
+            {
+                ItemId = i.Id,
+                ItemTitle = i.Title
+            }).ToListAsync();
+            var pics = await _itemPicRepository.GetAll().Where(i => itemIdList.Contains(i.ItemId) && i.IsCover).Select(i => new
+            {
+                i.ItemId,
+                Url = new Uri(new Uri(new Uri(_appConfiguration["App:ImageUrlPrefix"]), i.Path), i.FileName + i.Extension).ToString()
+            }).ToListAsync();
+
+            var newList = new List<GetWaitingForEvaluatingOrdersOutputDto>();
+            foreach (var o in list)
+            {
+                newList.Add(new GetWaitingForEvaluatingOrdersOutputDto
+                {
+                    Id = o.Id,
+                    Code = o.Code,
+                    BuyerId = o.BuyerId,
+                    SellerId = o.SellerId,
+                    AddressId = o.AddressId,
+                    DeliveryId = o.DeliveryId,
+                    OrderTime = o.OrderTime,
+                    Amount = o.Amount,
+                    ItemPriceAmount = o.ItemPriceAmount,
+                    ExpressCostAmount = o.ExpressCostAmount,
+                    ItemTitle = items.FirstOrDefault(i => i.ItemId == o.ItemId)?.ItemTitle,
+                    ItemPicUrl = pics.FirstOrDefault(i => i.ItemId == o.ItemId)?.Url
+                });
+            }
+
+            return new PagedResultDto<GetWaitingForEvaluatingOrdersOutputDto>(count, newList);
         }
 
         public async Task<PagedResultDto<GetCompletedOrdersOutputDto>> GetCompletedOrdersAsSeller(GetCompletedOrdersInputDto input)
@@ -282,21 +594,55 @@ namespace Kuaiyipai.Auction.Order
             }
 
             var count = await query.CountAsync();
-            var list = await query.PageBy(input).Select(o => new GetCompletedOrdersOutputDto
+            var list = await query.PageBy(input).Select(o => new
             {
-                Id = o.Id,
-                Code = o.Code,
-                BuyerId = o.BuyerId,
-                SellerId = o.SellerId,
-                AddressId = o.AddressId,
-                DeliveryId = o.DeliveryId,
-                OrderTime = o.OrderTime,
-                Amount = o.Amount,
-                ItemPriceAmount = o.ItemPriceAmount,
-                ExpressCostAmount = o.ExpressCostAmount
+                o.Id,
+                o.Code,
+                o.BuyerId,
+                o.SellerId,
+                o.AddressId,
+                o.DeliveryId,
+                o.OrderTime,
+                o.Amount,
+                o.ItemPriceAmount,
+                o.ExpressCostAmount,
+                o.ItemId
             }).ToListAsync();
 
-            return new PagedResultDto<GetCompletedOrdersOutputDto>(count, list);
+            var itemIdList = list.Select(o => o.ItemId).ToList();
+
+            var items = await _itemRepository.GetAll().Where(i => itemIdList.Contains(i.Id)).Select(i => new
+            {
+                ItemId = i.Id,
+                ItemTitle = i.Title
+            }).ToListAsync();
+            var pics = await _itemPicRepository.GetAll().Where(i => itemIdList.Contains(i.ItemId) && i.IsCover).Select(i => new
+            {
+                i.ItemId,
+                Url = new Uri(new Uri(new Uri(_appConfiguration["App:ImageUrlPrefix"]), i.Path), i.FileName + i.Extension).ToString()
+            }).ToListAsync();
+
+            var newList = new List<GetCompletedOrdersOutputDto>();
+            foreach (var o in list)
+            {
+                newList.Add(new GetCompletedOrdersOutputDto
+                {
+                    Id = o.Id,
+                    Code = o.Code,
+                    BuyerId = o.BuyerId,
+                    SellerId = o.SellerId,
+                    AddressId = o.AddressId,
+                    DeliveryId = o.DeliveryId,
+                    OrderTime = o.OrderTime,
+                    Amount = o.Amount,
+                    ItemPriceAmount = o.ItemPriceAmount,
+                    ExpressCostAmount = o.ExpressCostAmount,
+                    ItemTitle = items.FirstOrDefault(i => i.ItemId == o.ItemId)?.ItemTitle,
+                    ItemPicUrl = pics.FirstOrDefault(i => i.ItemId == o.ItemId)?.Url
+                });
+            }
+
+            return new PagedResultDto<GetCompletedOrdersOutputDto>(count, newList);
         }
 
         public async Task<GetEachTypeOrderCountOutputDto> GetEachTypeOrderCountAsSeller()
@@ -442,7 +788,7 @@ namespace Kuaiyipai.Auction.Order
             var itemPic = await _itemPicRepository.FirstOrDefaultAsync(i => i.ItemId == goodsId && i.IsCover);
             if (itemPic != null)
             {
-                order.GoodsPicture = itemPic.Path;
+                order.GoodsPicture = new Uri(new Uri(new Uri(_appConfiguration["App:ImageUrlPrefix"]), itemPic.Path), itemPic.FileName + itemPic.Extension).ToString();
             }
             else
             {
