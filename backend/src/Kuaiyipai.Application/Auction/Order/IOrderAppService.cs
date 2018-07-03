@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using Abp.Application.Services.Dto;
 using Kuaiyipai.Auction.Order.Dto;
 
@@ -29,6 +30,9 @@ namespace Kuaiyipai.Auction.Order
         Task<GetEachTypeOrderCountOutputDto> GetEachTypeOrderCountAsBuyer();
 
         Task<GetEachTypeOrderCountOutputDto> GetEachTypeOrderCountAsSeller();
+
+        Task<OrderDetailDto> GetOrder(Guid orderId);
+
         /// <summary>
         /// 获取已完成的所有订单（用户可以是卖家也可以是买家）
         /// </summary>
