@@ -47,7 +47,7 @@ namespace Kuaiyipai.Auction.Order
 
         public async Task<PagedResultDto<GetWaitingForPaymentOrdersOutputDto>> GetWaitingForPaymentOrdersAsBuyer(GetWaitingForPaymentOrdersInputDto input)
         {
-            var query = _paymentRepository.GetAll().Where(o => o.BuyerId == AbpSession.UserId.Value && o.PaidTime == null);
+            var query = _paymentRepository.GetAll().Where(o => o.BuyerId == AbpSession.UserId.Value && o.PaidTime == null).OrderByDescending(o => o.OrderTime);
             if (!input.Sorting.IsNullOrEmpty())
             {
                 query = query.OrderBy(input.Sorting);
@@ -93,7 +93,7 @@ namespace Kuaiyipai.Auction.Order
                     SellerId = o.SellerId,
                     AddressId = o.AddressId,
                     DeliveryId = o.DeliveryId,
-                    OrderTime = o.OrderTime,
+                    OrderTime = o.OrderTime.ToString("yyyy-MM-dd HH:mm:ss"),
                     Amount = o.Amount,
                     ItemPriceAmount = o.ItemPriceAmount,
                     ExpressCostAmount = o.ExpressCostAmount,
@@ -107,7 +107,7 @@ namespace Kuaiyipai.Auction.Order
 
         public async Task<PagedResultDto<GetWaitingForSendingOrdersOutputDto>> GetWaitingForSendingOrdersAsBuyer(GetWaitingForSendingOrdersInputDto input)
         {
-            var query = _sendingRepository.GetAll().Where(o => o.BuyerId == AbpSession.UserId.Value && o.SentTime == null);
+            var query = _sendingRepository.GetAll().Where(o => o.BuyerId == AbpSession.UserId.Value && o.SentTime == null).OrderByDescending(o => o.OrderTime);
             if (!input.Sorting.IsNullOrEmpty())
             {
                 query = query.OrderBy(input.Sorting);
@@ -153,7 +153,7 @@ namespace Kuaiyipai.Auction.Order
                     SellerId = o.SellerId,
                     AddressId = o.AddressId,
                     DeliveryId = o.DeliveryId,
-                    OrderTime = o.OrderTime,
+                    OrderTime = o.OrderTime.ToString("yyyy-MM-dd HH:mm:ss"),
                     Amount = o.Amount,
                     ItemPriceAmount = o.ItemPriceAmount,
                     ExpressCostAmount = o.ExpressCostAmount,
@@ -167,7 +167,7 @@ namespace Kuaiyipai.Auction.Order
 
         public async Task<PagedResultDto<GetWaitingForReceivingOrdersOutputDto>> GetWaitingForReceivingOrdersAsBuyer(GetWaitingForReceivingOrdersInputDto input)
         {
-            var query = _receivingRepository.GetAll().Where(o => o.BuyerId == AbpSession.UserId.Value && o.ReceivedTime == null);
+            var query = _receivingRepository.GetAll().Where(o => o.BuyerId == AbpSession.UserId.Value && o.ReceivedTime == null).OrderByDescending(o => o.OrderTime);
             if (!input.Sorting.IsNullOrEmpty())
             {
                 query = query.OrderBy(input.Sorting);
@@ -213,7 +213,7 @@ namespace Kuaiyipai.Auction.Order
                     SellerId = o.SellerId,
                     AddressId = o.AddressId,
                     DeliveryId = o.DeliveryId,
-                    OrderTime = o.OrderTime,
+                    OrderTime = o.OrderTime.ToString("yyyy-MM-dd HH:mm:ss"),
                     Amount = o.Amount,
                     ItemPriceAmount = o.ItemPriceAmount,
                     ExpressCostAmount = o.ExpressCostAmount,
@@ -227,7 +227,7 @@ namespace Kuaiyipai.Auction.Order
 
         public async Task<PagedResultDto<GetWaitingForEvaluatingOrdersOutputDto>> GetWaitingForEvaluatingOrdersAsBuyer(GetWaitingForEvaluatingOrdersInputDto input)
         {
-            var query = _evaluatingRepository.GetAll().Where(o => o.BuyerId == AbpSession.UserId.Value && o.EvaluatedTime == null);
+            var query = _evaluatingRepository.GetAll().Where(o => o.BuyerId == AbpSession.UserId.Value && o.EvaluatedTime == null).OrderByDescending(o => o.OrderTime);
             if (!input.Sorting.IsNullOrEmpty())
             {
                 query = query.OrderBy(input.Sorting);
@@ -273,7 +273,7 @@ namespace Kuaiyipai.Auction.Order
                     SellerId = o.SellerId,
                     AddressId = o.AddressId,
                     DeliveryId = o.DeliveryId,
-                    OrderTime = o.OrderTime,
+                    OrderTime = o.OrderTime.ToString("yyyy-MM-dd HH:mm:ss"),
                     Amount = o.Amount,
                     ItemPriceAmount = o.ItemPriceAmount,
                     ExpressCostAmount = o.ExpressCostAmount,
@@ -287,7 +287,7 @@ namespace Kuaiyipai.Auction.Order
 
         public async Task<PagedResultDto<GetCompletedOrdersOutputDto>> GetCompletedOrdersAsBuyer(GetCompletedOrdersInputDto input)
         {
-            var query = _completedRepository.GetAll().Where(o => o.BuyerId == AbpSession.UserId.Value);
+            var query = _completedRepository.GetAll().Where(o => o.BuyerId == AbpSession.UserId.Value).OrderByDescending(o => o.OrderTime);
             if (!input.Sorting.IsNullOrEmpty())
             {
                 query = query.OrderBy(input.Sorting);
@@ -333,7 +333,7 @@ namespace Kuaiyipai.Auction.Order
                     SellerId = o.SellerId,
                     AddressId = o.AddressId,
                     DeliveryId = o.DeliveryId,
-                    OrderTime = o.OrderTime,
+                    OrderTime = o.OrderTime.ToString("yyyy-MM-dd HH:mm:ss"),
                     Amount = o.Amount,
                     ItemPriceAmount = o.ItemPriceAmount,
                     ExpressCostAmount = o.ExpressCostAmount,
@@ -347,7 +347,7 @@ namespace Kuaiyipai.Auction.Order
 
         public async Task<PagedResultDto<GetWaitingForPaymentOrdersOutputDto>> GetWaitingForPaymentOrdersAsSeller(GetWaitingForPaymentOrdersInputDto input)
         {
-            var query = _paymentRepository.GetAll().Where(o => o.SellerId == AbpSession.UserId.Value && o.PaidTime == null);
+            var query = _paymentRepository.GetAll().Where(o => o.SellerId == AbpSession.UserId.Value && o.PaidTime == null).OrderByDescending(o => o.OrderTime);
             if (!input.Sorting.IsNullOrEmpty())
             {
                 query = query.OrderBy(input.Sorting);
@@ -393,7 +393,7 @@ namespace Kuaiyipai.Auction.Order
                     SellerId = o.SellerId,
                     AddressId = o.AddressId,
                     DeliveryId = o.DeliveryId,
-                    OrderTime = o.OrderTime,
+                    OrderTime = o.OrderTime.ToString("yyyy-MM-dd HH:mm:ss"),
                     Amount = o.Amount,
                     ItemPriceAmount = o.ItemPriceAmount,
                     ExpressCostAmount = o.ExpressCostAmount,
@@ -407,7 +407,7 @@ namespace Kuaiyipai.Auction.Order
 
         public async Task<PagedResultDto<GetWaitingForSendingOrdersOutputDto>> GetWaitingForSendingOrdersAsSeller(GetWaitingForSendingOrdersInputDto input)
         {
-            var query = _sendingRepository.GetAll().Where(o => o.SellerId == AbpSession.UserId.Value && o.SentTime == null);
+            var query = _sendingRepository.GetAll().Where(o => o.SellerId == AbpSession.UserId.Value && o.SentTime == null).OrderByDescending(o => o.OrderTime);
             if (!input.Sorting.IsNullOrEmpty())
             {
                 query = query.OrderBy(input.Sorting);
@@ -453,7 +453,7 @@ namespace Kuaiyipai.Auction.Order
                     SellerId = o.SellerId,
                     AddressId = o.AddressId,
                     DeliveryId = o.DeliveryId,
-                    OrderTime = o.OrderTime,
+                    OrderTime = o.OrderTime.ToString("yyyy-MM-dd HH:mm:ss"),
                     Amount = o.Amount,
                     ItemPriceAmount = o.ItemPriceAmount,
                     ExpressCostAmount = o.ExpressCostAmount,
@@ -467,7 +467,7 @@ namespace Kuaiyipai.Auction.Order
 
         public async Task<PagedResultDto<GetWaitingForReceivingOrdersOutputDto>> GetWaitingForReceivingOrdersAsSeller(GetWaitingForReceivingOrdersInputDto input)
         {
-            var query = _receivingRepository.GetAll().Where(o => o.SellerId == AbpSession.UserId.Value && o.ReceivedTime == null);
+            var query = _receivingRepository.GetAll().Where(o => o.SellerId == AbpSession.UserId.Value && o.ReceivedTime == null).OrderByDescending(o => o.OrderTime);
             if (!input.Sorting.IsNullOrEmpty())
             {
                 query = query.OrderBy(input.Sorting);
@@ -513,7 +513,7 @@ namespace Kuaiyipai.Auction.Order
                     SellerId = o.SellerId,
                     AddressId = o.AddressId,
                     DeliveryId = o.DeliveryId,
-                    OrderTime = o.OrderTime,
+                    OrderTime = o.OrderTime.ToString("yyyy-MM-dd HH:mm:ss"),
                     Amount = o.Amount,
                     ItemPriceAmount = o.ItemPriceAmount,
                     ExpressCostAmount = o.ExpressCostAmount,
@@ -527,7 +527,7 @@ namespace Kuaiyipai.Auction.Order
 
         public async Task<PagedResultDto<GetWaitingForEvaluatingOrdersOutputDto>> GetWaitingForEvaluatingOrdersAsSeller(GetWaitingForEvaluatingOrdersInputDto input)
         {
-            var query = _evaluatingRepository.GetAll().Where(o => o.SellerId == AbpSession.UserId.Value && o.EvaluatedTime == null);
+            var query = _evaluatingRepository.GetAll().Where(o => o.SellerId == AbpSession.UserId.Value && o.EvaluatedTime == null).OrderByDescending(o => o.OrderTime);
             if (!input.Sorting.IsNullOrEmpty())
             {
                 query = query.OrderBy(input.Sorting);
@@ -573,7 +573,7 @@ namespace Kuaiyipai.Auction.Order
                     SellerId = o.SellerId,
                     AddressId = o.AddressId,
                     DeliveryId = o.DeliveryId,
-                    OrderTime = o.OrderTime,
+                    OrderTime = o.OrderTime.ToString("yyyy-MM-dd HH:mm:ss"),
                     Amount = o.Amount,
                     ItemPriceAmount = o.ItemPriceAmount,
                     ExpressCostAmount = o.ExpressCostAmount,
@@ -587,7 +587,7 @@ namespace Kuaiyipai.Auction.Order
 
         public async Task<PagedResultDto<GetCompletedOrdersOutputDto>> GetCompletedOrdersAsSeller(GetCompletedOrdersInputDto input)
         {
-            var query = _completedRepository.GetAll().Where(o => o.SellerId == AbpSession.UserId.Value);
+            var query = _completedRepository.GetAll().Where(o => o.SellerId == AbpSession.UserId.Value).OrderByDescending(o => o.OrderTime);
             if (!input.Sorting.IsNullOrEmpty())
             {
                 query = query.OrderBy(input.Sorting);
@@ -633,7 +633,7 @@ namespace Kuaiyipai.Auction.Order
                     SellerId = o.SellerId,
                     AddressId = o.AddressId,
                     DeliveryId = o.DeliveryId,
-                    OrderTime = o.OrderTime,
+                    OrderTime = o.OrderTime.ToString("yyyy-MM-dd HH:mm:ss"),
                     Amount = o.Amount,
                     ItemPriceAmount = o.ItemPriceAmount,
                     ExpressCostAmount = o.ExpressCostAmount,
@@ -837,7 +837,7 @@ namespace Kuaiyipai.Auction.Order
                 SellerId = o.SellerId,
                 AddressId = o.AddressId,
                 DeliveryId = o.DeliveryId,
-                OrderTime = o.OrderTime,
+                OrderTime = o.OrderTime.ToString("yyyy-MM-dd HH:mm:ss"),
                 Amount = o.Amount,
                 ItemPriceAmount = o.ItemPriceAmount,
                 ExpressCostAmount = o.ExpressCostAmount

@@ -15,7 +15,7 @@ namespace Kuaiyipai.Auction.Order.Dto
 
         public string DeliveryId { get; set; }
 
-        public DateTime OrderTime { get; set; }
+        public string OrderTime { get; set; }
 
         public double Amount { get; set; }
 
