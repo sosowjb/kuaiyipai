@@ -12,15 +12,20 @@ Page({
     isSeller:0,
     Deliveryhidden:true,
     DeliveryId:"",
-    orderid:""
+    orderid:"",
+    orderList:[],
+    haveData:false
   },
   statusTap:function(e){
     var that = this;
      var curType =  e.currentTarget.dataset.index;
-     console.log(curType);
+     //console.log(curType);
      that.setData({
        currentType:curType,
-       status: curType
+       status: curType,
+       currentPage: 0,
+       orderList: [],
+       haveData:false
      });
      this.getData();
   },
@@ -192,7 +197,9 @@ Page({
   // 加载更多订单
   more: function () {
     var that = this;
-    that.data.currentPage++;
+    if (!that.data.haveData) {
+      that.data.currentPage++;
+    }
     this.getData();
   },
   getData:function(){
@@ -200,7 +207,7 @@ Page({
     var that = this;
     // 获取订单列表
     wx.showLoading();
-    console.log(that.data);
+    //console.log(that.data);
     var status = that.data.status;
     var isSeller = that.data.isSeller;
     var url = app.globalData.apiLink + '/api/services/app/Order/GetCompletedOrders';
@@ -228,12 +235,28 @@ Page({
        'Authorization': "Bearer " + wx.getStorageSync("accessToken")
       },
       success: (res) => {
-        console.log(res);
+        //console.log(res);
         wx.hideLoading();
         if (res.data.success) {
-          that.setData({
-            orderList: res.data.result.items
-          });
+
+          if (res.data.result.items.length == 0){
+            that.setData({ haveData: true });
+            return;
+          }
+
+          if (that.data.currentPage == 0){
+            that.setData({
+              orderList: res.data.result.items
+            });
+          }else{
+            var tempList = that.data.orderList;
+            for (var i in res.data.result.items) {
+              tempList.push(res.data.result.items[i]);
+            }
+            that.setData({
+              orderList: tempList
+            });
+          }
         }
       }
     }) 

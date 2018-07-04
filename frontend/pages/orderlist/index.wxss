@@ -94,12 +94,12 @@
 }
 .goods-info .img-box .goods-img,
 .goods-img-container .img-box .goods-img{
-    width: 120rpx;
-    height: 120rpx;
+    width: 60rpx;
+    height: 60rpx;
 }
 .goods-info  .goods-des{
     width: 540rpx;
-    height: 78rpx;
+    height: 40rpx;
     line-height: 39rpx;
     font-size:26rpx;
     color:#000000;

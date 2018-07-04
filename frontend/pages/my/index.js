@@ -28,7 +28,7 @@ Page({
         title: '正在登陆...',
         icon: 'loading',
         mask: true,
-        duration: 100000
+        duration: 1000
       })
         wx.login({
         success: function (loginRes) {
