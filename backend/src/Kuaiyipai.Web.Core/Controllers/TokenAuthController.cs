@@ -60,6 +60,12 @@ namespace Kuaiyipai.Web.Controllers
         }
 
         [HttpPost]
+        public bool ValidateToken()
+        {
+            return AbpSession.UserId.HasValue;
+        }
+
+        [HttpPost]
         [UnitOfWork(IsDisabled = true)]
         public async Task<AuthenticateResultModel> Authenticate([FromBody] AuthenticateModel model)
         {
