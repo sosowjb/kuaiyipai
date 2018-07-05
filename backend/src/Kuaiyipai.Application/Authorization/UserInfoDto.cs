@@ -7,5 +7,7 @@ namespace Kuaiyipai.Authorization
         public string NickName { get; set; }
 
         public string AvatarUrl { get; set; }
+
+        public string Phone { get; set; }
     }
 }

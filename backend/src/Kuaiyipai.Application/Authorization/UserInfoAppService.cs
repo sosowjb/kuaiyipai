@@ -27,7 +27,8 @@ namespace Kuaiyipai.Authorization
             {
                 Id = user.Id,
                 NickName = user.NickName,
-                AvatarUrl = user.AvatarLink
+                AvatarUrl = user.AvatarLink,
+                Phone = user.PhoneNumber
             };
         }
     }
