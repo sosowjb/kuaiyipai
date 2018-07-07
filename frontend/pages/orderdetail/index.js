@@ -26,7 +26,46 @@ Page({
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
-     var id='';
+    var id = options.id;
+    var that=this;
+    wx.showLoading();
+     wx.request({
+       url: app.globalData.apiLink + '/api/services/app/Order/GetOrder?orderId=' + id,
+       method: "GET",
+       header: {
+         "Abp.TenantId": "1",
+         "Authorization": "Bearer " + wx.getStorageSync("accessToken"),
+         "Content-Type": "application/json"
+       },
+       success: function (res) {
+         console.log(res);
+         wx.hideLoading();
+         if (res.data.success) {
+           that.setData({
+             orderStatus:res.data.result.orderStatus, // 1,//订单状态1表示
+             statusTime:res.data.result.orderTime,//"2018-04-03 23:23",//订单时间
+             address: res.data.result.address,//地址
+             goodsName:res.data.result.goodsName,
+             dealPrice:res.data.result.price,
+            // dealTime: .OrderTime,
+             sellerTel: res.data.result.sellerTel,//卖家手机号
+             auctionNum:res.data.result.code,//拍卖编号
+             goodsPriceNum:res.data.result.code,//货款交易号
+             goodspic:app.globalData.imageLink + res.data.result.goodsPicture,
+             consigneeName:res.data.result.buyerName,
+             consigneeTel:res.data.result.buyerTel,
+             deliveryType:res.data.result.deliveryType
+           });
+         } else {
+           wx.showModal({
+             title: '提示',
+             content: '无法获取数据',
+             showCancel: false
+           })
+         }
+       }
+     })
+     
   },
 
   /**

@@ -14,31 +14,15 @@ Page({
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
-
-      // 查看是否授权
-      wx.getSetting({
-        success: function (res) {
-          if (!wx.getStorageSync("accessToken")) {
-            // 已经授权，可以直接调用 getUserInfo 获取头像昵称
-            wx.getUserInfo({
-              success: function (resuserInfo) {
-               // console.log(res.userInfo)
-                wx.login({
-                  success: res => {
-                    app.Logins(resuserInfo.userInfo.nickName, res.code, resuserInfo.userInfo.avatarUrl, null)
-                  }
-                })
-              }
-            })
-          }
-          else
-          {
-            wx.navigateTo({
-              url: '/pages/search/index?CategoryId=' + e.currentTarget.dataset.text,
-            })
-          }
-        }
-      })
+    var that=this;
+    var url = "/pages/my/index";
+    if (options.url)
+    {
+      var url = options.url;
+    }
+    that.setData({
+      historyurl: url
+    });
   },
 
   /**
@@ -87,9 +71,30 @@ Page({
    * 用户点击右上角分享
    */
   onShareAppMessage: function () {
-  
+
   },
   bindGetUserInfo: function (e) {
-    console.log(e.detail.userInfo)
+    var that=this;
+    wx.getUserInfo({
+      success: function (resuserInfo) {
+        console.log(resuserInfo.userInfo)
+        wx.login({
+          success: res => {
+          app.Logins(resuserInfo.userInfo.nickName, resuserInfo.userInfo.avatarUrl, res.code,that.localhost)
+          }
+        })
+      }
+    })
+  },
+  localhost:function(){
+    var that=this;
+    wx.switchTab({
+      url: that.data.historyurl
+    })
+  },
+  backhome:function(){
+    wx.switchTab({
+      url: '/pages/home/home'
+    })
   }
-})
+});

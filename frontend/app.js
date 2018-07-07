@@ -5,11 +5,7 @@ App({
     // 获取用户信息
     wx.getSetting({
       success: res => {
-
-
-
-
-          // 已经授权，可以直接调用 getUserInfo 获取头像昵称，不会弹框
+     // 已经授权，可以直接调用 getUserInfo 获取头像昵称，不会弹框
        /*  wx.getUserInfo({
             withCredentials:true,
             success: res => {
@@ -28,17 +24,20 @@ App({
               }
             }
           })*/
-        
       }
     })
   },
-  Logins:function(code,callback){
+  Logins: function (nickname, avatarlink,code,callback){
     var that=this;
     wx.request({
       url: this.globalData.apiLink + '/api/TokenAuth/Authenticate',
       header: { 'Abp.TenantId': '1', 'Content-Type': 'application/json' },
       method: 'POST',
-      data: {code: code},
+      data: {
+        nickName: nickname,
+        avatarLink: avatarlink,
+        code: code
+        },
       dataType: 'json',
       responseType: 'text',
       success: function (res) {
@@ -50,8 +49,7 @@ App({
               mask: true,
               duration: 500
             })
-          that.globalData.userInfo = res.data.result;
-          console.log(res.data.result.accessToken);
+        that.globalData.userInfo = { "avatar": avatarlink, "nickname": nickname};
         wx.setStorage({
           key: "accessToken",
           data: res.data.result.accessToken
@@ -60,14 +58,17 @@ App({
             key: "userId",
             data: res.data.result.userId
           });
-          if(callback)
-          {
-            callback();
-          }
+          typeof callback == "function" && callback()
         }
       },
       fail: function (res) { },
       complete: function (res) { },
+    })
+  },
+  showModal(msg) {
+    wx.showModal({
+      content: msg,
+      showCancel: false,
     })
   },
   globalData: {

@@ -39,8 +39,6 @@ Page({
         }
       }
     });
-
-    
   },
   showModal(msg) {
     wx.showModal({
