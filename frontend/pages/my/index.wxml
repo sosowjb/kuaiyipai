@@ -1,20 +1,16 @@
 <view class="user-info flex-row">
     <image class="user-info-bg" mode="aspectFill" src="/content/images/img-user-bg.png"/>
-   <!-- <view class="flex-grow-1 flex-y-center flex-row">
+    <view class="flex-grow-1 flex-y-center flex-row">
         <view class="flex-grow-0">
-          <image wx:if="{{userInfo && userInfo.avatarUrl}}" class="avatar" src="{{userInfo.avatarUrl}}"/>
-          <image wx:if="{{!userInfo && !userInfo.avatarUrl}}" class="avatar" src="{{imageLink}}/application/User/default.jpg"/>
+          <image wx:if="{{userInfo && userInfo.avatar}}" class="avatar" src="{{userInfo.avatar}}"/>
+          <image wx:if="{{!userInfo && !userInfo.avatar}}" class="avatar" src="{{imageLink}}/application/User/default.jpg"/>
         </view>
         <view class="flex-grow-1">
-            <text class="user-name">{{userInfo.nickName}}\n{{userInfo.phoneNumber}}</text>
+            <view class="user-name">{{userInfo.nickname}}</view>
+            <view class="user-phone">{{userInfo.phone}}</view>
         </view>
-    </view>-->
-    <view class="userinfo">
-      <view class="userinfo-avatar">
-        <open-data  type="userAvatarUrl"></open-data>
-      </view>
-        <open-data type="userNickName"></open-data>
     </view>
+
 
     <!--<view class="flex-grow-0 flex-y-center">
         <navigator class="my-address flex-y-center" url="/pages/setting/index">
@@ -133,3 +129,21 @@
       </view>
   </navigator>
 </view>
+<modal title="绑定手机号" hidden="{{Deliveryhidden}}" data-DeliverId='{{DeliveryId}}' confirm-text="确定"  bindconfirm="bindPhone" cancel-text="取消" bindcancel="hiddenModel" >
+                <view class="weui-cell weui-cell_input">
+                <view class="weui-cell__bd">
+                    <input name="cellphone" bindinput="input_acceptVal" placeholder-class="placeholder"  class="weui-input" placeholder="请输入手机号" />
+                </view>
+               
+
+            </view>
+ <view class="weui-cell weui-cell_input weui-cell_vcode">
+                            <view class="weui-cell__bd">
+                    <input class='identifyCode weui-input' type="number" bindinput="input_identifyCode" placeholder-class="placeholder" placeholder="输入验证码" placeholder="请输入验证码" />
+                </view>
+                 <view class="weui-cell__ft">
+<button bindtap="reqIdentifyCode" disabled="{{identifyCode_btn}}" class="reqIdentifyCode">{{button_reqIdentifyCode}}</button>
+
+                </view>
+                </view>
+</modal>

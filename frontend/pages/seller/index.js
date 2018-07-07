@@ -3,6 +3,7 @@ const app = getApp()
 Page({
   data: {
     imageLink: app.globalData.imageLink,
+    userInfo: null,
     balance: 0,
     freeze: 0,
     score: 0,
@@ -12,31 +13,60 @@ Page({
     waitRevice: 0
   },
   onLoad() {
-
+    this.getUserInfo();
   },
   onShow() {
-    this.getUserInfo();
-    this.getUserOrder();
-    this.getUserAmount();
+    var that = this;
+    if (wx.getStorageSync("accessToken")) {
+      if (!app.globalData.userInfo.userInfo) {
+        that.getUserInfo();
+        that.getUserOrder();
+        that.getUserAmount();
+      }
+      else {
+        console.log(app.globalData.userInfo);
+        that.setData({
+          userInfo: app.globalData.userInfo
+        });
+        if (!app.globalData.userInfo.phone) {
+          that.setData({
+            Deliveryhidden: false
+          });
+        }
+      }
+    }
+    else {
+      that.login();
+    }
   },
-  getUserInfo: function (cb) {
-    var that = this
-    wx.login({
-      success: function (loginRes) {
-        //console.info(loginRes);
-        // 获取用户基础信息
-        wx.getUserInfo({
-          success: function (res) {
-            that.setData({
-              userInfo: res.userInfo
-            });
-            if (!wx.getStorageInfoSync("accessToken")) {
-              app.Logins(loginRes.code);
+  getUserInfo: function () {
+    var that = this;
+    console.log(wx.getStorageSync("accessToken"));
+    if (wx.getStorageSync("accessToken")) {
+      wx.request({
+        url: app.globalData.apiLink + '/api/TokenAuth/ValidateToken',
+        method: "POST",
+        header: {
+          "Abp.TenantId": "1",
+          "Authorization": "Bearer " + wx.getStorageSync("accessToken"),
+          "Content-Type": "application/json"
+        },
+        success: function (res) {
+          console.log(res);
+          if (res.data.success) {
+            if (!res.data.result) {
+              wx.navigateTo({
+                url: '/pages/login/index'　　// 页面 A
+              })
             }
           }
-        })
-      }
-    })
+        }
+      })
+    } else {
+      wx.navigateTo({
+        url: '/pages/login/index'　　// 页面 A
+      })
+    }
   },
   // 获取用户账户信息
   getUserAmount: function () {

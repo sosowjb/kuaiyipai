@@ -1,7 +1,9 @@
 {
   "pages": [
-
+        
     "pages/home/home",
+      "pages/mygoods/index",
+  "pages/login/index",
     "pages/classify/index",
     "pages/goodsdetail/index",
     "pages/orderdetail/index",

@@ -1,6 +1,11 @@
 <!--pages/login/index.wxml-->
-<view class='page'>
-<open-data type="userAvatarUrl"></open-data>
-<open-data type="userNickName"></open-data>
-<button wx:if="{{canIUse}}" class="weui-btn" type="primary" bindgetuserinfo="bindGetUserInfo"  open-type="getUserInfo">授权登录</button>
+<view>
+    <view class="userinfo">
+      <view class="userinfo-avatar">
+        <open-data  type="userAvatarUrl"></open-data>
+      </view>
+        <open-data type="userNickName"></open-data>
+    </view>
+<button wx:if="{{canIUse}}" class="btn weui-btn" type="primary" bindgetuserinfo="bindGetUserInfo"  open-type="getUserInfo">授权登录</button>
+<button class="btn weui-btn"  bindtap="backhome">返回首页</button>
 </view>

@@ -1,0 +1,4 @@
+/* pages/mygoods/index.wxss */
+.weui-navbar__slider {
+width:4.5em;
+}

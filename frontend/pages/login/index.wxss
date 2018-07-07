@@ -1,1 +1,30 @@
-/* pages/login/index.wxss */
+.userinfo {  
+  position: relative;  
+  width: 750rpx;
+  margin:0 auto;
+  color: #fff;  
+  display: flex;  
+  flex-direction: column;  
+  align-items: center; 
+  margin-top: 200rpx;
+}  
+  
+.userinfo-avatar {  
+  overflow:hidden;  
+  display: block;  
+  width: 160rpx;  
+  height: 160rpx;   
+  margin-top: 45rpx;  
+  border-radius: 50%;  
+  border: 2px solid #fff;  
+  box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.2);  
+}  
+  
+.userinfo{  
+  /* color: #fff; */  
+  font-size: 14px;  
+  color: #000;
+}  
+.btn{
+  width: 90%;
+}
