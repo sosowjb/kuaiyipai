@@ -15,6 +15,11 @@ namespace Kuaiyipai.Authorization
             _userRepository = userRepository;
         }
 
+        public Task RequestCaptcha(RequestCaptchaInputDto input)
+        {
+            return Task.CompletedTask;
+        }
+
         public async Task BindPhone(BindPhoneInputDto input)
         {
             if (!AbpSession.UserId.HasValue)
