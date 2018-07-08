@@ -1,4 +1,4 @@
-<view wx:for="{{addressList}}" wx:key="{{index}}" style='fone-size:18px;'>  
+<view wx:for="{{addressList}}" wx:key="{{index}}">  
   <view class='flex-row margin-inner'>
       <view class="flex-grow-1 flex-y-center flex-row">
           <view class="flex-grow-0">

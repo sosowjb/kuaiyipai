@@ -44,61 +44,61 @@
             <view wx:for="{{goodsInfoPic}}" wx:for-item="image" wx:key="*this" class="previewimg" >
                  <image class="weui-grid__icon" src="{{image.url}}" data-text="{{image.url}}" bindtap='previewImage'/>
             </view>
-<view wx:if='{{fixednum.is_open!=0}}' id="fixednumMain" >
-  <view class="fixednumMask" style="opacity: 0.38;"></view>
-    <view class="fixednumMain flip-up">
-      <view>
-        <view class="tipBanner">
-          <span class="title">领先价</span>
-          <view class="last"></view>
-          <view bindtap='closefixednum' class="close"></view>
-        </view>
-        <view class="priceBanner">
-          <span class="title">出价</span>
-          <view class="editTxt">
-            <span class="hover">{{fixednum.price}}</span>
+            <view wx:if='{{fixednum.is_open!=0}}' id="fixednumMain" >
+              <view class="fixednumMask" style="opacity: 0.38;"></view>
+                <view class="fixednumMain flip-up">
+                  <view>
+                    <view class="tipBanner">
+                      <span class="title">领先价</span>
+                      <view class="last"></view>
+                      <view bindtap='closefixednum' class="close"></view>
+                    </view>
+                    <view class="priceBanner">
+                      <span class="title">出价</span>
+                      <view class="editTxt">
+                        <span class="hover">{{fixednum.price}}</span>
+                        </view>
+                        <view class="tips">
+                          <view bindtap='clearPrice' class="clearPrice"></view>
+                        </view>
+                    </view>
+                    <view class="btnBanner">
+                        <view bindtap='submitPrice' class="confirmBtn">出价</view>
+                    </view>
+                    <view class="agreeBanner">出价即表示同意
+                        <span style="color: rgb(135, 135, 135);">《快易拍竞拍服务协议》</span>
+                    </view>
+                    </view>
+                    <view class="numkey">
+                    <ul>
+                    <li class="num touchEffect">
+                        <view bindtap='inputNum' hover-class="touchEffect" data-text="1"  class="number">1</view>
+                    </li>
+                    <li class="num">
+                        <view bindtap='inputNum' hover-class="touchEffect"  data-text="2" class="number">2</view>
+                    </li>
+                    <li  class="num">
+                        <view bindtap='inputNum' hover-class="touchEffect" data-text="3" class="number">3</view>
+                      </li>
+                      <li  class="num">
+                        <view bindtap='inputNum' hover-class="touchEffect" data-text="4" class="number">4</view>
+                      </li>
+                      <li  class="num">
+                      <view bindtap='inputNum' hover-class="touchEffect" data-text="5" class="number">5</view>
+                      </li>
+                      <li  class="num">
+                      <view bindtap='inputNum' hover-class="touchEffect" data-text="6" class="number">6</view>
+                      </li>
+                      <li  class="num"><view bindtap='inputNum' hover-class="touchEffect" data-text="7" class="number">7</view></li>
+                      <li  class="num"><view bindtap='inputNum' hover-class="touchEffect" data-text="8" class="number">8</view></li>
+                      <li  class="num"><view bindtap='inputNum' hover-class="touchEffect" data-text="9" class="number">9</view></li>
+                      <li  class="num othernum"><view bindtap='inputNum' hover-class="touchEffect" data-text="00">00</view></li>
+                      <li  class="num" style="line-height: 50px;"><view bindtap='inputNum' hover-class="touchEffect" data-text="0">0</view></li>
+                      <li  class="delete"><view bindtap='backspace' hover-class="touchEffect" class="number"></view></li>
+                      </ul>
+                </view>
+              </view>
             </view>
-            <view class="tips">
-              <view bindtap='clearPrice' class="clearPrice"></view>
-            </view>
-         </view>
-         <view class="btnBanner">
-            <view bindtap='submitPrice' class="confirmBtn">出价</view>
-         </view>
-         <view class="agreeBanner">出价即表示同意
-            <span style="color: rgb(135, 135, 135);">《快易拍竞拍服务协议》</span>
-         </view>
-        </view>
-        <view class="numkey">
-        <ul>
-         <li class="num touchEffect">
-            <view bindtap='inputNum' hover-class="touchEffect" data-text="1"  class="number">1</view>
-         </li>
-         <li class="num">
-            <view bindtap='inputNum' hover-class="touchEffect"  data-text="2" class="number">2</view>
-         </li>
-         <li  class="num">
-            <view bindtap='inputNum' hover-class="touchEffect" data-text="3" class="number">3</view>
-          </li>
-          <li  class="num">
-            <view bindtap='inputNum' hover-class="touchEffect" data-text="4" class="number">4</view>
-          </li>
-          <li  class="num">
-          <view bindtap='inputNum' hover-class="touchEffect" data-text="5" class="number">5</view>
-          </li>
-          <li  class="num">
-          <view bindtap='inputNum' hover-class="touchEffect" data-text="6" class="number">6</view>
-          </li>
-          <li  class="num"><view bindtap='inputNum' hover-class="touchEffect" data-text="7" class="number">7</view></li>
-          <li  class="num"><view bindtap='inputNum' hover-class="touchEffect" data-text="8" class="number">8</view></li>
-          <li  class="num"><view bindtap='inputNum' hover-class="touchEffect" data-text="9" class="number">9</view></li>
-          <li  class="num othernum"><view bindtap='inputNum' hover-class="touchEffect" data-text="00">00</view></li>
-          <li  class="num" style="line-height: 50px;"><view bindtap='inputNum' hover-class="touchEffect" data-text="0">0</view></li>
-          <li  class="delete"><view bindtap='backspace' hover-class="touchEffect" class="number"></view></li>
-          </ul>
-    </view>
-  </view>
-</view>
     </view>
            <view class='stateInfo'>
            <view wx:if='{{!(djs.clock=="已经结束" || goodsInfo.status==2)}}' class='state'>正在拍卖<i></i></view>

@@ -2,7 +2,7 @@
 
      <view class="weui-panel weui-panel_access">
      <view class="weui-panel__hd">订单状态</view>
-      <view wx:if="{{orderStatus==4}}" class="weui-panel__bd">
+      <view wx:if="{{orderStatus==5}}" class="weui-panel__bd">
         <navigator url="" class="weui-cell weui-cell_access" hover-class="weui-cell_active">
           <view class="weui-cell__hd">
             <i style='margin-right: 5px;vertical-align: middle;font-size:20px' class='iconfont icon-fm-receipt'></i>
@@ -13,7 +13,7 @@
           </view>
         </navigator>
       </view>
-      <view wx:if="{{orderStatus==3}}" class="weui-panel__bd">
+      <view wx:if="{{orderStatus==4}}" class="weui-panel__bd">
         <navigator url="" class="weui-cell weui-cell_access" hover-class="weui-cell_active">
           <view class="weui-cell__hd">
             <i style='margin-right: 5px;vertical-align: middle;font-size:20px' class='iconfont icon-fm-delivery'></i>
@@ -35,7 +35,7 @@
           </view>
         </navigator>
       </view>
-      <view  wx:if="{{orderStatus==0}}"  class="weui-panel__bd">
+      <!--<view  wx:if="{{orderStatus==0}}"  class="weui-panel__bd">
         <navigator url="" class="weui-cell weui-cell_access" hover-class="weui-cell_active">
           <view class="weui-cell__hd">
             <i style='margin-right: 5px;vertical-align: middle;font-size:20px' class='iconfont icon-fm-opensale'></i>
@@ -45,7 +45,7 @@
             <view class="weui-media-box__desc">开始时间:{{statusTime}}</view>
           </view>
         </navigator>
-      </view>
+      </view>-->
       <view wx:if="{{orderStatus==1}}"  class="weui-panel__bd">
         <navigator class="weui-cell weui-cell_access" hover-class="weui-cell_active">
           <view class="weui-cell__hd">
@@ -88,10 +88,10 @@
                     <view class="weui-form-preview__value orderdetailvalue">{{auctionNum}}</view>
                     <view bindtap='copyNum' data-text="{{auctionNum}}" class='weui-form-preview__value weui-cell__ft'><i class='iconfont icon-fm-copy iml'></i></view>
                 </view>
-                <view class="weui-form-preview__item">
+               <!-- <view class="weui-form-preview__item">
                     <view class="weui-form-preview__label orderdetaillabel">货款交易号</view>
                     <view class="weui-form-preview__value orderdetailvalue">{{goodsPriceNum}}</view>
-                </view>
+                </view>-->
             </view>
         </view>
           <view class="weui-panel weui-form-preview">

@@ -2,7 +2,7 @@
     <view class="flex-grow-1 flex-y-center flex-row">
         <view class="flex-grow-0" style='padding-left:15px;' bindtap='choosetype'>
             <text>款项选择</text>
-            <image class="amount-img" src="{{showView?'/images/icon-nav-up.png':'/images/icon-nav-down.png'}}"/>
+            <image class="amount-img" src="{{showView?'/content/images/icon-nav-up.png':'/content/images/icon-nav-down.png'}}"/>
         </view>
     </view>
     <view class="flex-grow-0 flex-y-center" style='padding-right:15px;'>
@@ -21,18 +21,20 @@
   </view>
 </view>
 <view style="width:100%;">
-  <view class='flex-row detail-list' wx:for="{{detaillist}}">
+<scroll-view scroll-y="true" style="height:{{height}}px" bindscrolltolower="more" >
+  <view class='flex-row detail-list'  wx:for="{{detaillist}}" wx:key="id">
       <view class="flex-grow-1 flex-y-center flex-row detail-left">
           <view class="flex-grow-0">
-              <text>{{item.type}}</text>
-              <text style='font-size:10px'>\n{{item.comment}}</text>
+              <text></text>
+              <text style='font-size:10px'>\n{{item.remarks}}</text>
           </view>
       </view>
       <view wx-if="{{item.status == 0}}" class="flex-grow-0 flex-y-center detail-right">
-          <text style="color:green;">+{{item.balance}}</text>
+          <text style="color:green;">+{{item.amount}}</text>
       </view>
       <view wx-if="{{item.status == 1}}" class="flex-grow-0 flex-y-center detail-right">
-          <text style='color:red'>-{{item.balance}}</text>
+          <text style='color:red'>-{{item.amount}}</text>
       </view>
   </view>
+</scroll-view>
 </view>
