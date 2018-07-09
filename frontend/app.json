@@ -22,7 +22,7 @@
     "pages/orderlist/index"
   ],
   "tabBar": {
-    "selectedColor": "#1296db",
+    "selectedColor": "#2F77F1",
     "list": [
       {
         "pagePath": "pages/home/home",

@@ -113,10 +113,10 @@ Page({
         "Content-Type": "application/json"
       },
       success: function (res) {
-        console.info("余额:"+res);
-        if (res.data.code == 0) {
+        console.info(res);
+        if (res.data.success == 0) {
           that.setData({
-            balance: res.available
+            balance: res.data.result.available
           });
         }
       }
