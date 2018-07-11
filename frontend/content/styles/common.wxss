@@ -68,6 +68,7 @@
     display: block;
     border-bottom: 1rpx solid #e3e3e3;
     padding: 24rpx;
+    font-size: 15px;
 }
 .order-block .nav-item{
     text-align: center;

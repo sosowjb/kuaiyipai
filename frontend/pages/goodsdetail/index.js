@@ -23,8 +23,8 @@ Page({
     userInfo: {},
     vendor: { 
       id:123,//id
-      nickname: "天河珠宝",//名称
-      hpic: app.globalData.imageLink+"/avatar/96.jpg"//头像
+      nickname: "",//名称
+      hpic: ""//头像
      // credit:4.8,//信用值
      // increase:true,//信用值是否增加
      // amountInAll:4000,
@@ -58,22 +58,10 @@ Page({
       }
     });
     
-    wx.request({
-      url: app.globalData.apiLink + '/api/services/app/Bidding/GetBiddings?ItemId=' + options.id +'&SkipCount=0&MaxResultCount=5&Sorting=Price',
-      header: { 'Abp.TenantId': '1', 'Content-Type': 'application/json' },
-      method: 'GET',
-      dataType: 'json',
-      responseType: 'text',
-      success: function (res) {
-        if (res.data.success) {
-          that.setData({
-            auctionInfo: res.data.result.items
-          });
-        }
-      }
-    });
+
     wx.request({
       url: app.globalData.apiLink + '/api/services/app/Item/GetItem?id=' + options.id,
+      header: { 'Abp.TenantId': '1', 'Content-Type': 'application/json' },
       method: 'GET',
       dataType: 'json',
       responseType: 'text',
@@ -102,8 +90,26 @@ Page({
         }
       }
     });
+    that.GetBiddings(options.id);
   },
-
+  GetBiddings:function(id){
+    var that=this;
+  wx.request({
+    url: app.globalData.apiLink + '/api/services/app/Bidding/GetBiddings?ItemId=' + id + '&SkipCount=0&MaxResultCount=5&Sorting=Price',
+    header: { 'Abp.TenantId': '1', 'Content-Type': 'application/json' },
+    method: 'GET',
+    dataType: 'json',
+    responseType: 'text',
+    success: function (res) {
+      if (res.data.success) {
+        console.log(res.data.result.items);
+        that.setData({
+          auctionInfo: res.data.result.items
+        });
+      }
+    }
+  });
+},
   /**
    * 生命周期函数--监听页面初次渲染完成
    */
@@ -154,8 +160,10 @@ Page({
   },
   getImageArry:function(){
     var arry=[];
-    for (var i = 0,len = this.data.goodsInfo.goodsPic.length; i < len;i++) {
-      arry.push(this.data.goodsInfo.goodsPic[i].pic);
+    console.log(this.data.goodsInfoPic);
+    for (var i = 0, len = this.data.goodsInfoPic.length; i < len;i++) {
+      
+      arry.push(this.data.goodsInfoPic[i].url);
    }
     return arry;
   },
@@ -169,13 +177,14 @@ Page({
     })
   },
   bid:function(){//出价
+  var that=this;
     var suprice=0;
-    if (this.data.auctionInfo.length>0)
+    if (that.data.auctionInfo.length>0)
    {
-     suprice = this.data.auctionInfo[0].price;
+      suprice = that.data.auctionInfo[0].price;
    }
    console.log(suprice)
-  this.setData({
+   that.setData({
       "fixednum.is_open": 1,
       "fixednum.price": parseFloat(suprice) + parseFloat(this.data.goodsInfo.addPrice)
    });
@@ -245,7 +254,8 @@ closefixednum: function () {//关闭弹窗
    }
   },
   submitdata:function(){
-    console.log(wx.getStorageSync("accessToken"));
+    if (wx.getStorageSync("accessToken"))
+    {
     wx.request({
       url: app.globalData.apiLink + '/api/services/app/Bidding/Bid',
       data: { itemId: this.data.goodsInfo.goodsId, price: this.data.fixednum.price },
@@ -259,7 +269,6 @@ closefixednum: function () {//关闭弹窗
           //提交获取成功
           show("恭喜您，竞拍成功");
           closefixednum();
-
         }
         else
         {
@@ -267,6 +276,13 @@ closefixednum: function () {//关闭弹窗
         }
       }
     })
+    }
+    else
+    {
+      wx.navigateTo({
+        url: '/pages/login/index'
+      })
+    }
   },
   bindGetUserInfo: function (e) {
     console.log(e.detail.userInfo)

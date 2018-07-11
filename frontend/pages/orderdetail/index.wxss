@@ -18,3 +18,15 @@
 {
   text-align-last:left;
 }
+.topay-btn{
+    border:1px solid #e64340;
+    color: #e64340;
+}.btn{
+    width: 166rpx;
+    height: 60rpx;
+    box-sizing: border-box;
+    text-align: center;
+    line-height: 60rpx;
+    border-radius: 6rpx;
+    margin-left: 20rpx;
+}

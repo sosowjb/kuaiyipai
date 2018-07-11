@@ -188,6 +188,9 @@ Page({
     this.setData(data);
   },
   loadImages: function () {
+    wx.showLoading({
+      title: '加载中...',
+    })
     var that = this;
     var skincount = (this.data.currentpage - 1) * this.data.pageSize;
     var cpage = this.data.currentpage;
@@ -210,6 +213,9 @@ Page({
           });
         }
         }
+      },
+      complete:function(){
+        wx.hideLoading();
       }
     })
   },
@@ -218,5 +224,10 @@ Page({
     wx.navigateTo({
       url: '/pages/goodsdetail/index?id=' + current,
     })
+  },
+  gotourl:function(){
+    wx.switchTab({
+      url: "/pages/classify/index"
+    });
   }
 })

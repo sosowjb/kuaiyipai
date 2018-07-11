@@ -150,6 +150,7 @@
 .a-order .price-box .topay-btn{
     border:1px solid #e64340;
     color: #e64340;
+    float: right;
 }
 .inputborder{
   border:1px solid #E9E9EB;

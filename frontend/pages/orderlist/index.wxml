@@ -12,24 +12,25 @@
 
   <scroll-view scroll-y='true'  style="height:{{height}}px" bindscrolltolower='more'>
     <view class="order-list" wx:if="{{orderList.length>0}}" >
-        <view class="a-order" wx:for-items="{{orderList}}" wx:key="{{index}}">
-            <view class="order-date">
-                <view class="date-box">下单时间：{{item.orderTime}}</view>
-            </view>
-            <view class="goods-info" bindtap="orderDetail" data-id="{{item.id}}">
-                <view class="goods-des">
-                   <view>订单号:{{item.code}} </view>
-                   <view wx:if="{{item.remark && item.remark != ''}}">备注： {{item.remark}}</view>
-                </view>
-            </view>
-            <view class="goods-info" bindtap="orderDetail" data-id="{{item.id}}">
+        <view class="a-order weui-tab__content" wx:for-items="{{orderList}}" wx:key="{{index}}">
+<navigator bindtap="orderDetail" data-id="{{item.id}}" class="weui-media-box weui-media-box_appmsg" hover-class="weui-cell_active">
+                    <view class="weui-media-box__hd weui-media-box__hd_in-appmsg">
+                        <image class="weui-media-box__thumb" src="{{item.itemPicUrl}}" />
+                    </view>
+                    <view class="weui-media-box__bd weui-media-box__bd_in-appmsg">
+                        <view class="weui-media-box__title">{{item.itemTitle}}</view>
+                        <view  wx:if="{{item.remark && item.remark != ''}}" class="weui-media-box__desc">用户留言：{{item.remark}}</view>
+                        <view class='weui-media-box__desc'>订 单 号: {{item.code}} </view><view class="weui-media-box__desc">下单时间：{{item.orderTime}}</view>
+                    </view>
+                </navigator>
+            <!--<view class="goods-info" bindtap="orderDetail" data-id="{{item.id}}">
                 <view class="goods-des">
                    <view>拍品名称:{{item.itemTitle}} </view>
                 </view>
                 <view class="goods-img">
                   <image src="{{item.itemPicUrl}}" style="width:60rpx;height:60rpx;"></image>
                 </view>
-            </view>
+            </view>-->
             <view class="price-box">
                 <view class="total-price">合计：¥ {{item.itemPriceAmount+item.expressCostAmount}}</view>
                 <view class="btn topay-btn" hidden="{{status==0? false : true}}" bindtap="toPayTap" data-id="{{item.id}}" data-money="{{(item.itemPriceAmount+item.expressCostAmount)}}">马上付款</view>

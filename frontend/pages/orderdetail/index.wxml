@@ -110,6 +110,23 @@
                     <view class="weui-form-preview__label orderdetaillabel">发货方式</view>
                     <view class="weui-form-preview__value orderdetailvalue">{{deliveryType}}</view>
                 </view>
+
+ <view class="weui-form-preview__item">
+                    <view wx:if="{{deliveryId!=null}}" class="weui-form-preview__label orderdetaillabel">快递单号</view>
+                    <view wx:if="{{deliveryId!=null}}" class="weui-form-preview__value orderdetailvalue">{{deliveryId}}</view>
+                </view>
+
             </view>
         </view>
+        <view class='weui-panel weui-form-preview'>
+ <view class="weui-form-preview__bd">
+         <view class="weui-form-preview__item">
+             <view class='weui-form-preview__value weui-cell__ft'>
+        <view class="btn topay-btn" hidden="{{status==0? false : true}}" bindtap="toPayTap" data-id="{{item.id}}" data-money="{{(item.itemPriceAmount+item.expressCostAmount)}}">马上付款</view>
+                <view class="btn topay-btn" hidden="{{status==1 && isSeller==1? false : true}}" bindtap="showModel" data-id="{{item.id}}" >立即发货</view> 
+                 <view class="btn topay-btn" hidden="{{status==2 && isSeller==0? false : true}}" bindtap="toReceived" data-id="{{item.id}}" >确认收货</view> 
+                 </view>
+                 </view> 
+</view></view>
 </view>
+

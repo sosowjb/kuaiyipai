@@ -104,7 +104,7 @@ Page({
        'Authorization': "Bearer " + wx.getStorageSync("accessToken")
       },
       success: (res) => {
-        //console.log(res);
+        console.log(res);
         wx.hideLoading();
         if (res.data.success) {
           if (res.data.result.items.length == 0){
@@ -139,7 +139,7 @@ Page({
           wx.showLoading();
           wx.request({
             url: app.globalData.apiLink + '/api/services/app/Item/StartAuction',
-            method: "get",
+            method: "post",
             header: {
               'Abp.TenantId': '1',
               'Content-Type': 'application/json',
@@ -213,5 +213,8 @@ Page({
   onReachBottom: function() {
     // 页面上拉触底事件的处理函数
   
+  },
+  orderDetail:function(){
+    
   }
 })

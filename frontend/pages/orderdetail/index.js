@@ -1,4 +1,5 @@
 // pages/orderdetail/index.js
+var commonCityData = require('../../content/utils/city.js')
 const app = getApp()
 Page({
 
@@ -19,7 +20,9 @@ Page({
     goodspic:'',
     consigneeName:"",
     consigneeTel:"",
-    deliveryType:""
+    deliveryType:"",
+    deliveryId:"",
+    status:""
   },
 
   /**
@@ -44,17 +47,18 @@ Page({
            that.setData({
              orderStatus:res.data.result.orderStatus, // 1,//订单状态1表示
              statusTime:res.data.result.orderTime,//"2018-04-03 23:23",//订单时间
-             address: res.data.result.address,//地址
+             address: that.getCityName(commonCityData.cityData, res.data.result.provinceId, res.data.result.cityId, res.data.result.districtId) + " " + res.data.result.street,//地址
              goodsName:res.data.result.goodsName,
              dealPrice:res.data.result.price,
             // dealTime: .OrderTime,
              sellerTel: res.data.result.sellerTel,//卖家手机号
-            // auctionNum:res.data.result.code,//拍卖编号
+             auctionNum:res.data.result.auctionNum,//拍卖编号
            //  goodsPriceNum:res.data.result.code,//货款交易号
              goodspic:res.data.result.goodsPicture,
              consigneeName:res.data.result.buyerName,
              consigneeTel:res.data.result.buyerTel,
-             deliveryType:res.data.result.deliveryType
+             deliveryType:res.data.result.deliveryType,
+             deliveryId: res.data.result.deliveryId
            });
          } else {
            wx.showModal({
@@ -136,5 +140,24 @@ Page({
       }
     })
   },
+  getCityName: function (cityData, p, c, s) {
+    var dizhi = "";
+    for (var i = 0; i < cityData.length; i++) {
+      if (cityData[i].id == p) {
+        dizhi += cityData[i].name;
+      }
+      for (var j = 0; j < cityData[i].cityList.length; j++) {
+        if (cityData[i].cityList[j].id == c) {
+          dizhi += '-' + cityData[i].cityList[j].name;
+        }
+        for (var k = 0; k < cityData[i].cityList[j].districtList.length; k++) {
+          if (cityData[i].cityList[j].districtList[k].id == s) {
+            dizhi += '-' + cityData[i].cityList[j].districtList[k].name;
+          }
+        }
+      }
+    }
+    return dizhi;
+  }
   
 })

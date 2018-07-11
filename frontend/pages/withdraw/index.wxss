@@ -1,11 +1,32 @@
+
 .input{
-    border:  1px solid;
-    border-radius: 10px;
-    margin-left: 10px;
-    margin-right: 10px;
+    border-bottom:  2px solid #C0C2C6;
     margin-top: 10px;
-    height: 36px;
+    margin-bottom: 10px;
+    height: 80rpx;
+    width: 76%;
+    margin-left: 57rpx;
+    padding-left:70rpx;
+    font-size: 35px;
+}
+.czje{
+  font-size: 15px;
+  margin:30rpx 20rpx;
+}
+.rmb{
+  position:absolute;
+  font-size: 25px;
+  left:66rpx;
+  top: 80rpx;
+}
+.add-btn{
+  margin-top: 45rpx;
+    margin-left: 77rpx;
+    background-size: 40rpx auto;
+    width:80%
 }
 .tip{
-  font-size: 10px;
+  font-size: 15px;
+  color: #C0C2C6;
+  margin-left:77rpx;
 }

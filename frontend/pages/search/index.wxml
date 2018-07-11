@@ -16,8 +16,13 @@
         <view class="weui-search-bar__cancel-btn" hidden="{{!inputShowed}}" bindtap="hideInput">取消</view>
     </view><!--bar结束-->
 
-
-    <view style="display:none">
+ <view class="weui-msg no-order" style='text-align:center' wx:if="{{(col1.length+col2.length)==0}}">
+ <view class="weui-msg__text-area">
+            <view class="weui-msg__title">抱歉，没有找到您需要是商品</view>
+            <view class="weui-msg__desc">去查看其它推荐商品？<navigator bindtap='gotourl' class="weui-msg__link">点击查看</navigator></view>
+        </view>
+ </view>
+ <view style="display:none">
   <image wx:for="{{images}}" wx:key="id" id="{{item.id}}" src="{{item.coverPic}}" bindload="onImageLoad"></image>
 </view>
     <scroll-view scroll-y="true" style="height:{{scrollH}}px" bindscrolltolower="loadImages">
