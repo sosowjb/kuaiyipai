@@ -8,18 +8,18 @@ Page({
   data: {
     id:"",
     orderStatus:1,//订单状态1表示
-    statusTime:"2018-04-03 23:23",//订单时间
-    address:"北京市北京市昌平区，霍营华龙苑中里7-2-501",//地址
-    goodsName:"昭和时代手表",
-    dealPrice:"1000",
-    dealTime:"2018-04-03 23:23",
-    sellerTel:"18500189360",//卖家手机号
-    auctionNum:"412990",//拍卖编号
-    goodsPriceNum: "198999er33443434",//货款交易号
-    goodspic: app.globalData.imageLink + '/goods/1.jpg',
-    consigneeName:"王嘉宾",
-    consigneeTel:"18500189361",
-    deliveryType:"快递"
+    statusTime:"",//订单时间
+    address:"",//地址
+    goodsName:"",
+    dealPrice:"",
+    dealTime:"",
+    sellerTel:"",//卖家手机号
+    auctionNum:"",//拍卖编号
+    goodsPriceNum: "",//货款交易号
+    goodspic:'',
+    consigneeName:"",
+    consigneeTel:"",
+    deliveryType:""
   },
 
   /**
@@ -49,9 +49,9 @@ Page({
              dealPrice:res.data.result.price,
             // dealTime: .OrderTime,
              sellerTel: res.data.result.sellerTel,//卖家手机号
-             auctionNum:res.data.result.code,//拍卖编号
-             goodsPriceNum:res.data.result.code,//货款交易号
-             goodspic:app.globalData.imageLink + res.data.result.goodsPicture,
+            // auctionNum:res.data.result.code,//拍卖编号
+           //  goodsPriceNum:res.data.result.code,//货款交易号
+             goodspic:res.data.result.goodsPicture,
              consigneeName:res.data.result.buyerName,
              consigneeTel:res.data.result.buyerTel,
              deliveryType:res.data.result.deliveryType

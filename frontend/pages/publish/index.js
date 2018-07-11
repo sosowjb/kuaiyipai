@@ -107,15 +107,22 @@ Page({
    chooseImage: function (e) {
     var that = this;
     wx.chooseImage({
-      count:9,  //最多可以选择的图片总数
+      count: 9 - that.data.pictureList.length,  //最多可以选择的图片总数
       sizeType: ['compressed'], // 可以指定是原图还是压缩图，默认二者都有
       sourceType: ['album', 'camera'], // 可以指定来源是相册还是相机，默认二者都有
       success: function (res) {
         // 返回选定照片的本地文件路径列表，tempFilePath可以作为img标签的src属性显示图片
-        that.setData({
-          img_arr: res.tempFilePaths
-        });
         var tempFilePaths = res.tempFilePaths;
+      /*  console.log(res.tempFilePaths);
+        var imgArr = that.data.img_arr;
+        for (var i = 0, h = tempFilePaths.length; i < h; i++) {
+          imgArr.push(tempFilePaths[i]);
+        }
+        console.log(imgArr);
+        that.setData({
+          img_arr: imgArr
+        });*/
+       
         //启动上传等待中...
         wx.showToast({
           title: '正在上传...',
@@ -124,7 +131,7 @@ Page({
           duration: 10000
         })
         var uploadImgCount = 0;
-        var pL=[];
+        var pL=that.data.pictureList;
         for (var i = 0, h = tempFilePaths.length; i < h; i++) {
           wx.uploadFile({
             url: app.globalData.apiLink+'/api/services/app/Item/UploadPicture',
@@ -135,9 +142,7 @@ Page({
             },
             header: { 'Abp.TenantId': '1', 'Content-Type': 'application/json', 'Authorization': "Bearer " + wx.getStorageSync("accessToken") },
             success: function (res) {
-             
               var data = JSON.parse(res.data);
-     
               if (data.success)
              {
                var isco=false;
@@ -145,10 +150,10 @@ Page({
                {
                  isco=true;
                }
-
                var pic={
                  isCover: isco,
-                 id: data.result.id
+                 id: data.result.id,
+                 url: data.result.url
                }
                pL.push(pic);
                that.setData({
@@ -179,7 +184,7 @@ Page({
   previewImage: function (e) {
     wx.previewImage({
       current: e.currentTarget.id, // 当前显示图片的http链接
-      urls: this.data.files // 需要预览的图片http链接列表
+      urls: this.data.img_arr // 需要预览的图片http链接列表
     })
   },
   formSubmit: function (e) {
@@ -222,7 +227,7 @@ Page({
       return false
     }
 
-
+    wx.showLoading();
     wx.request({
       url: app.globalData.apiLink + '/api/services/app/Item/CreateItem',
       data: { 
@@ -241,7 +246,10 @@ Page({
       dataType: 'json',
       responseType: 'text',
       success: function (res) {
-      console.log(res);
+        wx.hideLoading();
+        wx.navigateTo({
+          url: "/pages/container/index",
+        })
       }
       });
   },
@@ -315,4 +323,21 @@ Page({
     if (result == null) return false;
     else return true;
   },
+  deleteimage:function(e){
+    var that = this;
+    console.log(that.data.pictureList);
+    console.log(e.currentTarget.dataset.id);
+   
+    var piclist = that.data.pictureList;
+    for (var i = 0; i < piclist.length; i++) {
+      if (piclist[i].id == e.currentTarget.dataset.id)
+      {
+       // delete piclist[i];
+        piclist.splice(i,1);
+      }
+    }
+    that.setData({
+      pictureList: piclist
+    });
+  }
 })

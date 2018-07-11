@@ -2,8 +2,8 @@
   "pages": [
         
     "pages/home/home",
-      "pages/mygoods/index",
-  "pages/login/index",
+    "pages/container/index",
+    "pages/login/index",
     "pages/classify/index",
     "pages/goodsdetail/index",
     "pages/orderdetail/index",
@@ -22,7 +22,7 @@
     "pages/orderlist/index"
   ],
   "tabBar": {
-    "selectedColor": "#1296db",
+    "selectedColor": "#2F77F1",
     "list": [
       {
         "pagePath": "pages/home/home",

@@ -1,3 +1,6 @@
+  .flex-row{
+  font-size: 15px;
+  }
 .flex-row image{
   width:15px;
   height:15px;

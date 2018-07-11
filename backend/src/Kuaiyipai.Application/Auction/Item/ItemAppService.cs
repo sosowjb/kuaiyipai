@@ -718,7 +718,8 @@ namespace Kuaiyipai.Auction.Item
                     Extension = ext
                 };
                 var id = await _itemPicRepository.InsertAndGetIdAsync(pic);
-                return new UploadPictureOutputDto { Id = id };
+                var url = new Uri(new Uri(_appConfiguration["App:ImageUrlPrefix"]), Path.Combine(pic.Path, pic.FileName + pic.Extension)).ToString();
+                return new UploadPictureOutputDto { Id = id,Url= url };
             }
             catch
             {

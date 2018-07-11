@@ -1,12 +1,13 @@
 <view class="user-info flex-row">
     <image class="user-info-bg" mode="aspectFill" src="/content/images/img-user-bg.png"/>
     <view class="flex-grow-1 flex-y-center flex-row">
-        <view class="flex-grow-0">
-                    <image wx:if="{{userInfo && userInfo.avatarUrl}}" class="avatar" src="{{userInfo.avatarUrl}}"/>
-          <image wx:if="{{!userInfo && !userInfo.avatarUrl}}" class="avatar" src="{{imageLink}}/application/User/default.jpg"/>
+       <view class="flex-grow-0">
+          <image wx:if="{{userInfo && userInfo.avatar}}" class="avatar" src="{{userInfo.avatar}}"/>
+          <image wx:if="{{!userInfo && !userInfo.avatar}}" class="avatar" src="{{imageLink}}/application/User/default.jpg"/>
         </view>
         <view class="flex-grow-1">
-            <text class="user-name">{{userInfo.nickName}}\n{{userInfo.phoneNumber}}</text>
+            <view class="user-name">{{userInfo.nickname}}</view>
+            <view class="user-phone">{{userInfo.phone}}</view>
         </view>
     </view>
     <!--<view class="flex-grow-0 flex-y-center">
@@ -113,7 +114,7 @@
           </view>
       </view>
   </navigator>
-<navigator class="option-item" url='/pages/mygoods/index'>
+<navigator class="option-item" url='/pages/container/index'>
       <view class="flex-row option-content">
           <view class="flex-grow-1 flex-row">
               <view class="flex-grow-0 flex-y-center">

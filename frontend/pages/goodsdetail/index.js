@@ -86,10 +86,10 @@ Page({
           that.setData({
             goodsInfo: {
               goodsId: res.data.result.id,
-              rPrice: 78168,//参考价
+             // rPrice: 78168,//参考价
               bPrice: res.data.result.startPrice,//起价
               addPrice: res.data.result.stepPrice,//加价幅度
-              pPrice: 100,//保证金
+              //pPrice: 100,//保证金
               desc: res.data.result.description,//描述
               status: statu,//拍卖状态【1，正在拍卖，0是还未开始,2结束】
               endTime: new Date(res.data.result.deadline).format("yyyy-MM-dd hh:mm"),

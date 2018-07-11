@@ -25,25 +25,22 @@ Page({
 	},	
   onShow() {
     var that=this;
+   
     if (wx.getStorageSync("accessToken"))
     {
-      if (!app.globalData.userInfo) {
-        that.getUserInfo();
-        that.getUserOrder();
-        that.getUserAmount();
-      }
-      else
+      that.getUserInfo();
+      that.getUserOrder();
+      that.getUserAmount();
+      /*else
       {
         that.setData({
           userInfo: app.globalData.userInfo
         });
         if (!app.globalData.userInfo.phone)
         {
-          that.setData({
-            Deliveryhidden: false
-          });
+          that.getUserInfo();
         }
-      }
+      }*/
     }
     else
     {
@@ -86,7 +83,6 @@ Page({
   },
   login: function () {
     var that = this;
-    console.log(wx.getStorageSync("accessToken"));
     if (wx.getStorageSync("accessToken")) {
            wx.request({
              url: app.globalData.apiLink + '/api/TokenAuth/ValidateToken',
@@ -205,7 +201,7 @@ Page({
       });
       // 获取验证码
       wx.request({
-        url: this.globalData.apiLink + '/api/services/app/Profile/SendVerificationSms',
+        url: this.globalData.apiLink + '/api/services/app/UserPhone/RequestCaptcha',
         header: {
           'Abp.TenantId': '1',
           'Content-Type': 'application/json',

@@ -3,11 +3,12 @@
 {
   color:black;
   float: left;
-  font-size: 1em
+  font-size: .8em
 }
 .orderdetaillabel
 {
   width: 5em;
+  font-size:.8em;
 }
 .iml
 {

@@ -13,15 +13,15 @@ Page({
     waitRevice: 0
   },
   onLoad() {
-    this.getUserInfo();
+    this.login();
   },
   onShow() {
     var that = this;
+    that.getUserOrder();
+    that.getUserAmount();
     if (wx.getStorageSync("accessToken")) {
       if (!app.globalData.userInfo.userInfo) {
         that.getUserInfo();
-        that.getUserOrder();
-        that.getUserAmount();
       }
       else {
         console.log(app.globalData.userInfo);
@@ -40,6 +40,39 @@ Page({
     }
   },
   getUserInfo: function () {
+    var that = this;
+    wx.request({
+      url: app.globalData.apiLink + '/api/services/app/UserInfo/GetUserInfo',
+      header: {
+        "Abp.TenantId": "1",
+        "Authorization": "Bearer " + wx.getStorageSync("accessToken"),
+        "Content-Type": "application/json"
+      },
+      method: 'GET',
+      success: function (res) {
+        if (res.data.success) {
+          console.log(res.data.result);
+          that.setData({
+            userInfo: {
+              "avatar": res.data.result.avatarUrl,
+              "nickname": res.data.result.nickName,
+              "phone": res.data.result.phone,
+              "id": res.data.result.id
+            }
+          });
+          app.globalData.userInfo = that.data.userInfo;
+          if (!res.data.result.phone) {
+            that.setData({
+              Deliveryhidden: false
+            });
+          }
+        }
+      },
+      fail: function (res) { },
+      complete: function (res) { },
+    })
+  },
+  login: function () {
     var that = this;
     console.log(wx.getStorageSync("accessToken"));
     if (wx.getStorageSync("accessToken")) {
@@ -64,7 +97,7 @@ Page({
       })
     } else {
       wx.navigateTo({
-        url: '/pages/login/index'　　// 页面 A
+        url: '/pages/login/index'
       })
     }
   },
@@ -81,9 +114,9 @@ Page({
       },
       success: function (res) {
         console.info(res);
-        if (res.data.code == 0) {
+        if (res.data.success == 0) {
           that.setData({
-            balance: res.available
+            balance: res.data.result.available
           });
         }
       }
