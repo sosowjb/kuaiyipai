@@ -8,8 +8,14 @@ namespace Kuaiyipai.Auction.Order.Dto
         public int OrderStatus { get; set; }
 
         public DateTime OrderTime { get; set; }
-
-        public string Address { get; set; }
+        
+        public int ProvinceId { get; set; }
+        
+        public int CityId { get; set; }
+        
+        public int DistrictId { get; set; }
+        
+        public string Street { get; set; }
 
         public string GoodsName { get; set; }
 

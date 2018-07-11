@@ -773,9 +773,13 @@ namespace Kuaiyipai.Auction.Order
             order.SellerTel = seller.PhoneNumber;
 
             var address = await _addressRepository.FirstOrDefaultAsync(a => a.CreatorUserId == buyerId && a.IsDefault);
+            if(address != null)
             order.BuyerName = address.Receiver;
             order.BuyerTel = address.ContactPhoneNumber;
-            order.Address = address.Street;
+            order.ProvinceId = address.ProvinceId;
+            order.CityId = address.CityId;
+            order.DistrictId = address.DistrictId;
+            order.Street = address.Street;
 
             var item = await _itemRepository.FirstOrDefaultAsync(goodsId);
             if (item == null)
