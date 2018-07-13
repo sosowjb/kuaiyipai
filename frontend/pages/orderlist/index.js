@@ -31,8 +31,9 @@ Page({
   },
   orderDetail : function (e) {
     var orderId = e.currentTarget.dataset.id;
+    var that=this;
     wx.navigateTo({
-      url: "/pages/orderdetail/index?id=" + orderId
+      url: "/pages/orderdetail/index?id=" + orderId + '&isSeller=' + that.data.isSeller
     })
   },
   toPayTap:function(e){

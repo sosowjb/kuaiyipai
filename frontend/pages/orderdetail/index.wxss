@@ -29,4 +29,8 @@
     line-height: 60rpx;
     border-radius: 6rpx;
     margin-left: 20rpx;
+ 
+}
+.fr{
+     float: right
 }
