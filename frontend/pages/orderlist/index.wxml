@@ -12,17 +12,17 @@
 
   <scroll-view scroll-y='true'  style="height:{{height}}px" bindscrolltolower='more'>
     <view class="order-list" wx:if="{{orderList.length>0}}" >
-        <view class="a-order weui-tab__content" wx:for-items="{{orderList}}" wx:key="{{index}}">
-<navigator bindtap="orderDetail" data-id="{{item.id}}" class="weui-media-box weui-media-box_appmsg" hover-class="weui-cell_active">
-                    <view class="weui-media-box__hd weui-media-box__hd_in-appmsg">
-                        <image class="weui-media-box__thumb" src="{{item.itemPicUrl}}" />
-                    </view>
-                    <view class="weui-media-box__bd weui-media-box__bd_in-appmsg">
-                        <view class="weui-media-box__title">{{item.itemTitle}}</view>
-                        <view  wx:if="{{item.remark && item.remark != ''}}" class="weui-media-box__desc">用户留言：{{item.remark}}</view>
-                        <view class='weui-media-box__desc'>订 单 号: {{item.code}} </view><view class="weui-media-box__desc">下单时间：{{item.orderTime}}</view>
-                    </view>
-                </navigator>
+      <view class="a-order weui-tab__content" wx:for-items="{{orderList}}" wx:key="{{index}}">
+         <view url='' bindtap="orderDetail" data-id="{{item.id}}" class="weui-media-box weui-media-box_appmsg" hover-class="weui-cell_active">           <view class="weui-media-box__hd weui-media-box__hd_in-appmsg">
+          <image class="weui-media-box__thumb" src="{{item.itemPicUrl}}" />
+      </view>
+      <view class="weui-media-box__bd weui-media-box__bd_in-appmsg">
+        <view class="weui-media-box__title">{{item.itemTitle}}</view>
+          <view  wx:if="{{item.remark && item.remark != ''}}" class="weui-media-box__desc">用户留言：{{item.remark}}</view>
+             <view class='weui-media-box__desc'>订 单 号: {{item.code}} </view>
+             <view class="weui-media-box__desc">下单时间：{{item.orderTime}}</view>
+              </view>
+          </view>
             <!--<view class="goods-info" bindtap="orderDetail" data-id="{{item.id}}">
                 <view class="goods-des">
                    <view>拍品名称:{{item.itemTitle}} </view>

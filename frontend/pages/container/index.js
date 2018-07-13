@@ -214,7 +214,22 @@ Page({
     // 页面上拉触底事件的处理函数
   
   },
-  orderDetail:function(){
-    
+  orderDetail:function(e){
+    var id = e.currentTarget.dataset.id;
+con
+  },
+  onReachBottom: function() {
+    // 页面上拉触底事件的处理函数
+  
+  },
+  orderDetail:function(e){
+    var id = e.currentTarget.dataset.id;
+    var status =this.data.status;
+    if(status==0)
+    {
+      wx.navigateTo({
+        url: '/pages/publish/index?id='+id,
+      })
+    }
   }
 })
