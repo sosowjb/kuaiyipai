@@ -20,6 +20,8 @@ namespace Kuaiyipai.Auction.Item
 
         Task DeleteItem(EntityDto<Guid> input);
 
+        Task EditItem(EditItemInputDto input);
+
         Task<PagedResultDto<GetMyDraftingItemsOutputDto>> GetMyDraftingItems(GetMyDraftingItemsInputDto input);
 
         Task<PagedResultDto<GetMyAuctionItemsOutputDto>> GetMyAuctionItems(GetMyAuctionItemsInputDto input);

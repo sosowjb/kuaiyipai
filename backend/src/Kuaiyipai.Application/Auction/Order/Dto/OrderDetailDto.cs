@@ -21,6 +21,8 @@ namespace Kuaiyipai.Auction.Order.Dto
 
         public double Price { get; set; }
 
+        public double ExpressFee { get; set; }
+
         public DateTime? PaidTime { get; set; }
 
         public string SellerTel { get; set; }

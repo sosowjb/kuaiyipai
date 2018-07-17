@@ -88,6 +88,37 @@ namespace Kuaiyipai.Auction.Item
         }
 
         [UnitOfWork]
+        public async Task EditItem(EditItemInputDto input)
+        {
+            var pillar = await _pillarRepository.GetAsync(input.PillarId);
+            var category = await _categoryRepository.GetAsync(input.CategoryId);
+
+            var item = await _itemDraftingRepository.FirstOrDefaultAsync(input.Id);
+            if (item != null)
+            {
+                item.PillarId = input.PillarId;
+                item.CategoryId = input.CategoryId;
+                item.StartPrice = input.StartPrice;
+                item.StepPrice = input.StepPrice;
+                item.StartTime = input.StartTime;
+                item.Deadline = input.Deadline;
+                item.Title = input.Title;
+                item.Description = input.Description;
+            }
+
+            var itemId = await _itemDraftingRepository.InsertAndGetIdAsync(item);
+
+            for (int i = 0; i < input.PictureList.Count; i++)
+            {
+                var p = await _itemPicRepository.GetAsync(input.PictureList[i].Id);
+                p.IsCover = input.PictureList[i].IsCover;
+                p.ItemId = itemId;
+                p.Index = i + 1;
+                await _itemPicRepository.UpdateAsync(p);
+            }
+        }
+
+        [UnitOfWork]
         public async Task StartAuction(EntityDto<Guid> input)
         {
             var item = await _itemDraftingRepository.FirstOrDefaultAsync(input.Id);
@@ -286,8 +317,8 @@ namespace Kuaiyipai.Auction.Item
                     Description = item.Description,
                     StartPrice = item.StartPrice,
                     StepPrice = item.StepPrice,
-                    StartTime = item.StartTime,
-                    Deadline = item.Deadline
+                    StartTime = item.StartTime.HasValue ? item.StartTime.Value.ToString("yyyy-MM-dd") : "",
+                    Deadline = item.Deadline.ToString("yyyy-MM-dd")
                 }).ToListAsync();
 
             return new PagedResultDto<GetMyDraftingItemsOutputDto>(count, list);
@@ -328,8 +359,8 @@ namespace Kuaiyipai.Auction.Item
                     Description = item.Description,
                     StartPrice = item.StartPrice,
                     StepPrice = item.StepPrice,
-                    StartTime = item.StartTime,
-                    Deadline = item.Deadline,
+                    StartTime = item.StartTime.HasValue ? item.StartTime.Value.ToString("yyyy-MM-dd") : "",
+                    Deadline = item.Deadline.ToString("yyyy-MM-dd"),
                     BiddingCount = item.BiddingCount,
                     HighestBiddingPrice = item.HighestBiddingPrice
                 }).ToListAsync();
@@ -372,8 +403,8 @@ namespace Kuaiyipai.Auction.Item
                     Description = item.Description,
                     StartPrice = item.StartPrice,
                     StepPrice = item.StepPrice,
-                    StartTime = item.StartTime,
-                    Deadline = item.Deadline,
+                    StartTime = item.StartTime.HasValue ? item.StartTime.Value.ToString("yyyy-MM-dd") : "",
+                    Deadline = item.Deadline.ToString("yyyy-MM-dd"),
                     BiddingCount = item.BiddingCount,
                     HighestBiddingPrice = item.HighestBiddingPrice
                 }).ToListAsync();
@@ -417,8 +448,8 @@ namespace Kuaiyipai.Auction.Item
                     Description = item.Description,
                     StartPrice = item.StartPrice,
                     StepPrice = item.StepPrice,
-                    StartTime = item.StartTime,
-                    Deadline = item.Deadline,
+                    StartTime = item.StartTime.HasValue ? item.StartTime.Value.ToString("yyyy-MM-dd") : "",
+                    Deadline = item.Deadline.ToString("yyyy-MM-dd"),
                     BiddingCount = item.BiddingCount,
                     HighestBiddingPrice = item.HighestBiddingPrice
                 }).ToListAsync();
@@ -719,7 +750,7 @@ namespace Kuaiyipai.Auction.Item
                 };
                 var id = await _itemPicRepository.InsertAndGetIdAsync(pic);
                 var url = new Uri(new Uri(_appConfiguration["App:ImageUrlPrefix"]), Path.Combine(pic.Path, pic.FileName + pic.Extension)).ToString();
-                return new UploadPictureOutputDto { Id = id,Url= url };
+                return new UploadPictureOutputDto { Id = id, Url = url };
             }
             catch
             {

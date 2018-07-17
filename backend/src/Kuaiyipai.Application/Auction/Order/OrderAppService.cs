@@ -705,6 +705,7 @@ namespace Kuaiyipai.Auction.Order
                             order.AuctionNum = order1.Code;
                             order.DeliveryType = "快递";
                             order.DeliveryId = order1.DeliveryId;
+                            order.ExpressFee = order1.ExpressCostAmount;
                             sellerId = order1.SellerId;
                             buyerId = order1.BuyerId;
                             goodsId = order1.ItemId;
@@ -719,6 +720,7 @@ namespace Kuaiyipai.Auction.Order
                             order.AuctionNum = order2.Code;
                             order.DeliveryType = "快递";
                             order.DeliveryId = order2.DeliveryId;
+                            order.ExpressFee = order2.ExpressCostAmount;
                             sellerId = order2.SellerId;
                             buyerId = order2.BuyerId;
                             goodsId = order2.ItemId;
@@ -734,6 +736,7 @@ namespace Kuaiyipai.Auction.Order
                         order.AuctionNum = order3.Code;
                         order.DeliveryType = "快递";
                         order.DeliveryId = order3.DeliveryId;
+                        order.ExpressFee = order3.ExpressCostAmount;
                         sellerId = order3.SellerId;
                         buyerId = order3.BuyerId;
                         goodsId = order3.ItemId;
@@ -749,6 +752,7 @@ namespace Kuaiyipai.Auction.Order
                     order.AuctionNum = order4.Code;
                     order.DeliveryType = "快递";
                     order.DeliveryId = order4.DeliveryId;
+                    order.ExpressFee = order4.ExpressCostAmount;
                     sellerId = order4.SellerId;
                     buyerId = order4.BuyerId;
                     goodsId = order4.ItemId;
@@ -764,6 +768,7 @@ namespace Kuaiyipai.Auction.Order
                 order.AuctionNum = order5.Code;
                 order.DeliveryType = "快递";
                 order.DeliveryId = order5.DeliveryId;
+                order.ExpressFee = order5.ExpressCostAmount;
                 sellerId = order5.SellerId;
                 buyerId = order5.BuyerId;
                 goodsId = order5.ItemId;
@@ -773,13 +778,15 @@ namespace Kuaiyipai.Auction.Order
             order.SellerTel = seller.PhoneNumber;
 
             var address = await _addressRepository.FirstOrDefaultAsync(a => a.CreatorUserId == buyerId && a.IsDefault);
-            if(address != null)
-            order.BuyerName = address.Receiver;
-            order.BuyerTel = address.ContactPhoneNumber;
-            order.ProvinceId = address.ProvinceId;
-            order.CityId = address.CityId;
-            order.DistrictId = address.DistrictId;
-            order.Street = address.Street;
+            if (address != null)
+            {
+                order.BuyerName = address.Receiver;
+                order.BuyerTel = address.ContactPhoneNumber;
+                order.ProvinceId = address.ProvinceId;
+                order.CityId = address.CityId;
+                order.DistrictId = address.DistrictId;
+                order.Street = address.Street;
+            }
 
             var item = await _itemRepository.FirstOrDefaultAsync(goodsId);
             if (item == null)

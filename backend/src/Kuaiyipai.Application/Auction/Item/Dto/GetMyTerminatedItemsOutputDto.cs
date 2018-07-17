@@ -17,9 +17,9 @@ namespace Kuaiyipai.Auction.Item.Dto
 
         public double StepPrice { get; set; }
 
-        public DateTime? StartTime { get; set; }
+        public string StartTime { get; set; }
 
-        public DateTime Deadline { get; set; }
+        public string Deadline { get; set; }
 
         public int BiddingCount { get; set; }
 
