@@ -12,29 +12,23 @@
   <scroll-view scroll-y='true'  style="height:{{height}}px" bindscrolltolower='more'>
     <view class="order-list" wx:if="{{containerList.length>0}}" >
         <view class="a-order" wx:for-items="{{containerList}}" wx:key="{{index}}">        
-            <view class="goods-info">
-                <view class="goods-des">
-                   <view>拍品名称:{{item.title}} </view>
+            <view bindtap="orderDetail" data-id="{{item.id}}" data-status="{{}}"  class="weui-media-box weui-media-box_appmsg" hover-class="weui-cell_active">
+                    <view class="weui-media-box__hd weui-media-box__hd_in-appmsg">
+                        <image class="weui-media-box__thumb" src="{{item.itemPicUrl}}" />
+                    </view>
+                    <view class="weui-media-box__bd weui-media-box__bd_in-appmsg">
+                        <view class="weui-media-box__title">{{item.title}}</view>
+                        <view  wx:if="{{item.description && item.description != ''}}" class="weui-media-box__desc">拍品详细：{{item.description}}</view>
+                        <view class='weui-media-box__desc'>起拍时间：{{item.startTime}} </view>
+                        <view class="weui-media-box__desc">停拍时间：{{item.deadline}}</view>
+                         <view class="weui-media-box__desc">起始价格：{{item.startPrice}}</view>
+                          <view class="weui-media-box__desc">加价幅度：{{item.stepPrice}}</view>
+                          
+                    </view>
                 </view>
-            </view>
-            <view class="order-date">
-                <view class="date-box">拍品详细:{{item.description}} </view>
-            </view>
-            <view class="order-date">
-                <view class="date-box">起拍时间：{{item.startTime}}</view>
-                <view class="date-box">停拍时间：{{item.deadline}}</view>
-            </view>
-            <view class="order-date">
-                <view class="date-box">起始价格：{{item.startPrice}}</view>
-                <view class="date-box">加价幅度：{{item.stepPrice}}</view>
-            </view>
-            <view class="order-date" wx-if="{{status==2 || status==3}}">
-                <view class="date-box">出价次数：{{item.biddingCount}}</view>
-                <view class="date-box">最高价：{{item.highestBiddingPrice}}</view>
-            </view>
             <view class="price-box">
                 <view class="btn topay-btn" hidden="{{status==0? false : true}}" bindtap="addToAuction" data-id="{{item.id}}">加入拍卖</view>
-                <view class="btn topay-btn" hidden="{{status==1? false : true}}" bindtap="deleteContainer" data-id="{{item.id}}">移出货柜</view>
+                <view class="btn topay-btn" wx-if="{{status==2 || status==3}}"  bindtap="deleteContainer" data-id="{{item.id}}">移出货柜</view>
             </view>  
         </view>
       </view>

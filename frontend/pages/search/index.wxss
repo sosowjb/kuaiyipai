@@ -69,8 +69,17 @@
   margin: 1%;
   display: inline-block;
   vertical-align: top;
-border: 1px #bbb solid;
 }
 .left{
   float: left;
+}
+.no-order {
+position:absolute;
+bottom:0;
+top:88rpx;
+left:0;
+right:0;
+text-align:center;
+padding-top:203rpx;
+background-color:#F2f2f2;
 }

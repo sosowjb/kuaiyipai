@@ -54,7 +54,7 @@
         <view class="weui-cell__bd">
        <picker bindchange="bindPickerChangeP" value="{{pillarsIndex}}" range="{{pillars}}">
               {{pillars[pillarsIndex]}}
-            </picker>
+                          </picker>
         </view>
       </view>
       <view class="weui-cell">

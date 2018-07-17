@@ -10,7 +10,7 @@
       </view>
   </view>  
   <view class='flex-row margin-inner'>
-      <text>{{item.pcd}}{{item.street}}</text>    
+      <text>{{item.pcd}} {{item.street}}</text>    
   </view>
   <view style='border-bottom:1px #eee solid;height:2px;'></view>
   <view class='flex-row margin-inner'>

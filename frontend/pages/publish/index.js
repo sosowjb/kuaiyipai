@@ -27,6 +27,7 @@ Page({
    */
   onLoad: function (options) {
     var that = this;
+    var id = options.id;
     wx.request({
       url: app.globalData.apiLink + '/api/services/app/Pillar/GetPillars?SkipCount=0&MaxResultCount=100',
       header: { 'Abp.TenantId': '1', 'Content-Type': 'application/json' },
@@ -35,7 +36,8 @@ Page({
       responseType: 'text',
       success: function (res) {
         if (res.data.success) {
-          that.getCategory(res.data.result.items);
+          that.getCategory(res.data.result.items,id,that.getinitData);
+          
         }
       }
     });
@@ -259,7 +261,7 @@ Page({
       "formdata.description": e.detail.value
     });
   },
-  getCategory: function (Pillars) {
+  getCategory: function (Pillars,id,callback) {
     var that = this;
     wx.request({
       url: app.globalData.apiLink + '/api/services/app/Category/GetCategories?SkipCount=0&MaxResultCount=100',
@@ -300,9 +302,38 @@ Page({
             c.push(CobjectArray[i].name)
           }
           that.setData({ pillars: p, categories: c})
+
+          callback(id);
         }
       }
     })
+  },
+  getPillarsAndCategoriesIndex:function(id,cid)
+  {
+    var that=this;
+    var Pillars = that.data.getPillars;
+    console.log(Pillars); 
+    var c = [];
+    for (var i = 0; i < Pillars.length; i++) {
+      if (Pillars[i].id == id)
+      {
+        that.setData({
+          pillarsIndex: i
+        });
+        for (var j = 0; j < Pillars[i].categories.length; j++) {
+          if (Pillars[i].categories[j].id==cid)
+        {
+          that.setData({
+            categoriesIndex:j
+          });
+        }     
+          c.push(Pillars[i].categories[j].name) 
+      }
+        that.setData({
+          categories: c
+        });
+      }
+    }
   },
   bindPickerChangeP:function(e){
     this.setData({ pillarsIndex: e.detail.value, categoriesIndex: 0 })
@@ -323,6 +354,49 @@ Page({
     if (result == null) return false;
     else return true;
   },
+  getinitData:function(id){
+    var that = this;
+    if (id) {
+      wx.request({
+        url: app.globalData.apiLink + '/api/services/app/Item/GetItem?id=' + id,
+        header: { 'Abp.TenantId': '1', 'Content-Type': 'application/json' },
+        method: 'get',
+        dataType: 'json',
+        responseType: 'text',
+        success: function (res) {
+          if (res.data.success) {
+            console.log(res);
+            var dates = new Date(res.data.result.deadline);
+           that.getPillarsAndCategoriesIndex(res.data.result.pillarId, res.data.result.categoryId)
+
+            that.setData({
+              'formdata.title': res.data.result.title,
+              'formdata.startPrice': res.data.result.startPrice,
+              'formdata.stepPrice': res.data.result.stepPrice,
+              date: that.datetimefmt(dates, 'yyyy-MM-dd'),
+              time: that.datetimefmt(dates, 'hh:mm'),
+              'formdata.description': res.data.result.description
+            });
+          }
+        }
+      });
+      wx.request({
+        url: app.globalData.apiLink + '/api/services/app/Item/GetItemPictures?id=' + id,
+        header: { 'Abp.TenantId': '1', 'Content-Type': 'application/json' },
+        method: 'GET',
+        dataType: 'json',
+        responseType: 'text',
+        success: function (res) {
+          if (res.data.success) {
+            that.setData({
+              pictureList: res.data.result.items
+            });
+          }
+        }
+      });
+
+    }
+  },
   deleteimage:function(e){
     var that = this;
     console.log(that.data.pictureList);
@@ -339,5 +413,21 @@ Page({
     that.setData({
       pictureList: piclist
     });
+  },
+ datetimefmt:function(time,fmt) { //author: meizz
+    var o = {
+      "M+": time.getMonth() + 1, //月份
+      "d+": time.getDate(), //日
+      "h+": time.getHours(), //小时
+      "m+": time.getMinutes(), //分
+      "s+": time.getSeconds(), //秒
+      "q+": Math.floor((time.getMonth() + 3) / 3), //季度
+      "S": time.getMilliseconds() //毫秒
+    };
+    if (/(y+)/.test(fmt)) fmt = fmt.replace(RegExp.$1, (time.getFullYear() + "").substr(4 - RegExp.$1.length));
+    for (var k in o)
+      if (new RegExp("(" + k + ")").test(fmt))
+        fmt = fmt.replace(RegExp.$1, (RegExp.$1.length === 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));
+    return fmt;
   }
 })

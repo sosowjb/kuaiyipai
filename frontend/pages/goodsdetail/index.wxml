@@ -111,7 +111,8 @@
                     <view wx:if='{{djs.clock=="已经结束" || goodsInfo.status==2}}' class='endTime'>距离结束：已经结束
                     </view>
            </view>
-             <view wx:if='{{!(djs.clock=="已经结束" || goodsInfo.status==2)}}' class='bidBtns'><button wx:if="{{canIUse}}" open-type="getUserInfo" bindgetuserinfo="bindGetUserInfo">出价</button><button wx:if="{{!canIUse}}" bindtap='bid'>出价</button></view>
+             <view wx:if='{{!(djs.clock=="已经结束" || goodsInfo.status==2)}}' class='bidBtns'>
+             <button bindtap='bid'>出价</button></view>
              <view wx:if='{{djs.clock=="已经结束" || goodsInfo.status==2}}' class='bidBtns isgray'><button>结束</button></view>
             <view class='moneyInfo'>
                       <view><i class='iconfont .icon-fm-saleqi'></i>￥{{goodsInfo.bPrice}}元</view>

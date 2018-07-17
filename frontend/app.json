@@ -1,15 +1,16 @@
 {
   "pages": [
-        
+
     "pages/home/home",
     "pages/container/index",
+                "pages/charge/index",
     "pages/login/index",
     "pages/classify/index",
     "pages/goodsdetail/index",
     "pages/orderdetail/index",
     "pages/balance/index",
     "pages/balance-detail/index", 
-    "pages/charge/index",
+
     "pages/my/index",
     "pages/search/index",
     "pages/seller/index",

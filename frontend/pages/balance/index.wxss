@@ -2,7 +2,7 @@
     height: 218rpx;
     position: relative;
 }
-.top-info .money{
+.money{
     font-weight: bold;
     color:brown;
 }
@@ -11,7 +11,18 @@
     height: 22rpx;
     margin: 16rpx;
 }
-.order-block .money{
-    font-weight: bold;
+.money{
+    font-weight:400;
     color:brown;
+    font-size: 30px;
+  }
+  .djmoney{
+    font-weight:400;
+    color:brown;
+    font-size: 15px;
+    margin-bottom: 16rpx;
+  }
+  .yue{
+    font-size: 12px;
+    margin-top: 10rpx;
   }

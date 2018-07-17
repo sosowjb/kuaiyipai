@@ -1,9 +1,8 @@
 <view class="page">
-
      <view class="weui-panel weui-panel_access">
      <view class="weui-panel__hd">订单状态</view>
       <view wx:if="{{orderStatus==5}}" class="weui-panel__bd">
-        <navigator url="" class="weui-cell weui-cell_access" hover-class="weui-cell_active">
+        <view class="weui-cell weui-cell_access" hover-class="weui-cell_active">
           <view class="weui-cell__hd">
             <i style='margin-right: 5px;vertical-align: middle;font-size:20px' class='iconfont icon-fm-receipt'></i>
           </view>
@@ -11,10 +10,10 @@
             <view class="weui-media-box__title">已确认收货</view>
             <view class="weui-media-box__desc">收货时间:{{statusTime}}</view>
           </view>
-        </navigator>
+        </view>
       </view>
       <view wx:if="{{orderStatus==4}}" class="weui-panel__bd">
-        <navigator url="" class="weui-cell weui-cell_access" hover-class="weui-cell_active">
+        <view class="weui-cell weui-cell_access" hover-class="weui-cell_active">
           <view class="weui-cell__hd">
             <i style='margin-right: 5px;vertical-align: middle;font-size:20px' class='iconfont icon-fm-delivery'></i>
           </view>
@@ -22,10 +21,10 @@
             <view class="weui-media-box__title">已发货</view>
             <view class="weui-media-box__desc">发货时间:{{statusTime}}</view>
           </view>
-        </navigator>
+        </view>
       </view>
       <view wx:if="{{orderStatus==2}}" class="weui-panel__bd">
-        <navigator url="" class="weui-cell weui-cell_access" hover-class="weui-cell_active">
+        <view class="weui-cell weui-cell_access" hover-class="weui-cell_active">
           <view class="weui-cell__hd">
             <i style='margin-right: 5px;vertical-align: middle;font-size:20px' class='iconfont icon-fm-notpaid'></i>
           </view>
@@ -33,7 +32,7 @@
             <view class="weui-media-box__title">已付款</view>
             <view class="weui-media-box__desc">付款时间:{{statusTime}}</view>
           </view>
-        </navigator>
+        </view>
       </view>
       <!--<view  wx:if="{{orderStatus==0}}"  class="weui-panel__bd">
         <navigator url="" class="weui-cell weui-cell_access" hover-class="weui-cell_active">
@@ -47,7 +46,7 @@
         </navigator>
       </view>-->
       <view wx:if="{{orderStatus==1}}"  class="weui-panel__bd">
-        <navigator class="weui-cell weui-cell_access" hover-class="weui-cell_active">
+        <view class="weui-cell weui-cell_access" hover-class="weui-cell_active">
           <view class="weui-cell__hd">
             <i style='margin-right: 5px;vertical-align: middle;font-size:20px' class='iconfont icon-fm-heterodyne'></i>
           </view>
@@ -55,7 +54,7 @@
             <view  class="weui-media-box__title">竞拍成功</view>
             <view class="weui-media-box__desc">成功时间:{{statusTime}}</view>
           </view>
-        </navigator>
+        </view>
       </view>
     </view>
 
@@ -63,7 +62,7 @@
   <view class="weui-panel weui-panel_access">
     <view class="weui-panel__hd">商品信息</view>
     <view class="weui-panel__bd">
-      <navigator url="" class="weui-media-box weui-media-box_appmsg" hover-class="weui-cell_active">
+      <view class="weui-media-box weui-media-box_appmsg" hover-class="weui-cell_active">
         <view class="weui-media-box__hd weui-media-box__hd_in-appmsg">
           <image class="weui-media-box__thumb" src="{{goodspic}}" />
           </view>
@@ -72,7 +71,7 @@
             <view class="weui-media-box__desc">成交金额：{{dealPrice}}元</view>
             <view class="weui-media-box__desc">成交时间：{{dealTime}}</view>
         </view>
-     </navigator>
+     </view>
    </view>
   </view>
   <view class="weui-panel weui-form-preview">
@@ -96,20 +95,38 @@
         </view>
           <view class="weui-panel weui-form-preview">
       <view class="weui-panel__hd">发货信息</view>
-            <view class="weui-form-preview__bd">
-                <view class="weui-form-preview__item">
-                    <view class="weui-form-preview__label orderdetaillabel">收货人</view>
-                    <view class="weui-form-preview__value orderdetailvalue">{{consigneeName}}</view>
-                     <view style='color:black' class='weui-form-preview__value weui-cell__ft'>{{consigneeTel}}</view>
+          <view class="weui-form-preview__bd">
+              <view class="weui-form-preview__item">
+                <view class="weui-form-preview__label orderdetaillabel">收货人</view>
+                  <view class="weui-form-preview__value orderdetailvalue">{{consigneeName}}</view>
+                  <view style='color:black' class='weui-form-preview__value weui-cell__ft'>{{consigneeTel}}</view>
+          </view>
+      <view class="weui-form-preview__item">
+          <view class="weui-form-preview__label orderdetaillabel"></view>
+            <view style='margin-left:6em;' class='weui-form-preview__value orderdetailvalue'>{{address}}</view>
+            </view>
+              <view class="weui-form-preview__item">
+                <view class="weui-form-preview__label orderdetaillabel">发货方式</view>
+                  <view class="weui-form-preview__value orderdetailvalue">{{deliveryType}}</view>
                 </view>
-                <view class="weui-form-preview__item">
-                <view class="weui-form-preview__label orderdetaillabel"></view>
-                <view style='margin-left:6em;' class='weui-form-preview__value orderdetailvalue'>{{address}}</view>
-                </view>
-                <view class="weui-form-preview__item">
-                    <view class="weui-form-preview__label orderdetaillabel">发货方式</view>
-                    <view class="weui-form-preview__value orderdetailvalue">{{deliveryType}}</view>
+ <view class="weui-form-preview__item">
+                    <view wx:if="{{deliveryId!=null}}" class="weui-form-preview__label orderdetaillabel">快递单号</view>
+                    <view wx:if="{{deliveryId!=null}}" class="weui-form-preview__value orderdetailvalue">{{deliveryId}}</view>
                 </view>
             </view>
         </view>
+        <view class='weui-panel weui-form-preview address-add'>
+         <view class="weui-form-preview__bd">
+          <view class="weui-form-preview__item">
+             <view class='weui-form-preview__value weui-cell__ft'>
+              <view class="btn topay-btn fr" hidden="{{orderStatus==1? false : true}}"  bindtap="toPayTap" data-id="{{id}}" data-money="{{(item.dealPrice+item.expressCostAmount)}}">马上付款</view>
+              <view class="btn topay-btn fr" hidden="{{orderStatus==2 && isSeller==1? false : true}}" bindtap="showModel" data-id="{{id}}" >立即发货</view> 
+              <view class="btn topay-btn fr" hidden="{{orderStatus==4 && isSeller==0? false : true}}"  bindtap="toReceived" data-id="{{id}}" >确认收货</view> 
+        </view>
+      </view> 
+    </view>
+  </view>
 </view>
+<modal hidden="{{Deliveryhidden}}" data-DeliverId='{{deliveryId}}'  data-OrderId='{{id}}' confirm-text="确定" cancel-text="取消" bindcancel="hiddenModel" bindconfirm="toSend" >
+    <input name="title" class="inputborder weui-input" placeholder="请输入快递单号" type="text"  value='{{deliveryId}}' bindinput="GetDeliveryId" confirm-type="next"  />
+</modal>

@@ -113,11 +113,19 @@ Page({
         "Content-Type": "application/json"
       },
       success: function (res) {
-        console.info(res);
-        if (res.data.success == 0) {
+        console.log(res);
+        if (res.data.success) {
           that.setData({
             balance: res.data.result.available
           });
+        }
+        else {
+          wx.login({
+            success: function (loginRes) {
+              //console.log("accessToken:" + wx.getStorageSync("accessToken"));
+              app.Logins(loginRes.code, null);
+            }
+          })
         }
       }
     })

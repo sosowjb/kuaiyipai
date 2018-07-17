@@ -50,6 +50,20 @@ App({
       showCancel: false,
     })
   },
+  openLoading: function () {
+    wx.showToast({
+      title: '数据加载中',
+      icon: 'loading',
+      duration: 3000
+    });
+  },
+  openToast: function () {
+    wx.showToast({
+      title: '已完成',
+      icon: 'success',
+      duration: 3000
+    });
+  },
   globalData: {
     userInfo: null,
     apiLink: "http://localhost:5000",//api链接
