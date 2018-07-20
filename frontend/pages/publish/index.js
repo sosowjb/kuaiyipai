@@ -19,7 +19,8 @@ Page({
     pillars:[],
     categories:[],
     pillarsIndex:0,
-    categoriesIndex:0
+    categoriesIndex:0,
+    id:''
   },
 
   /**
@@ -28,6 +29,11 @@ Page({
   onLoad: function (options) {
     var that = this;
     var id = options.id;
+if(id)
+{
+that.setData({
+  id:id
+});
     wx.request({
       url: app.globalData.apiLink + '/api/services/app/Pillar/GetPillars?SkipCount=0&MaxResultCount=100',
       header: { 'Abp.TenantId': '1', 'Content-Type': 'application/json' },
@@ -41,6 +47,7 @@ Page({
         }
       }
     });
+}
   },
   showModal(msg) {
     wx.showModal({
@@ -193,6 +200,7 @@ Page({
   /*  console.log(this.data.pictureList);
    console.log(this.data.getPillars[this.data.pillarsIndex]);
    console.log(this.data.getPillars[this.data.pillarsIndex].categories[this.data.categoriesIndex]);*/
+   var that=this;
     if (!e.detail.value.title)
     {
       this.showModal("请输入标题");
@@ -230,8 +238,15 @@ Page({
     }
 
     wx.showLoading();
+    var url = app.globalData.apiLink + '/api/services/app/Item/CreateItem'
+    console.log(that.data.id);
+    if(that.data.id)
+    {
+      url = app.globalData.apiLink + '/api/services/app/Item/EditItem'
+    }
+  
     wx.request({
-      url: app.globalData.apiLink + '/api/services/app/Item/CreateItem',
+      url: url,
       data: { 
         pillarId: this.data.getPillars[this.data.pillarsIndex].id,
         categoryId: this.data.getPillars[this.data.pillarsIndex].categories[this.data.categoriesIndex].id,
@@ -241,13 +256,15 @@ Page({
         title: e.detail.value.title,
         deadline: this.data.date + " " + this.data.time,
         description: this.data.formdata.description,
-        pictureList: this.data.pictureList
+        pictureList: this.data.pictureList,
+        id:that.data.id
        },
       header: { 'Abp.TenantId': '1', 'Content-Type': 'application/json', 'Authorization':"Bearer "+wx.getStorageSync("accessToken") },
       method: 'POST',
       dataType: 'json',
       responseType: 'text',
       success: function (res) {
+       // console.log(res);
         wx.hideLoading();
         wx.navigateTo({
           url: "/pages/container/index",

@@ -1,16 +1,14 @@
 {
   "pages": [
-
     "pages/home/home",
     "pages/container/index",
-                "pages/charge/index",
+    "pages/charge/index",
     "pages/login/index",
     "pages/classify/index",
     "pages/goodsdetail/index",
     "pages/orderdetail/index",
     "pages/balance/index",
     "pages/balance-detail/index", 
-
     "pages/my/index",
     "pages/search/index",
     "pages/seller/index",
@@ -47,7 +45,7 @@
   },
   "window": {
     "backgroundTextStyle": "light",
-    "navigationBarBackgroundColor": "#66666",
+    "navigationBarBackgroundColor": "#fff",
     "navigationBarTitleText": "快微拍",
     "navigationBarTextStyle": "black"
   }

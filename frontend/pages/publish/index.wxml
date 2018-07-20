@@ -99,7 +99,7 @@
       <view class="weui-cell">
         <view class="weui-cell__bd">
     <view class="page__bd page__bd_spacing">
-       <button class="weui-btn"  formType="submit" type="primary">提交审核</button>
+       <button class="weui-btn"  formType="submit" type="primary">提交</button>
 </view>
   </view>
   </view>

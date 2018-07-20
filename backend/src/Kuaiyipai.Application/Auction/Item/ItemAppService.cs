@@ -106,7 +106,10 @@ namespace Kuaiyipai.Auction.Item
                 item.Description = input.Description;
             }
 
-            var itemId = await _itemDraftingRepository.InsertAndGetIdAsync(item);
+          //  var itemId = await _itemDraftingRepository.InsertAndGetIdAsync(item);
+            var itemId = await _itemDraftingRepository.InsertOrUpdateAndGetIdAsync(item);
+
+            await _itemPicRepository.DeleteAsync(p => p.ItemId == itemId);
 
             for (int i = 0; i < input.PictureList.Count; i++)
             {
