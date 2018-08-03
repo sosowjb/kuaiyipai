@@ -4,7 +4,9 @@ var commonCityData = require('../../content/utils/city.js')
 var app = getApp()
 Page({
   data: {
-    addressList:[]
+    addressList:[],
+    selectid:'',
+    isSeller:0
   },
   addAddress : function () {
     wx.navigateTo({
@@ -69,7 +71,16 @@ Page({
       }
     })
   } ,
-  onLoad: function () {
+  onLoad: function (e) {
+     
+    if (e && e!=null)
+    {
+      console.log(e);
+       this.setData({
+         selectid: e.id,
+         isSeller: e.isSeller
+       });
+    }
   },
   onShow : function () {
     this.getUserAddressList();
@@ -117,5 +128,16 @@ Page({
       }
     }
     return dizhi;
+  },
+  selectAddress:function(e){
+    var that=this;
+    console.log(e.currentTarget.dataset.id);
+    console.log(that.data.selectid);
+    if (that.data.selectid)
+    {
+    wx.navigateTo({
+      url: "/pages/orderdetail/index?addressid=" + e.currentTarget.dataset.id + "&id=" + that.data.selectid +"&isSeller="+that.data.isSeller
+    })
+    }
   }
 })

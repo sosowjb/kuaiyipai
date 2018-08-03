@@ -6,6 +6,7 @@ Page({
    * 页面的初始数据
    */
   data: {
+    goodsid:0,
     canIUse: wx.canIUse('button.open-type.getUserInfo'),
     imageLink: app.globalData.imageLink,
     djs:{//倒计时
@@ -22,7 +23,7 @@ Page({
      },
     userInfo: {},
     vendor: { 
-      id:123,//id
+      id:0,//id
       nickname: "",//名称
       hpic: ""//头像
      // credit:4.8,//信用值
@@ -42,6 +43,9 @@ Page({
   onLoad: function (options) {
     var that=this;
     var statu = 0;
+    that.setData({
+      goodsid: options.id
+    });
     wx.request({
       url: app.globalData.apiLink + '/api/services/app/Item/GetItemPictures?id=' + options.id,
       header: { 'Abp.TenantId': '1', 'Content-Type': 'application/json' },
@@ -94,13 +98,15 @@ Page({
   },
   GetBiddings:function(id){
     var that=this;
+    console.log(that.data.goodsid);
   wx.request({
-    url: app.globalData.apiLink + '/api/services/app/Bidding/GetBiddings?ItemId=' + id + '&SkipCount=0&MaxResultCount=5&Sorting=Price',
+    url: app.globalData.apiLink + '/api/services/app/Bidding/GetBiddings?ItemId=' + id + '&SkipCount=0&MaxResultCount=5&Sorting=Price DESC',
     header: { 'Abp.TenantId': '1', 'Content-Type': 'application/json' },
     method: 'GET',
     dataType: 'json',
     responseType: 'text',
     success: function (res) {
+      console.log(res);
       if (res.data.success) {
         console.log(res.data.result.items);
         that.setData({
@@ -114,14 +120,16 @@ Page({
    * 生命周期函数--监听页面初次渲染完成
    */
   onReady: function () {
-  
+
   },
 
   /**
    * 生命周期函数--监听页面显示
    */
   onShow: function () {
-  
+    var that = this;
+   
+    that.GetBiddings(that.data.goodsid);
   },
 
   /**
@@ -254,6 +262,7 @@ closefixednum: function () {//关闭弹窗
    }
   },
   submitdata:function(){
+    var that=this;
     if (wx.getStorageSync("accessToken"))
     {
     wx.request({
@@ -264,15 +273,17 @@ closefixednum: function () {//关闭弹窗
       dataType: 'json',
       responseType: 'text',
       success: function (res) {
+        console.log(res);
         if (res.data.success)
         {
           //提交获取成功
-          show("恭喜您，竞拍成功");
-          closefixednum();
+          app.showModal("恭喜您，竞拍成功");
+          that.closefixednum();
+          that.GetBiddings(that.data.goodsid);
         }
         else
         {
-          show(res.data.error.message);
+          app.showModal(res.data.error.message);
         }
       }
     })

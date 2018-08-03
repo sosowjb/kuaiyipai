@@ -4,10 +4,12 @@
         <view class="flex-grow-0">
           <image wx:if="{{userInfo && userInfo.avatar}}" class="avatar" src="{{userInfo.avatar}}"/>
           <image wx:if="{{!userInfo && !userInfo.avatar}}" class="avatar" src="{{imageLink}}/application/User/default.jpg"/>
+          
         </view>
         <view class="flex-grow-1">
+            <view bindtap='login' wx:if="{{!userInfo}}">授权登录</view>
             <view class="user-name">{{userInfo.nickname}}</view>
-            <view class="user-phone">{{userInfo.phone}}</view>
+            <view wx:if="{{userInfo && userInfo.phone}}" class="user-phone">{{userInfo.phone}}</view>
         </view>
     </view>
 

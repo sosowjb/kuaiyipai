@@ -133,6 +133,7 @@ Page({
           dataType: 'json',
           responseType: 'text',
           success: function(res) {
+
             this.setData({
               currentpage:currentpage+1
             });
@@ -198,6 +199,7 @@ Page({
         dataType: 'json',
         responseType: 'text',
         success: function (res) {
+          console.log(res);
           if (res.data.success)
           {
             if (res.data.result.items.length>0)

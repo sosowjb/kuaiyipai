@@ -1,6 +1,26 @@
 //app.js
 App({
   onLaunch: function () {
+    var that = this;
+    if (wx.getStorageSync("accessToken")) {
+      wx.request({
+        url: that.globalData.apiLink + '/api/TokenAuth/ValidateToken',
+        method: "POST",
+        header: {
+          "Abp.TenantId": "1",
+          "Authorization": "Bearer " + wx.getStorageSync("accessToken"),
+          "Content-Type": "application/json"
+        },
+        success: function (res) {
+          console.log(res);
+          if (res.data.success) {
+            if (!res.data.result) {
+              wx.clearStorage("accessToken");
+            }
+          }
+        }
+      })
+    }
   },
   Logins: function (nickname, avatarlink,code,callback){
     var that=this;
@@ -66,7 +86,7 @@ App({
   },
   globalData: {
     userInfo: null,
-    apiLink: "http://localhost:5000",//api链接
+    apiLink: "http://localhost:5000",//"http://39.104.135.205",//api链接
     imageLink: "http://images.kypwp.com"//图片链接
   }
 })

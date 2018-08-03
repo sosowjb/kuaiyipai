@@ -1,4 +1,4 @@
-<view wx:for="{{addressList}}" wx:key="{{index}}">  
+<view wx:for="{{addressList}}" wx:key="{{index}}" data-id="{{item.id}}" bindtap='selectAddress'>
   <view class='flex-row margin-inner'>
       <view class="flex-grow-1 flex-y-center flex-row">
           <view class="flex-grow-0">

@@ -128,9 +128,9 @@
                       <view class='bidLeader'><image style='width:100%;height:100%;display:block' src='{{index==0?imageLink+"/application/lx.png":imageLink+"/application/cj.png"}}'></image></view>
                     </view>
                 </view>
-                <view class='avatar'><image src="{{item.avatar}}"></image></view>
+                <view class='avatar'><image src="{{item.avatarLink}}"></image></view>
                 <view class='bidUser'>
-                  <view class='name2'>{{item.userName}}</view>
+                  <view class='name2'>{{item.nickName}}</view>
                   <view class='price'>￥{{item.price}}</view>
                 </view>
               </view>
