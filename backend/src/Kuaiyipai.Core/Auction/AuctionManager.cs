@@ -60,7 +60,7 @@ namespace Kuaiyipai.Auction
                     var order = new OrderWaitingForPayment
                     {
                         Code = DateTime.Now.Ticks + random.Next(0, 99999).ToString().PadLeft(5, '0'),
-                        AddressId = address.Id,
+                        //AddressId = address.Id,
                         Amount = bidding.Price,
                         ItemPriceAmount = bidding.Price,
                         BuyerId = buyer.Id,

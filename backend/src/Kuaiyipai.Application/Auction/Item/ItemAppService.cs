@@ -728,7 +728,7 @@ namespace Kuaiyipai.Auction.Item
             {
                 var now = DateTime.Now;
                 var relativePath = Path.Combine(now.Year.ToString(), now.Month.ToString(), now.Day.ToString(),
-                    now.Hour.ToString()) + "\\";
+                    now.Hour.ToString());
                 var filePath = Path.Combine(_appConfiguration["App:ImagePhysicalPath"], relativePath);
                 var fileName = now.ToString("yyyyMMddhhmmssffff") + "_" + AbpSession.UserId;
                 var ext = ".jpg";

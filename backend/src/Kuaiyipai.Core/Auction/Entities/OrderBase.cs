@@ -20,12 +20,8 @@ namespace Kuaiyipai.Auction.Entities
 
         [Required]
         public long SellerId { get; set; }
-
-        [Required]
-        public Guid AddressId { get; set; }
-
-        [ForeignKey("AddressId")]
-        public Address Address { get; set; }
+        
+        public Guid? AddressId { get; set; }
 
         /// <summary>
         /// 快递单号

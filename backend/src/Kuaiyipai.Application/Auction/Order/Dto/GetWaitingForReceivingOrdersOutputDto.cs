@@ -11,7 +11,7 @@ namespace Kuaiyipai.Auction.Order.Dto
 
         public long SellerId { get; set; }
 
-        public Guid AddressId { get; set; }
+        public Guid? AddressId { get; set; }
 
         public string DeliveryId { get; set; }
 

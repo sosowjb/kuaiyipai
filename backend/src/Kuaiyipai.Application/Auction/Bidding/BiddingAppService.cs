@@ -68,7 +68,9 @@ namespace Kuaiyipai.Auction.Bidding
                     BidTime = DateTime.Now,
                     Price = bidding.Price,
                     UserId = bidding.CreatorUserId.Value,
-                    UserName = user.FullName
+                    UserName = user.FullName,
+                    NickName = user.NickName,
+                    AvatarLink = user.AvatarLink
                 }).ToListAsync();
 
             return new PagedResultDto<GetBiddingsOutputDto>(count, list);

@@ -14,5 +14,9 @@ namespace Kuaiyipai.Auction.Bidding.Dto
         public long UserId { get; set; }
 
         public string UserName { get; set; }
+
+        public string NickName { get; set; }
+
+        public string AvatarLink { get; set; }
     }
 }
