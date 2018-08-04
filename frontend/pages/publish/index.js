@@ -34,6 +34,7 @@ if(id)
 that.setData({
   id:id
 });
+}
     wx.request({
       url: app.globalData.apiLink + '/api/services/app/Pillar/GetPillars?SkipCount=0&MaxResultCount=100',
       header: { 'Abp.TenantId': '1', 'Content-Type': 'application/json' },
@@ -47,7 +48,7 @@ that.setData({
         }
       }
     });
-}
+
   },
   showModal(msg) {
     wx.showModal({
@@ -139,7 +140,11 @@ that.setData({
           mask: true,
           duration: 10000
         })
-        var uploadImgCount = 0;
+        var uploadImgCount =0;
+        if (that.data.pictureList.length)
+        {
+          uploadImgCount = that.data.pictureList.length;
+        }
         var pL=that.data.pictureList;
         for (var i = 0, h = tempFilePaths.length; i < h; i++) {
           wx.uploadFile({
@@ -151,10 +156,12 @@ that.setData({
             },
             header: { 'Abp.TenantId': '1', 'Content-Type': 'application/json', 'Authorization': "Bearer " + wx.getStorageSync("accessToken") },
             success: function (res) {
+              console.log(res);
               var data = JSON.parse(res.data);
               if (data.success)
              {
                var isco=false;
+                console.log(uploadImgCount);
                if (uploadImgCount==0)
                {
                  isco=true;
@@ -239,7 +246,7 @@ that.setData({
 
     wx.showLoading();
     var url = app.globalData.apiLink + '/api/services/app/Item/CreateItem'
-    console.log(that.data.id);
+    console.log(this.data.pictureList);
     if(that.data.id)
     {
       url = app.globalData.apiLink + '/api/services/app/Item/EditItem'

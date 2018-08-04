@@ -7,7 +7,7 @@
         </view>
         <view class="flex-grow-1">
             <view class="user-name">{{userInfo.nickname}}</view>
-            <view class="user-phone">{{userInfo.phone}}</view>
+            <view wx:if="{{userInfo && userInfo.phone}}" class="user-phone">{{userInfo.phone}}</view>
         </view>
     </view>
     <!--<view class="flex-grow-0 flex-y-center">

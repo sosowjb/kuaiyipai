@@ -25,26 +25,11 @@ Page({
 	},	
   onShow() {
     var that=this;
-   
     if (wx.getStorageSync("accessToken"))
     {
       that.getUserInfo();
       that.getUserOrder();
       that.getUserAmount();
-      /*else
-      {
-        that.setData({
-          userInfo: app.globalData.userInfo
-        });
-        if (!app.globalData.userInfo.phone)
-        {
-          that.getUserInfo();
-        }
-      }*/
-    }
-    else
-    {
-      that.login();
     }
   },
   getUserInfo:function(){
@@ -201,7 +186,7 @@ Page({
       });
       // 获取验证码
       wx.request({
-        url: this.globalData.apiLink + '/api/services/app/UserPhone/RequestCaptcha',
+        url: app.globalData.apiLink + '/api/services/app/UserPhone/RequestCaptcha',
         header: {
           'Abp.TenantId': '1',
           'Content-Type': 'application/json',
@@ -213,20 +198,23 @@ Page({
         },
         success: function (res) {
           console.log(res)
+          if (res.data.success)
+          {
           // 结果不为空
-          if (res!=null) {
-            app.showModal(res.data.msg);
-            if (res.data.code == 100 && countdown > 0) {
-              interval = setInterval(function () {
+            //app.showModal('发送成功');
+            if (res.data.error ==null && countdown > 0) {
+             var interval = setInterval(function () {
                 that.setData({
-                  button_reqIdentifyCode: '重新获取(' + countdown + 's)'
+                  button_reqIdentifyCode: '重新获取(' + countdown + 's)',
+                  identifyCode_btn: true
                 });
                 countdown--;
 
                 if (countdown <= 0) {
                   countdown = -1
                   that.setData({
-                    button_reqIdentifyCode: '获取验证码'
+                    button_reqIdentifyCode: '获取验证码',
+                    identifyCode_btn: false
                   });
                   clearInterval(interval)
                 }
@@ -271,10 +259,18 @@ Page({
        "captcha": identifyCode
       },
       success: (res) => {
-        console.log(res);
-       that.setData({
-         Deliveryhidden:false
-       }); 
+       if(res.data.success)
+       {
+         that.setData({
+           Deliveryhidden: false
+         }); 
+         
+       }
+       else
+       {
+         app.showModal(res.data.error.message);
+       }
+
       }
     }) 
   },
