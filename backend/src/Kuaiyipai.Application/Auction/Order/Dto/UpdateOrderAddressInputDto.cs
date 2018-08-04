@@ -2,7 +2,7 @@
 
 namespace Kuaiyipai.Auction.Order.Dto
 {
-    public class PayInputDto
+    public class UpdateOrderAddressInputDto
     {
         public Guid OrderId { get; set; }
 

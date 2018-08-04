@@ -64,6 +64,7 @@ namespace Kuaiyipai.Auction.Order
 
             // 更改订单状态
             order.PaidTime = DateTime.Now;
+            order.AddressId = input.AddressId;
             await _paymentRepository.UpdateAsync(order);
             var sendingOrder = new OrderWaitingForSending
             {

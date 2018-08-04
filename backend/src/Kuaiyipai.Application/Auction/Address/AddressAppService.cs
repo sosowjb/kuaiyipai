@@ -9,7 +9,6 @@ using Abp.Linq.Extensions;
 using Abp.UI;
 using Castle.Core.Internal;
 using Kuaiyipai.Auction.Address.Dto;
-using Kuaiyipai.Auction.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace Kuaiyipai.Auction.Address
@@ -17,12 +16,10 @@ namespace Kuaiyipai.Auction.Address
     public class AddressAppService : KuaiyipaiAppServiceBase, IAddressAppService
     {
         private readonly IRepository<Entities.Address, Guid> _addressRepository;
-        private readonly IRepository<Area> _areaRepository;
 
-        public AddressAppService(IRepository<Entities.Address, Guid> addressRepository, IRepository<Area> areaRepository)
+        public AddressAppService(IRepository<Entities.Address, Guid> addressRepository)
         {
             _addressRepository = addressRepository;
-            _areaRepository = areaRepository;
         }
 
         [UnitOfWork]
@@ -109,23 +106,51 @@ namespace Kuaiyipai.Auction.Address
             }
             var count = await query.CountAsync();
 
-            var provinceQuery = _areaRepository.GetAll().Where(a => a.Level == 1);
-            var cityQuery = _areaRepository.GetAll().Where(a => a.Level == 2);
-            var districtQuery = _areaRepository.GetAll().Where(a => a.Level == 3);
-
             var list = await query.PageBy(input).Select(address => new GetAddressesOutputDto
-                {
-                    Id = address.Id,
-                    Street = address.Street,
-                    IsDefault = address.IsDefault,
-                    Province = address.ProvinceId.ToString(),
-                    City = address.CityId.ToString(),
-                    District = address.DistrictId.ToString(),
-                    Receiver = address.Receiver,
-                    ContactPhoneNumber = address.ContactPhoneNumber
-                }).ToListAsync();
+            {
+                Id = address.Id,
+                Street = address.Street,
+                IsDefault = address.IsDefault,
+                Province = address.ProvinceId.ToString(),
+                City = address.CityId.ToString(),
+                District = address.DistrictId.ToString(),
+                Receiver = address.Receiver,
+                ContactPhoneNumber = address.ContactPhoneNumber
+            }).ToListAsync();
 
             return new PagedResultDto<GetAddressesOutputDto>(count, list);
+        }
+
+        public async Task<GetAddressesOutputDto> GetDefaultAddress()
+        {
+            if (!AbpSession.UserId.HasValue)
+            {
+                throw new UserFriendlyException("用户未登录");
+            }
+
+            var address = await _addressRepository.GetAll()
+                .FirstOrDefaultAsync(a => a.CreatorUserId == AbpSession.UserId.Value && a.IsDefault);
+
+            if (address == null)
+            {
+                address = await _addressRepository.GetAll().FirstOrDefaultAsync(a => a.CreatorUserId == AbpSession.UserId.Value);
+                if (address == null)
+                {
+                    throw new UserFriendlyException("用户没有设置任何地址");
+                }
+            }
+
+            return new GetAddressesOutputDto
+            {
+                Id = address.Id,
+                Province = address.ProvinceId.ToString(),
+                City = address.CityId.ToString(),
+                District = address.DistrictId.ToString(),
+                Street = address.Street,
+                Receiver = address.Receiver,
+                ContactPhoneNumber = address.ContactPhoneNumber,
+                IsDefault = address.IsDefault
+            };
         }
     }
 }

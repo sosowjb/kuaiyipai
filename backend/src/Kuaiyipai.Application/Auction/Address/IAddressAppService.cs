@@ -17,5 +17,7 @@ namespace Kuaiyipai.Auction.Address
         Task DeleteAddress(EntityDto<Guid> input);
 
         Task<PagedResultDto<GetAddressesOutputDto>> GetAddress(GetAddressesInputDto input);
+
+        Task<GetAddressesOutputDto> GetDefaultAddress();
     }
 }
