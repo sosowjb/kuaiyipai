@@ -38,8 +38,18 @@ Page({
   },
   toPayTap:function(e){
     console.log(e);
+    var that=this;
     var orderId = e.currentTarget.dataset.id;
     var money = e.currentTarget.dataset.money;
+    var addressid = e.currentTarget.dataset.addressid
+    if (orderId == "") {
+      that.showModal("订单号不能为空");
+      return;
+    }
+    if (addressid == "") {
+      that.showModal("地址不能为空");
+      return;
+    }
     wx.showModal({
       title: '支付确认',
       content: '将扣除您' + money+'元 您确认支付吗？',
@@ -57,11 +67,16 @@ Page({
               'Authorization': "Bearer " + wx.getStorageSync("accessToken")
             },
             data: {
-              "orderId": orderId
+              "orderId": orderId,
+              "address": addressid
             },
             success: (res) => {
-              console.log(res);
-
+              if (res.data.success) {
+                that.getData();
+              }
+              else {
+                that.showModal(res.data.error.message);
+              }
             }
           }) 
         } else {
@@ -149,6 +164,11 @@ Page({
         if (res.data.success)
         {
           that.showModal("发货成功！");
+          that.getData();
+        }
+        else
+        {
+          that.showModal(res.data.error.message);
         }
       }
     }) 
@@ -236,7 +256,7 @@ Page({
        'Authorization': "Bearer " + wx.getStorageSync("accessToken")
       },
       success: (res) => {
-        //console.log(res);
+        console.log(res);
         wx.hideLoading();
         if (res.data.success) {
 

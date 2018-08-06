@@ -657,8 +657,8 @@ namespace Kuaiyipai.Auction.Order
                 var output = new GetEachTypeOrderCountOutputDto();
 
                 output.WaitPay = await _paymentRepository.CountAsync(t => t.SellerId == AbpSession.UserId.Value && t.PaidTime == null);
-                output.WaitReceive = await _receivingRepository.CountAsync(t => t.SellerId == AbpSession.UserId.Value);
-                output.WaitSend = await _sendingRepository.CountAsync(t => t.SellerId == AbpSession.UserId.Value);
+                output.WaitReceive = await _receivingRepository.CountAsync(t => t.SellerId == AbpSession.UserId.Value && t.ReceivedTime == null);
+                output.WaitSend = await _sendingRepository.CountAsync(t => t.SellerId == AbpSession.UserId.Value && t.SentTime == null);
 
                 return output;
             }
@@ -820,9 +820,9 @@ namespace Kuaiyipai.Auction.Order
 
                 var output = new GetEachTypeOrderCountOutputDto();
 
-                output.WaitPay = await _paymentRepository.CountAsync(t => t.BuyerId == AbpSession.UserId.Value && t.PaidTime == null);
-                output.WaitReceive = await _receivingRepository.CountAsync(t => t.BuyerId == AbpSession.UserId.Value);
-                output.WaitSend = await _sendingRepository.CountAsync(t => t.BuyerId == AbpSession.UserId.Value);
+                output.WaitPay = await _paymentRepository.CountAsync(t => t.SellerId == AbpSession.UserId.Value && t.PaidTime == null);
+                output.WaitReceive = await _receivingRepository.CountAsync(t => t.SellerId == AbpSession.UserId.Value && t.ReceivedTime == null);
+                output.WaitSend = await _sendingRepository.CountAsync(t => t.SellerId == AbpSession.UserId.Value && t.SentTime == null);
 
                 return output;
             }

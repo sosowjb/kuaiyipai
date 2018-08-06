@@ -33,7 +33,7 @@
             </view>-->
             <view class="price-box">
                 <view class="total-price">合计：¥ {{item.itemPriceAmount+item.expressCostAmount}}</view>
-                <view class="btn topay-btn" hidden="{{status==0? false : true}}" bindtap="toPayTap" data-id="{{item.id}}" data-money="{{(item.itemPriceAmount+item.expressCostAmount)}}">马上付款</view>
+                <view class="btn topay-btn" hidden="{{status==0? false : true}}" bindtap="toPayTap" data-addressid="{{item.addressId}}" data-id="{{item.id}}" data-money="{{(item.itemPriceAmount+item.expressCostAmount)}}">马上付款</view>
                 <view class="btn topay-btn" hidden="{{status==1 && isSeller==1? false : true}}" bindtap="showModel" data-id="{{item.id}}" >立即发货</view> 
                  <view class="btn topay-btn" hidden="{{status==2 && isSeller==0? false : true}}" bindtap="toReceived" data-id="{{item.id}}" >确认收货</view> 
             </view>  

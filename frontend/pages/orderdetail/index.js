@@ -11,6 +11,7 @@ Page({
     orderStatus:1,//订单状态1表示
     statusTime:"",//订单时间
     address:"",//地址
+    addressid:"",
     goodsName:"",
     dealPrice:0,
     expressCostAmount:0,
@@ -36,50 +37,57 @@ Page({
     var id = options.id;
     var isSeller = options.isSeller;
     var addressid = options.addressid;
-    //console.log(isSeller);
-
     wx.showLoading();
-     wx.request({
-       url: app.globalData.apiLink + '/api/services/app/Order/GetOrder?orderId=' + id,
-       method: "GET",
-       header: {
-         "Abp.TenantId": "1",
-         "Authorization": "Bearer " + wx.getStorageSync("accessToken"),
-         "Content-Type": "application/json"
-       },
-       success: function (res) {
-        // console.log(res);
-         wx.hideLoading();
-         if (res.data.success) {
-           that.setData({
-             id: id,
-             isSeller: isSeller,
-             orderStatus:res.data.result.orderStatus, // 1,//订单状态1表示
-             statusTime:res.data.result.orderTime,//"2018-04-03 23:23",//订单时间
-            
-             goodsName:res.data.result.goodsName,
-             dealPrice:res.data.result.price,
-             expressCostAmount:0,
-            // dealTime: .OrderTime,
-             sellerTel: res.data.result.sellerTel,//卖家手机号
-             auctionNum:res.data.result.auctionNum,//拍卖编号
-           //  goodsPriceNum:res.data.result.code,//货款交易号
-             goodspic:res.data.result.goodsPicture
-           });
-         } else {
-           wx.showModal({
-             title: '提示',
-             content: '无法获取数据',
-             showCancel: false
-           })
-         }
-       }
-     })
+    that.loadData(isSeller,id);
     if (addressid){
-    that.getDefalutAddress(addressid);
+      that.getAddressById(addressid);
     }
   },
-getDefalutAddress(addressid){
+  loadData: function (isSeller,id)
+  {
+    var that = this;
+    wx.request({
+      url: app.globalData.apiLink + '/api/services/app/Order/GetOrder?orderId=' + id,
+      method: "GET",
+      header: {
+        "Abp.TenantId": "1",
+        "Authorization": "Bearer " + wx.getStorageSync("accessToken"),
+        "Content-Type": "application/json"
+      },
+      success: function (res) {
+        wx.hideLoading();
+        if (res.data.success) {
+          console.log(res);
+          that.setData({
+            id: id,
+            isSeller: isSeller,
+            orderStatus: res.data.result.orderStatus, // 1,//订单状态1表示
+            statusTime: res.data.result.orderTime,//"2018-04-03 23:23",//订单时间
+            deliveryId: res.data.result.deliveryId,
+            goodsName: res.data.result.goodsName,
+            dealPrice: res.data.result.price,
+            expressCostAmount: 0,
+            // dealTime: .OrderTime,
+            sellerTel: res.data.result.sellerTel,//卖家手机号
+            auctionNum: res.data.result.auctionNum,//拍卖编号
+            //  goodsPriceNum:res.data.result.code,//货款交易号
+            goodspic: res.data.result.goodsPicture
+          });
+          if (that.data.address == '') {
+            that.getdefaultaddress();
+          }
+        } else {
+          wx.showModal({
+            title: '提示',
+            content: '无法获取数据',
+            showCancel: false
+          })
+        }
+      }
+    })
+
+  },
+getAddressById(addressid){
   var that=this;
   wx.request({
     url: app.globalData.apiLink + '/api/services/app/Address/GetAddress?Id=' + addressid,
@@ -93,6 +101,7 @@ getDefalutAddress(addressid){
       console.log(res);
       if (res.data.success) {
   that.setData({
+    addressid: addressid,
     consigneeName: res.data.result.items[0].receiver,
     consigneeTel: res.data.result.items[0].contactPhoneNumber,
     address: that.getCityName(commonCityData.cityData, res.data.result.items[0].province, res.data.result.items[0].city, res.data.result.items[0].district) + " " + res.data.result.items[0].street,//地址
@@ -237,14 +246,17 @@ getDefalutAddress(addressid){
   },
   toSend: function (e) {
     var that = this;
-    // console.log(e.target.dataset.deliverid);
-    // console.log(that.data.orderid);
     if (e.target.dataset.deliverid == "") {
       that.showModal("快递单号不能为空");
       return;
     }
     if (that.data.orderId == "") {
       that.showModal("订单号不能为空");
+      return;
+    }
+    if (that.data.address == '')
+    {
+      that.showModal("地址不能为空");
       return;
     }
     wx.showLoading();
@@ -264,6 +276,7 @@ getDefalutAddress(addressid){
         wx.hideLoading();
         if (res.data.success) {
           that.showModal("发货成功！");
+          that.loadData(that.data.isSeller,that.data.orderid);
         }
       }
     })
@@ -279,6 +292,20 @@ getDefalutAddress(addressid){
     console.log(e);
     var orderId = e.currentTarget.dataset.id;
     var money = e.currentTarget.dataset.money;
+    var that = this;
+    if (that.data.addressid == "") {
+      that.showModal("地址不能为空");
+      return;
+    }
+    if (orderId == "") {
+      that.showModal("订单号不能为空");
+      return;
+    }
+    if (money<=0) {
+      that.showModal("金额不能小于0元");
+      return;
+    }
+
     wx.showModal({
       title: '支付确认',
       content: '将扣除您' + money + '元 您确认支付吗？',
@@ -296,11 +323,20 @@ getDefalutAddress(addressid){
               'Authorization': "Bearer " + wx.getStorageSync("accessToken")
             },
             data: {
-              "orderId": orderId
+              "orderId": orderId,
+              "addressId": that.data.addressid
             },
             success: (res) => {
-              console.log(res);
-
+            
+              if (res.data.success) {
+                //console.log(res);
+                that.loadData(that.data.isSeller,orderId);
+              }
+              else
+              {
+                //console.log(res);
+                that.showModal(res.data.error.message);
+              }
             }
           })
         } else {
@@ -313,6 +349,28 @@ getDefalutAddress(addressid){
     wx.navigateTo({
       url: "/pages/select-address/index?id=" + this.data.id + "&isSeller=" + this.data.isSeller
     })
+  },
+  getdefaultaddress:function(){
+    var that=this;
+    wx.request({
+      url: app.globalData.apiLink + "/api/services/app/Address/GetDefaultAddress",
+      method: "GET",
+      header: {
+        'Abp.TenantId': '1',
+        'Content-Type': 'application/json',
+        'Authorization': "Bearer " + wx.getStorageSync("accessToken")
+      },
+      success: (res) => {
+        console.log(res);
+        if (res.data.success) {
+          that.setData({
+            addressid: res.data.result.id,
+            consigneeName: res.data.result.receiver,
+            consigneeTel: res.data.result.contactPhoneNumber,
+            address: that.getCityName(commonCityData.cityData, res.data.result.province, res.data.result.city, res.data.result.district) + " " + res.data.result.street,//地址
+          })
+        }
+      }
+    })
   }
-  
 })

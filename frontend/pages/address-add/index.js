@@ -179,7 +179,7 @@ Page({
   },
   onLoad: function (e) {
     var that = this;
-   // this.initCityData(1)
+   //
     var id = e.id;
     if (id) {
       // 初始化原数据
@@ -217,6 +217,10 @@ Page({
           }
         }
       })
+    }
+    else
+    {
+      this.getPcsIndex(110000,110101);
     }
   },
   setDBSaveAddressId: function(data) {

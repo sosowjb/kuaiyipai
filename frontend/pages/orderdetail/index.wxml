@@ -12,7 +12,7 @@
           </view>
         </view>
       </view>
-      <view wx:if="{{orderStatus==4}}" class="weui-panel__bd">
+      <view wx:if="{{orderStatus==3}}" class="weui-panel__bd">
         <view class="weui-cell weui-cell_access" hover-class="weui-cell_active">
           <view class="weui-cell__hd">
             <i style='margin-right: 5px;vertical-align: middle;font-size:20px' class='iconfont icon-fm-delivery'></i>
@@ -121,7 +121,7 @@
              <view class='weui-form-preview__value weui-cell__ft'>
               <view class="btn topay-btn fr" hidden="{{orderStatus==1? false : true}}"  bindtap="toPayTap" data-id="{{id}}" data-money="{{(dealPrice+expressCostAmount)}}">马上付款</view>
               <view class="btn topay-btn fr" hidden="{{orderStatus==2 && isSeller==1? false : true}}" bindtap="showModel" data-id="{{id}}" >立即发货</view> 
-              <view class="btn topay-btn fr" hidden="{{orderStatus==4 && isSeller==0? false : true}}"  bindtap="toReceived" data-id="{{id}}" >确认收货</view> 
+              <view class="btn topay-btn fr" hidden="{{orderStatus==3 && isSeller==0? false : true}}"  bindtap="toReceived" data-id="{{id}}" >确认收货</view> 
         </view>
       </view> 
     </view>
