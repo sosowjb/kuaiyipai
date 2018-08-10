@@ -146,14 +146,15 @@ Page({
     this.setData({
       selProvince:selIterm.name,
       selProvinceIndex:event.detail.value,
-      citys: selIterm[event.detail.value].cityList,
+      citys: selIterm.cityList,
       selCity:'请选择',
       selCityIndex:0,
-      districts: selIterm[event.detail.value].cityList[0].districtList,
-      selDistrict:'请选择',
-      selDistrictIndex: 0
+     // districts: selIterm.cityList[0].districtList,
+      //selDistrict:'请选择',
+      //selDistrictIndex: 0
     })
-    this.initCityData(2, selIterm)
+    this.initCityData(2, selIterm);
+    this.initCityData(3, selIterm.cityList[0]);
   },
   bindPickerCityChange:function (event) {
     console.log(event.detail.value);
@@ -162,9 +163,9 @@ Page({
       selCity:selIterm.name,
       selCityIndex:event.detail.value,
 
-      districts: selIterm.districtList,
-      selDistrict: '请选择',
-      selDistrictIndex: 0
+     // districts: selIterm.districtList,
+    //  selDistrict: '请选择',
+     // selDistrictIndex: 0
     })
     this.initCityData(3, selIterm)
   },
