@@ -4,7 +4,7 @@ using Abp.Domain.Entities;
 
 namespace Kuaiyipai.Auction.Entities
 {
-    [Table("ACU_Categories")]
+    [Table("AUC_Categories")]
     public class Category : Entity
     {
         [Required]
@@ -17,8 +17,5 @@ namespace Kuaiyipai.Auction.Entities
 
         [Required]
         public int PillarId { get; set; }
-
-        [ForeignKey("PillarId")]
-        public Pillar Pillar { get; set; }
     }
 }

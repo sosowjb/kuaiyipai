@@ -941,9 +941,7 @@ namespace Kuaiyipai.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("PillarId");
-
-                    b.ToTable("ACU_Categories");
+                    b.ToTable("AUC_Categories");
                 });
 
             modelBuilder.Entity("Kuaiyipai.Auction.Entities.ItemAuctioning", b =>
@@ -995,10 +993,6 @@ namespace Kuaiyipai.Migrations
                         .HasMaxLength(200);
 
                     b.HasKey("Id");
-
-                    b.HasIndex("CategoryId");
-
-                    b.HasIndex("PillarId");
 
                     b.ToTable("AUC_Items_Auctioning");
                 });
@@ -1053,10 +1047,6 @@ namespace Kuaiyipai.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CategoryId");
-
-                    b.HasIndex("PillarId");
-
                     b.ToTable("AUC_Items_Completed");
                 });
 
@@ -1109,10 +1099,6 @@ namespace Kuaiyipai.Migrations
                         .HasMaxLength(200);
 
                     b.HasKey("Id");
-
-                    b.HasIndex("CategoryId");
-
-                    b.HasIndex("PillarId");
 
                     b.ToTable("AUC_Items_Drafting");
                 });
@@ -1194,10 +1180,6 @@ namespace Kuaiyipai.Migrations
                         .HasMaxLength(200);
 
                     b.HasKey("Id");
-
-                    b.HasIndex("CategoryId");
-
-                    b.HasIndex("PillarId");
 
                     b.ToTable("AUC_Items_Terminated");
                 });
@@ -1463,8 +1445,6 @@ namespace Kuaiyipai.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("UserId");
-
                     b.ToTable("AUC_Balance");
                 });
 
@@ -1489,8 +1469,6 @@ namespace Kuaiyipai.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("UserId");
-
                     b.ToTable("AUC_BalanceRecords");
                 });
 
@@ -1508,8 +1486,6 @@ namespace Kuaiyipai.Migrations
                     b.Property<double>("Price");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("ItemId");
 
                     b.ToTable("AUC_BiddingRecords");
                 });
@@ -2046,90 +2022,6 @@ namespace Kuaiyipai.Migrations
                     b.HasOne("Abp.Organizations.OrganizationUnit", "Parent")
                         .WithMany("Children")
                         .HasForeignKey("ParentId");
-                });
-
-            modelBuilder.Entity("Kuaiyipai.Auction.Entities.Category", b =>
-                {
-                    b.HasOne("Kuaiyipai.Auction.Entities.Pillar", "Pillar")
-                        .WithMany()
-                        .HasForeignKey("PillarId")
-                        .OnDelete(DeleteBehavior.Cascade);
-                });
-
-            modelBuilder.Entity("Kuaiyipai.Auction.Entities.ItemAuctioning", b =>
-                {
-                    b.HasOne("Kuaiyipai.Auction.Entities.Category", "Category")
-                        .WithMany()
-                        .HasForeignKey("CategoryId")
-                        .OnDelete(DeleteBehavior.Cascade);
-
-                    b.HasOne("Kuaiyipai.Auction.Entities.Pillar", "Pillar")
-                        .WithMany()
-                        .HasForeignKey("PillarId")
-                        .OnDelete(DeleteBehavior.Cascade);
-                });
-
-            modelBuilder.Entity("Kuaiyipai.Auction.Entities.ItemCompleted", b =>
-                {
-                    b.HasOne("Kuaiyipai.Auction.Entities.Category", "Category")
-                        .WithMany()
-                        .HasForeignKey("CategoryId")
-                        .OnDelete(DeleteBehavior.Cascade);
-
-                    b.HasOne("Kuaiyipai.Auction.Entities.Pillar", "Pillar")
-                        .WithMany()
-                        .HasForeignKey("PillarId")
-                        .OnDelete(DeleteBehavior.Cascade);
-                });
-
-            modelBuilder.Entity("Kuaiyipai.Auction.Entities.ItemDrafting", b =>
-                {
-                    b.HasOne("Kuaiyipai.Auction.Entities.Category", "Category")
-                        .WithMany()
-                        .HasForeignKey("CategoryId")
-                        .OnDelete(DeleteBehavior.Cascade);
-
-                    b.HasOne("Kuaiyipai.Auction.Entities.Pillar", "Pillar")
-                        .WithMany()
-                        .HasForeignKey("PillarId")
-                        .OnDelete(DeleteBehavior.Cascade);
-                });
-
-            modelBuilder.Entity("Kuaiyipai.Auction.Entities.ItemTerminated", b =>
-                {
-                    b.HasOne("Kuaiyipai.Auction.Entities.Category", "Category")
-                        .WithMany()
-                        .HasForeignKey("CategoryId")
-                        .OnDelete(DeleteBehavior.Cascade);
-
-                    b.HasOne("Kuaiyipai.Auction.Entities.Pillar", "Pillar")
-                        .WithMany()
-                        .HasForeignKey("PillarId")
-                        .OnDelete(DeleteBehavior.Cascade);
-                });
-
-            modelBuilder.Entity("Kuaiyipai.Auction.Entities.UserBalance", b =>
-                {
-                    b.HasOne("Kuaiyipai.Authorization.Users.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade);
-                });
-
-            modelBuilder.Entity("Kuaiyipai.Auction.Entities.UserBalanceRecord", b =>
-                {
-                    b.HasOne("Kuaiyipai.Authorization.Users.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade);
-                });
-
-            modelBuilder.Entity("Kuaiyipai.Auction.Entities.UserBiddingRecord", b =>
-                {
-                    b.HasOne("Kuaiyipai.Auction.Entities.ItemAuctioning", "Item")
-                        .WithMany()
-                        .HasForeignKey("ItemId")
-                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("Kuaiyipai.Authorization.Roles.Role", b =>

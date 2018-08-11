@@ -11,9 +11,6 @@ namespace Kuaiyipai.Auction.Entities
         [Required]
         public long UserId { get; set; }
 
-        [ForeignKey("UserId")]
-        public User User { get; set; }
-
         public double TotalBalance { get; set; }
 
         public double FrozenBalance { get; set; }
