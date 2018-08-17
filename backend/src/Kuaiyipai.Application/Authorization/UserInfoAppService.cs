@@ -23,6 +23,12 @@ namespace Kuaiyipai.Authorization
             }
 
             var user = await _userRepository.FirstOrDefaultAsync(AbpSession.UserId.Value);
+
+            if (user == null)
+            {
+                throw new UserFriendlyException("用户不存在");
+            }
+
             return new UserInfoDto
             {
                 Id = user.Id,

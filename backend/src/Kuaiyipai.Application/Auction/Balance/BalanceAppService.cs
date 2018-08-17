@@ -31,6 +31,7 @@ namespace Kuaiyipai.Auction.Balance
     {
         //private const string LoginApi = "https://api.weixin.qq.com/sns/jscode2session?appid=APPID&secret=SECRET&js_code=JSCODE&grant_type=authorization_code";
         private const string OrderApi = "https://api.mch.weixin.qq.com/pay/unifiedorder";
+        private const string SandboxOrderApi = "https://api.mch.weixin.qq.com/sandboxnew/pay/unifiedorder";
 
         private readonly IRepository<UserBalance, long> _balanceRepository;
         private readonly IRepository<UserBalanceRecord, Guid> _balanceRecordRepository;
@@ -101,12 +102,47 @@ namespace Kuaiyipai.Auction.Balance
         [UnitOfWork]
         public async Task<ChargeOutputDto> Charge(ChargeInputDto input)
         {
+            var sandbox = Convert.ToBoolean(_appConfiguration["WeChat:Sandbox"]);
+
             var appId = _appConfiguration["WeChat:AppId"];
             var merchantId = _appConfiguration["WeChat:PayMerchantId"];
             var paymentApiKey = _appConfiguration["WeChat:PaymentApiKey"];
+            string sandBoxPaymentApiKey = "";
             //var remoteIp = _httpContextAccessor.HttpContext.Connection.RemoteIpAddress.ToString();
             var remoteIp = "192.168.1.1";
             var notifyUrl = new Uri(new Uri(_appConfiguration["App:ServerRootAddress"]), "/api/services/app/Balance/CompleteCharge").ToString();
+
+            if (sandbox)
+            {
+                var p = new Dictionary<string, string>
+                {
+                    {"mch_id", merchantId},
+                    {"nonce_str", GetRandomString(32, true, false, true, false, "")},
+                };
+                p.Add("sign", GetSign(p, paymentApiKey));
+                var s = new StringBuilder();
+                s.Append("<xml>");
+                foreach (var d in p)
+                {
+                    s.Append("<" + d.Key + ">" + d.Value + "</" + d.Key + ">");
+                }
+                s.Append("</xml>");
+
+                var r = await HttpHelper.Post("https://api.mch.weixin.qq.com/sandboxnew/pay/getsignkey", s.ToString());
+                DataSet ds1 = new DataSet();
+                StringReader stram1 = new StringReader(r);
+                XmlTextReader reader1 = new XmlTextReader(stram1);
+                ds1.ReadXml(reader1);
+                string returnCode1 = ds1.Tables[0].Rows[0]["return_code"].ToString();
+                if (returnCode1.ToUpper() == "SUCCESS")
+                {
+                    sandBoxPaymentApiKey = ds1.Tables[0].Rows[0]["sandbox_signkey"].ToString();
+                }
+                else
+                {
+                    throw new UserFriendlyException("沙箱Key获取失败");
+                }
+            }
 
             // 获取OpenID
             if (!AbpSession.UserId.HasValue)
@@ -143,13 +179,14 @@ namespace Kuaiyipai.Auction.Balance
                     {"nonce_str", GetRandomString(32, true, false, true, false, "")},
                     {"body", "快微拍-余额充值"},
                     {"out_trade_no", balanceRecord.Id.ToString().Replace("-", "").ToUpper()},
-                    {"total_fee", input.Amount.ToString(CultureInfo.InvariantCulture)},
+                    {"total_fee", (input.Amount * 100).ToString(CultureInfo.InvariantCulture)},
                     {"spbill_create_ip", remoteIp},
                     {"notify_url", notifyUrl},
                     {"trade_type", "JSAPI"},
                     {"openid", openId}
                 };
-                paramsDict.Add("sign", GetSign(paramsDict, paymentApiKey));
+                var sign = !sandbox ? GetSign(paramsDict, paymentApiKey) : GetSign(paramsDict, sandBoxPaymentApiKey);
+                paramsDict.Add("sign", sign);
                 var sb = new StringBuilder();
                 sb.Append("<xml>");
                 foreach (var d in paramsDict)
@@ -158,7 +195,9 @@ namespace Kuaiyipai.Auction.Balance
                 }
                 sb.Append("</xml>");
 
-                var result = await HttpHelper.Post(OrderApi, sb.ToString());
+                var result = !sandbox
+                    ? await HttpHelper.Post(OrderApi, sb.ToString())
+                    : await HttpHelper.Post(SandboxOrderApi, sb.ToString());
 
                 DataSet ds = new DataSet();
                 StringReader stram = new StringReader(result);
@@ -189,7 +228,7 @@ namespace Kuaiyipai.Auction.Balance
                     {"signType", "MD5"},
                     {"timeStamp", tick.ToString()}
                 };
-                var secondSign = GetSign(signDict, paymentApiKey);
+                var secondSign = GetSign(signDict, !sandbox ? paymentApiKey : sandBoxPaymentApiKey);
 
                 return new ChargeOutputDto
                 {
@@ -205,13 +244,13 @@ namespace Kuaiyipai.Auction.Balance
             }
         }
 
-        public async Task<string> CompleteCharge()
+        /*public async Task<string> CompleteCharge()
         {
             // for test
             var result =
                 "<xml><appid><![CDATA[wx2421b1c4370ec43b]]></appid><attach><![CDATA[支付测试]]></attach><bank_type><![CDATA[CFT]]></bank_type><fee_type><![CDATA[CNY]]></fee_type><is_subscribe><![CDATA[Y]]></is_subscribe><mch_id><![CDATA[10000100]]></mch_id><nonce_str><![CDATA[5d2b6c2a8db53831f7eda20af46e531c]]></nonce_str><openid><![CDATA[oUpF8uMEb4qRXf22hE3X68TekukE]]></openid><out_trade_no><![CDATA[1409811653]]></out_trade_no><result_code><![CDATA[SUCCESS]]></result_code><return_code><![CDATA[SUCCESS]]></return_code><sign><![CDATA[B552ED6B279343CB493C5DD0D78AB241]]></sign><sub_mch_id><![CDATA[10000100]]></sub_mch_id><time_end><![CDATA[20140903131540]]></time_end><total_fee>1</total_fee><coupon_fee><![CDATA[10]]></coupon_fee><coupon_count><![CDATA[1]]></coupon_count><coupon_type><![CDATA[CASH]]></coupon_type><coupon_id><![CDATA[10000]]></coupon_id><coupon_fee><![CDATA[100]]></coupon_fee><trade_type><![CDATA[JSAPI]]></trade_type><transaction_id><![CDATA[1004400740201409030005092168]]></transaction_id></xml>";
 
-            DataSet ds = new DataSet();
+            /*DataSet ds = new DataSet();
             StringReader stram = new StringReader(result);
             XmlTextReader reader = new XmlTextReader(stram);
             ds.ReadXml(reader);
@@ -243,10 +282,10 @@ namespace Kuaiyipai.Auction.Balance
             {
                 balance.TotalBalance += double.Parse(amount);
                 await _balanceRepository.UpdateAsync(balance);
-            }
+            }#1#
 
             return "<xml><return_code><![CDATA[SUCCESS]]></return_code><return_msg><![CDATA[OK]]></return_msg></xml>";
-        }
+        }*/
 
         [UnitOfWork]
         public async Task Withdraw(WithdrawInputDto input)
