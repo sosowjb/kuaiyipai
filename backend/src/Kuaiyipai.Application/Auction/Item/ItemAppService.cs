@@ -752,7 +752,8 @@ namespace Kuaiyipai.Auction.Item
                     Extension = ext
                 };
                 var id = await _itemPicRepository.InsertAndGetIdAsync(pic);
-                var url = new Uri(new Uri(_appConfiguration["App:ImageUrlPrefix"]), Path.Combine(pic.Path, pic.FileName + pic.Extension)).ToString();
+                //var url = new Uri(new Uri(_appConfiguration["App:ImageUrlPrefix"]), Path.Combine(pic.Path, pic.FileName + pic.Extension)).ToString();
+                var url = _appConfiguration["App:ImageUrlPrefix"] + "/" + pic.Path + "/" + pic.FileName + pic.Extension;
                 return new UploadPictureOutputDto { Id = id, Url = url };
             }
             catch
@@ -769,8 +770,9 @@ namespace Kuaiyipai.Auction.Item
                 Height = p.Height,
                 Width = p.Width,
                 IsCover = p.IsCover,
-                Url = new Uri(new Uri(_appConfiguration["App:ImageUrlPrefix"]), Path.Combine(p.Path, p.FileName + p.Extension)).ToString()
-            }).ToListAsync();
+                //Url = new Uri(new Uri(_appConfiguration["App:ImageUrlPrefix"]), Path.Combine(p.Path, p.FileName + p.Extension)).ToString()
+                Url = _appConfiguration["App:ImageUrlPrefix"] + "/" + p.Path + "/" + p.FileName + p.Extension
+        }).ToListAsync();
             return new ListResultDto<GetItemPicturesOutputDto>(list);
         }
 
@@ -783,7 +785,8 @@ namespace Kuaiyipai.Auction.Item
                 Height = pic.Height,
                 Width = pic.Width,
                 IsCover = pic.IsCover,
-                Url = new Uri(new Uri(_appConfiguration["App:ImageUrlPrefix"]), Path.Combine(pic.Path, pic.FileName + pic.Extension)).ToString()
+                //Url = new Uri(new Uri(_appConfiguration["App:ImageUrlPrefix"]), Path.Combine(pic.Path, pic.FileName + pic.Extension)).ToString()
+                Url = _appConfiguration["App:ImageUrlPrefix"] + "/" + pic.Path + "/" + pic.FileName + pic.Extension
             };
         }
 
@@ -816,27 +819,78 @@ namespace Kuaiyipai.Auction.Item
             }
             var count = await query.CountAsync();
 
-            var list = await query.PageBy(input)
-                         .Join(pillarQuery, item => item.PillarId, pillar => pillar.Id, (item, pillar) => new { item, pillar })
-                         .Join(categoryQuery, items => items.item.CategoryId, category => category.Id, (items, category) => new { items, category })
-                         .Join(itempicQuery, itemss => itemss.items.item.Id, itempic => itempic.ItemId, (itemss, itempic) => new GetAuctionItemsOutputDto
-                         {
+            var list1 = await query.PageBy(input)
+                .Join(itempicQuery, item => item.Id, itempic => itempic.ItemId, (item, itempic) => new
+                {
+                    item.Id,
+                    item.PillarId,
+                    item.CategoryId,
+                    item.Title,
+                    item.StartPrice,
+                    item.StepPrice,
+                    item.StartTime,
+                    item.Deadline,
+                    //CoverPic = new Uri(new Uri(_appConfiguration["App:ImageUrlPrefix"]), Path.Combine(itempic.Path, itempic.FileName + itempic.Extension)).ToString(),
+                    CoverPic = _appConfiguration["App:ImageUrlPrefix"] + "/" + itempic.Path + "/" + itempic.FileName + itempic.Extension,
+                    CoverPicHeight = itempic.Height,
+                    CoverPicWidth = itempic.Width,
+                    CurrentPrice = item.HighestBiddingPrice,
+                    biddingCount = item.BiddingCount
+                })
+                .Join(pillarQuery, item => item.PillarId, pillar => pillar.Id, (item,pillar)=>new {
+                    item.Id,
+                    item.PillarId,
+                    item.CategoryId,
+                    Pillar = pillar.Name,
+                    item.Title,
+                    item.StartPrice,
+                    item.StepPrice,
+                    item.StartTime,
+                    item.Deadline,
+                    item.CoverPic,
+                    item.CoverPicHeight,
+                    item.CoverPicWidth,
+                    item.CurrentPrice,
+                    item.biddingCount
+                })
+                .Join(categoryQuery, item => item.CategoryId, category => category.Id, (item, category) => new GetAuctionItemsOutputDto {
+                    Id = item.Id,
+                    Pillar = item.Pillar,
+                    Category = category.Name,
+                    Title = item.Title,
+                    StartPrice = item.StartPrice,
+                    StepPrice = item.StepPrice,
+                    StartTime = item.StartTime,
+                    Deadline = item.Deadline,
+                    CoverPic = item.CoverPic,
+                    CoverPicHeight = item.CoverPicHeight,
+                    CoverPicWidth = item.CoverPicWidth,
+                    CurrentPrice = item.CurrentPrice,
+                    biddingCount = item.biddingCount
+                })
+                .ToListAsync();
 
-                             Id = itemss.items.item.Id,
-                             Pillar = itemss.items.pillar.Name,
-                             Category = itemss.category.Name,
-                             Title = itemss.items.item.Title,
-                             StartPrice = itemss.items.item.StartPrice,
-                             StepPrice = itemss.items.item.StepPrice,
-                             StartTime = itemss.items.item.StartTime,
-                             Deadline = itemss.items.item.Deadline,
-                             CoverPic = new Uri(new Uri(_appConfiguration["App:ImageUrlPrefix"]), Path.Combine(itempic.Path, itempic.FileName + itempic.Extension)).ToString(),
-                             CoverPicHeight = itempic.Height,
-                             CoverPicWidth = itempic.Width,
-                             CurrentPrice = itemss.items.item.HighestBiddingPrice,
-                             biddingCount = itemss.items.item.BiddingCount
-                         }).ToListAsync();
-            return new PagedResultDto<GetAuctionItemsOutputDto>(count, list);
+            //var list = await query.PageBy(input)
+            //             .Join(pillarQuery, item => item.PillarId, pillar => pillar.Id, (item, pillar) => new { item, pillar })
+            //             .Join(categoryQuery, items => items.item.CategoryId, category => category.Id, (items, category) => new { items, category })
+            //             .Join(itempicQuery, itemss => itemss.items.item.Id, itempic => itempic.ItemId, (itemss, itempic) => new GetAuctionItemsOutputDto
+            //             {
+            //                 Id = itemss.items.item.Id,
+            //                 Pillar = itemss.items.pillar.Name,
+            //                 Category = itemss.category.Name,
+            //                 Title = itemss.items.item.Title,
+            //                 StartPrice = itemss.items.item.StartPrice,
+            //                 StepPrice = itemss.items.item.StepPrice,
+            //                 StartTime = itemss.items.item.StartTime,
+            //                 Deadline = itemss.items.item.Deadline,
+            //                 //CoverPic = new Uri(new Uri(_appConfiguration["App:ImageUrlPrefix"]), Path.Combine(itempic.Path, itempic.FileName + itempic.Extension)).ToString(),
+            //                 CoverPic = _appConfiguration["App:ImageUrlPrefix"] + "/" + itempic.Path + "/" + itempic.FileName +itempic.Extension,
+            //                 CoverPicHeight = itempic.Height,
+            //                 CoverPicWidth = itempic.Width,
+            //                 CurrentPrice = itemss.items.item.HighestBiddingPrice,
+            //                 biddingCount = itemss.items.item.BiddingCount
+            //             }).ToListAsync();
+            return new PagedResultDto<GetAuctionItemsOutputDto>(count, list1);
 
         }
     }
