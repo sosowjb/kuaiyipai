@@ -346,9 +346,12 @@ getAddressById(addressid){
     });
   },
   selectAddress:function(){
+    if (this.data.orderStatus=="1")
+    {
     wx.navigateTo({
       url: "/pages/select-address/index?id=" + this.data.id + "&isSeller=" + this.data.isSeller
     })
+    }
   },
   getdefaultaddress:function(){
     var that=this;

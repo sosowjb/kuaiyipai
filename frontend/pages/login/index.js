@@ -77,9 +77,10 @@ Page({
     var that=this;
     wx.getUserInfo({
       success: function (resuserInfo) {
-        console.log(resuserInfo.userInfo)
+        //console.log(resuserInfo.userInfo)
         wx.login({
           success: res => {
+            //console.log(resuserInfo.userInfo.nickName);
           app.Logins(resuserInfo.userInfo.nickName, resuserInfo.userInfo.avatarUrl, res.code,that.localhost)
           }
         })
@@ -88,6 +89,7 @@ Page({
   },
   localhost:function(){
     var that=this;
+    console.log(that.data.historyurl);
     wx.switchTab({
       url: that.data.historyurl
     })
