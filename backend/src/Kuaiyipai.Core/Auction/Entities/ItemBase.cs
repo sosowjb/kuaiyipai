@@ -18,14 +18,8 @@ namespace Kuaiyipai.Auction.Entities
         [Required]
         public int PillarId { get; set; }
 
-        [ForeignKey("PillarId")]
-        public Pillar Pillar { get; set; }
-
         [Required]
         public int CategoryId { get; set; }
-
-        [ForeignKey("CategoryId")]
-        public Category Category { get; set; }
 
         /// <summary>
         /// 起步价

@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace Kuaiyipai.Migrations
 {
-    public partial class Initial : Migration
+    public partial class Init : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -514,6 +514,69 @@ namespace Kuaiyipai.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "AUC_Balance",
+                columns: table => new
+                {
+                    Id = table.Column<long>(nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    FrozenBalance = table.Column<double>(nullable: false),
+                    TotalBalance = table.Column<double>(nullable: false),
+                    UserId = table.Column<long>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AUC_Balance", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "AUC_BalanceRecords",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(nullable: false),
+                    Amount = table.Column<double>(nullable: false),
+                    IsPaidSuccessfully = table.Column<bool>(nullable: true),
+                    PaymentCompleteTime = table.Column<DateTime>(nullable: false),
+                    RecordTime = table.Column<DateTime>(nullable: false),
+                    Remarks = table.Column<string>(nullable: true),
+                    UserId = table.Column<long>(nullable: false),
+                    WechatPayId = table.Column<string>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AUC_BalanceRecords", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "AUC_BiddingRecords",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(nullable: false),
+                    CreationTime = table.Column<DateTime>(nullable: false),
+                    CreatorUserId = table.Column<long>(nullable: true),
+                    ItemId = table.Column<Guid>(nullable: false),
+                    Price = table.Column<double>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AUC_BiddingRecords", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "AUC_Categories",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    Code = table.Column<string>(maxLength: 5, nullable: false),
+                    Name = table.Column<string>(maxLength: 50, nullable: false),
+                    PillarId = table.Column<int>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AUC_Categories", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "AUC_ItemPictures",
                 columns: table => new
                 {
@@ -531,6 +594,266 @@ namespace Kuaiyipai.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_AUC_ItemPictures", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "AUC_Items_Auctioning",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(nullable: false),
+                    BiddingCount = table.Column<int>(nullable: false),
+                    CategoryId = table.Column<int>(nullable: false),
+                    Code = table.Column<string>(maxLength: 50, nullable: false),
+                    CreationTime = table.Column<DateTime>(nullable: false),
+                    CreatorUserId = table.Column<long>(nullable: true),
+                    Deadline = table.Column<DateTime>(nullable: false),
+                    DeleterUserId = table.Column<long>(nullable: true),
+                    DeletionTime = table.Column<DateTime>(nullable: true),
+                    Description = table.Column<string>(nullable: false),
+                    HighestBiddingPrice = table.Column<double>(nullable: false),
+                    IsDeleted = table.Column<bool>(nullable: false),
+                    LastModificationTime = table.Column<DateTime>(nullable: true),
+                    LastModifierUserId = table.Column<long>(nullable: true),
+                    PillarId = table.Column<int>(nullable: false),
+                    PriceLimit = table.Column<double>(nullable: true),
+                    StartPrice = table.Column<double>(nullable: false),
+                    StartTime = table.Column<DateTime>(nullable: true),
+                    StepPrice = table.Column<double>(nullable: false),
+                    Title = table.Column<string>(maxLength: 200, nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AUC_Items_Auctioning", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "AUC_Items_Completed",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(nullable: false),
+                    BiddingCount = table.Column<int>(nullable: false),
+                    CategoryId = table.Column<int>(nullable: false),
+                    Code = table.Column<string>(maxLength: 50, nullable: false),
+                    CreationTime = table.Column<DateTime>(nullable: false),
+                    CreatorUserId = table.Column<long>(nullable: true),
+                    Deadline = table.Column<DateTime>(nullable: false),
+                    DeleterUserId = table.Column<long>(nullable: true),
+                    DeletionTime = table.Column<DateTime>(nullable: true),
+                    Description = table.Column<string>(nullable: false),
+                    HighestBiddingPrice = table.Column<double>(nullable: false),
+                    IsDeleted = table.Column<bool>(nullable: false),
+                    LastModificationTime = table.Column<DateTime>(nullable: true),
+                    LastModifierUserId = table.Column<long>(nullable: true),
+                    PillarId = table.Column<int>(nullable: false),
+                    PriceLimit = table.Column<double>(nullable: true),
+                    StartPrice = table.Column<double>(nullable: false),
+                    StartTime = table.Column<DateTime>(nullable: true),
+                    StepPrice = table.Column<double>(nullable: false),
+                    Title = table.Column<string>(maxLength: 200, nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AUC_Items_Completed", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "AUC_Items_Drafting",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(nullable: false),
+                    BiddingCount = table.Column<int>(nullable: false),
+                    CategoryId = table.Column<int>(nullable: false),
+                    Code = table.Column<string>(maxLength: 50, nullable: false),
+                    CreationTime = table.Column<DateTime>(nullable: false),
+                    CreatorUserId = table.Column<long>(nullable: true),
+                    Deadline = table.Column<DateTime>(nullable: false),
+                    DeleterUserId = table.Column<long>(nullable: true),
+                    DeletionTime = table.Column<DateTime>(nullable: true),
+                    Description = table.Column<string>(nullable: false),
+                    HighestBiddingPrice = table.Column<double>(nullable: false),
+                    IsDeleted = table.Column<bool>(nullable: false),
+                    LastModificationTime = table.Column<DateTime>(nullable: true),
+                    LastModifierUserId = table.Column<long>(nullable: true),
+                    PillarId = table.Column<int>(nullable: false),
+                    PriceLimit = table.Column<double>(nullable: true),
+                    StartPrice = table.Column<double>(nullable: false),
+                    StartTime = table.Column<DateTime>(nullable: true),
+                    StepPrice = table.Column<double>(nullable: false),
+                    Title = table.Column<string>(maxLength: 200, nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AUC_Items_Drafting", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "AUC_Items_Terminated",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(nullable: false),
+                    BiddingCount = table.Column<int>(nullable: false),
+                    CategoryId = table.Column<int>(nullable: false),
+                    Code = table.Column<string>(maxLength: 50, nullable: false),
+                    CreationTime = table.Column<DateTime>(nullable: false),
+                    CreatorUserId = table.Column<long>(nullable: true),
+                    Deadline = table.Column<DateTime>(nullable: false),
+                    DeleterUserId = table.Column<long>(nullable: true),
+                    DeletionTime = table.Column<DateTime>(nullable: true),
+                    Description = table.Column<string>(nullable: false),
+                    HighestBiddingPrice = table.Column<double>(nullable: false),
+                    IsDeleted = table.Column<bool>(nullable: false),
+                    LastModificationTime = table.Column<DateTime>(nullable: true),
+                    LastModifierUserId = table.Column<long>(nullable: true),
+                    PillarId = table.Column<int>(nullable: false),
+                    PriceLimit = table.Column<double>(nullable: true),
+                    StartPrice = table.Column<double>(nullable: false),
+                    StartTime = table.Column<DateTime>(nullable: true),
+                    StepPrice = table.Column<double>(nullable: false),
+                    Title = table.Column<string>(maxLength: 200, nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AUC_Items_Terminated", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "AUC_Orders_Completed",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(nullable: false),
+                    AddressId = table.Column<Guid>(nullable: true),
+                    Amount = table.Column<double>(nullable: false),
+                    BuyerId = table.Column<long>(nullable: false),
+                    Code = table.Column<string>(maxLength: 50, nullable: false),
+                    CompletedTime = table.Column<DateTime>(nullable: true),
+                    DeliveryId = table.Column<string>(nullable: true),
+                    EvaluatedTime = table.Column<DateTime>(nullable: true),
+                    EvaluationContent = table.Column<string>(nullable: true),
+                    EvaluationLevel = table.Column<int>(nullable: true),
+                    ExpressCostAmount = table.Column<double>(nullable: false),
+                    ItemId = table.Column<Guid>(nullable: false),
+                    ItemPriceAmount = table.Column<double>(nullable: false),
+                    OrderTime = table.Column<DateTime>(nullable: false),
+                    PaidTime = table.Column<DateTime>(nullable: true),
+                    ReceivedTime = table.Column<DateTime>(nullable: true),
+                    SellerId = table.Column<long>(nullable: false),
+                    SentTime = table.Column<DateTime>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AUC_Orders_Completed", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "AUC_Orders_WaitingForEvaluating",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(nullable: false),
+                    AddressId = table.Column<Guid>(nullable: true),
+                    Amount = table.Column<double>(nullable: false),
+                    BuyerId = table.Column<long>(nullable: false),
+                    Code = table.Column<string>(maxLength: 50, nullable: false),
+                    CompletedTime = table.Column<DateTime>(nullable: true),
+                    DeliveryId = table.Column<string>(nullable: true),
+                    EvaluatedTime = table.Column<DateTime>(nullable: true),
+                    EvaluationContent = table.Column<string>(nullable: true),
+                    EvaluationLevel = table.Column<int>(nullable: true),
+                    ExpressCostAmount = table.Column<double>(nullable: false),
+                    ItemId = table.Column<Guid>(nullable: false),
+                    ItemPriceAmount = table.Column<double>(nullable: false),
+                    OrderTime = table.Column<DateTime>(nullable: false),
+                    PaidTime = table.Column<DateTime>(nullable: true),
+                    ReceivedTime = table.Column<DateTime>(nullable: true),
+                    SellerId = table.Column<long>(nullable: false),
+                    SentTime = table.Column<DateTime>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AUC_Orders_WaitingForEvaluating", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "AUC_Orders_WaitingForPayment",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(nullable: false),
+                    AddressId = table.Column<Guid>(nullable: true),
+                    Amount = table.Column<double>(nullable: false),
+                    BuyerId = table.Column<long>(nullable: false),
+                    Code = table.Column<string>(maxLength: 50, nullable: false),
+                    CompletedTime = table.Column<DateTime>(nullable: true),
+                    DeliveryId = table.Column<string>(nullable: true),
+                    EvaluatedTime = table.Column<DateTime>(nullable: true),
+                    EvaluationContent = table.Column<string>(nullable: true),
+                    EvaluationLevel = table.Column<int>(nullable: true),
+                    ExpressCostAmount = table.Column<double>(nullable: false),
+                    ItemId = table.Column<Guid>(nullable: false),
+                    ItemPriceAmount = table.Column<double>(nullable: false),
+                    OrderTime = table.Column<DateTime>(nullable: false),
+                    PaidTime = table.Column<DateTime>(nullable: true),
+                    ReceivedTime = table.Column<DateTime>(nullable: true),
+                    SellerId = table.Column<long>(nullable: false),
+                    SentTime = table.Column<DateTime>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AUC_Orders_WaitingForPayment", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "AUC_Orders_WaitingForReceiving",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(nullable: false),
+                    AddressId = table.Column<Guid>(nullable: true),
+                    Amount = table.Column<double>(nullable: false),
+                    BuyerId = table.Column<long>(nullable: false),
+                    Code = table.Column<string>(maxLength: 50, nullable: false),
+                    CompletedTime = table.Column<DateTime>(nullable: true),
+                    DeliveryId = table.Column<string>(nullable: true),
+                    EvaluatedTime = table.Column<DateTime>(nullable: true),
+                    EvaluationContent = table.Column<string>(nullable: true),
+                    EvaluationLevel = table.Column<int>(nullable: true),
+                    ExpressCostAmount = table.Column<double>(nullable: false),
+                    ItemId = table.Column<Guid>(nullable: false),
+                    ItemPriceAmount = table.Column<double>(nullable: false),
+                    OrderTime = table.Column<DateTime>(nullable: false),
+                    PaidTime = table.Column<DateTime>(nullable: true),
+                    ReceivedTime = table.Column<DateTime>(nullable: true),
+                    SellerId = table.Column<long>(nullable: false),
+                    SentTime = table.Column<DateTime>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AUC_Orders_WaitingForReceiving", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "AUC_Orders_WaitingForSending",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(nullable: false),
+                    AddressId = table.Column<Guid>(nullable: true),
+                    Amount = table.Column<double>(nullable: false),
+                    BuyerId = table.Column<long>(nullable: false),
+                    Code = table.Column<string>(maxLength: 50, nullable: false),
+                    CompletedTime = table.Column<DateTime>(nullable: true),
+                    DeliveryId = table.Column<string>(nullable: true),
+                    EvaluatedTime = table.Column<DateTime>(nullable: true),
+                    EvaluationContent = table.Column<string>(nullable: true),
+                    EvaluationLevel = table.Column<int>(nullable: true),
+                    ExpressCostAmount = table.Column<double>(nullable: false),
+                    ItemId = table.Column<Guid>(nullable: false),
+                    ItemPriceAmount = table.Column<double>(nullable: false),
+                    OrderTime = table.Column<DateTime>(nullable: false),
+                    PaidTime = table.Column<DateTime>(nullable: true),
+                    ReceivedTime = table.Column<DateTime>(nullable: true),
+                    SellerId = table.Column<long>(nullable: false),
+                    SentTime = table.Column<DateTime>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AUC_Orders_WaitingForSending", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -846,208 +1169,6 @@ namespace Kuaiyipai.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "AUC_Balance",
-                columns: table => new
-                {
-                    Id = table.Column<long>(nullable: false)
-                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    FrozenBalance = table.Column<double>(nullable: false),
-                    TotalBalance = table.Column<double>(nullable: false),
-                    UserId = table.Column<long>(nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_AUC_Balance", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_AUC_Balance_AbpUsers_UserId",
-                        column: x => x.UserId,
-                        principalTable: "AbpUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "AUC_BalanceRecords",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(nullable: false),
-                    Amount = table.Column<double>(nullable: false),
-                    IsPaidSuccessfully = table.Column<bool>(nullable: true),
-                    PaymentCompleteTime = table.Column<DateTime>(nullable: false),
-                    RecordTime = table.Column<DateTime>(nullable: false),
-                    Remarks = table.Column<string>(nullable: true),
-                    UserId = table.Column<long>(nullable: false),
-                    WechatPayId = table.Column<string>(nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_AUC_BalanceRecords", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_AUC_BalanceRecords_AbpUsers_UserId",
-                        column: x => x.UserId,
-                        principalTable: "AbpUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "AUC_Orders_Completed",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(nullable: false),
-                    AddressId = table.Column<Guid>(nullable: false),
-                    Amount = table.Column<double>(nullable: false),
-                    BuyerId = table.Column<long>(nullable: false),
-                    Code = table.Column<string>(maxLength: 50, nullable: false),
-                    CompletedTime = table.Column<DateTime>(nullable: false),
-                    DeliveryId = table.Column<string>(nullable: true),
-                    EvaluationLevel = table.Column<int>(nullable: true),
-                    ExpressCostAmount = table.Column<double>(nullable: false),
-                    ItemPriceAmount = table.Column<double>(nullable: false),
-                    OrderTime = table.Column<DateTime>(nullable: false),
-                    SellerId = table.Column<long>(nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_AUC_Orders_Completed", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_AUC_Orders_Completed_AUC_Addresses_AddressId",
-                        column: x => x.AddressId,
-                        principalTable: "AUC_Addresses",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "AUC_Orders_WaitingForEvaluating",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(nullable: false),
-                    AddressId = table.Column<Guid>(nullable: false),
-                    Amount = table.Column<double>(nullable: false),
-                    BuyerId = table.Column<long>(nullable: false),
-                    Code = table.Column<string>(maxLength: 50, nullable: false),
-                    DeliveryId = table.Column<string>(nullable: true),
-                    EvaluatedTime = table.Column<DateTime>(nullable: false),
-                    ExpressCostAmount = table.Column<double>(nullable: false),
-                    ItemPriceAmount = table.Column<double>(nullable: false),
-                    OrderTime = table.Column<DateTime>(nullable: false),
-                    SellerId = table.Column<long>(nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_AUC_Orders_WaitingForEvaluating", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_AUC_Orders_WaitingForEvaluating_AUC_Addresses_AddressId",
-                        column: x => x.AddressId,
-                        principalTable: "AUC_Addresses",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "AUC_Orders_WaitingForPayment",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(nullable: false),
-                    AddressId = table.Column<Guid>(nullable: false),
-                    Amount = table.Column<double>(nullable: false),
-                    BuyerId = table.Column<long>(nullable: false),
-                    Code = table.Column<string>(maxLength: 50, nullable: false),
-                    DeliveryId = table.Column<string>(nullable: true),
-                    ExpressCostAmount = table.Column<double>(nullable: false),
-                    ItemPriceAmount = table.Column<double>(nullable: false),
-                    OrderTime = table.Column<DateTime>(nullable: false),
-                    PaidTime = table.Column<DateTime>(nullable: false),
-                    SellerId = table.Column<long>(nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_AUC_Orders_WaitingForPayment", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_AUC_Orders_WaitingForPayment_AUC_Addresses_AddressId",
-                        column: x => x.AddressId,
-                        principalTable: "AUC_Addresses",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "AUC_Orders_WaitingForReceiving",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(nullable: false),
-                    AddressId = table.Column<Guid>(nullable: false),
-                    Amount = table.Column<double>(nullable: false),
-                    BuyerId = table.Column<long>(nullable: false),
-                    Code = table.Column<string>(maxLength: 50, nullable: false),
-                    DeliveryId = table.Column<string>(nullable: true),
-                    ExpressCostAmount = table.Column<double>(nullable: false),
-                    ItemPriceAmount = table.Column<double>(nullable: false),
-                    OrderTime = table.Column<DateTime>(nullable: false),
-                    ReceivedTime = table.Column<DateTime>(nullable: false),
-                    SellerId = table.Column<long>(nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_AUC_Orders_WaitingForReceiving", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_AUC_Orders_WaitingForReceiving_AUC_Addresses_AddressId",
-                        column: x => x.AddressId,
-                        principalTable: "AUC_Addresses",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "AUC_Orders_WaitingForSending",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(nullable: false),
-                    AddressId = table.Column<Guid>(nullable: false),
-                    Amount = table.Column<double>(nullable: false),
-                    BuyerId = table.Column<long>(nullable: false),
-                    Code = table.Column<string>(maxLength: 50, nullable: false),
-                    DeliveryId = table.Column<string>(nullable: true),
-                    ExpressCostAmount = table.Column<double>(nullable: false),
-                    ItemPriceAmount = table.Column<double>(nullable: false),
-                    OrderTime = table.Column<DateTime>(nullable: false),
-                    SellerId = table.Column<long>(nullable: false),
-                    SentTime = table.Column<DateTime>(nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_AUC_Orders_WaitingForSending", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_AUC_Orders_WaitingForSending_AUC_Addresses_AddressId",
-                        column: x => x.AddressId,
-                        principalTable: "AUC_Addresses",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "ACU_Categories",
-                columns: table => new
-                {
-                    Id = table.Column<int>(nullable: false)
-                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    Code = table.Column<string>(maxLength: 5, nullable: false),
-                    Name = table.Column<string>(maxLength: 50, nullable: false),
-                    PillarId = table.Column<int>(nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_ACU_Categories", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_ACU_Categories_AUC_Pillars_PillarId",
-                        column: x => x.PillarId,
-                        principalTable: "AUC_Pillars",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "AbpEntityPropertyChanges",
                 columns: table => new
                 {
@@ -1123,195 +1244,6 @@ namespace Kuaiyipai.Migrations
                         name: "FK_AbpRoleClaims_AbpRoles_RoleId",
                         column: x => x.RoleId,
                         principalTable: "AbpRoles",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "AUC_Items_Auctioning",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(nullable: false),
-                    BiddingCount = table.Column<int>(nullable: false),
-                    CategoryId = table.Column<int>(nullable: false),
-                    Code = table.Column<string>(maxLength: 50, nullable: false),
-                    CreationTime = table.Column<DateTime>(nullable: false),
-                    CreatorUserId = table.Column<long>(nullable: true),
-                    Deadline = table.Column<DateTime>(nullable: false),
-                    DeleterUserId = table.Column<long>(nullable: true),
-                    DeletionTime = table.Column<DateTime>(nullable: true),
-                    Description = table.Column<string>(nullable: false),
-                    HighestBiddingPrice = table.Column<double>(nullable: false),
-                    IsDeleted = table.Column<bool>(nullable: false),
-                    LastModificationTime = table.Column<DateTime>(nullable: true),
-                    LastModifierUserId = table.Column<long>(nullable: true),
-                    PillarId = table.Column<int>(nullable: false),
-                    PriceLimit = table.Column<double>(nullable: true),
-                    StartPrice = table.Column<double>(nullable: false),
-                    StartTime = table.Column<DateTime>(nullable: true),
-                    StepPrice = table.Column<double>(nullable: false),
-                    Title = table.Column<string>(maxLength: 200, nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_AUC_Items_Auctioning", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_AUC_Items_Auctioning_ACU_Categories_CategoryId",
-                        column: x => x.CategoryId,
-                        principalTable: "ACU_Categories",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_AUC_Items_Auctioning_AUC_Pillars_PillarId",
-                        column: x => x.PillarId,
-                        principalTable: "AUC_Pillars",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "AUC_Items_Completed",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(nullable: false),
-                    BiddingCount = table.Column<int>(nullable: false),
-                    CategoryId = table.Column<int>(nullable: false),
-                    Code = table.Column<string>(maxLength: 50, nullable: false),
-                    CreationTime = table.Column<DateTime>(nullable: false),
-                    CreatorUserId = table.Column<long>(nullable: true),
-                    Deadline = table.Column<DateTime>(nullable: false),
-                    DeleterUserId = table.Column<long>(nullable: true),
-                    DeletionTime = table.Column<DateTime>(nullable: true),
-                    Description = table.Column<string>(nullable: false),
-                    HighestBiddingPrice = table.Column<double>(nullable: false),
-                    IsDeleted = table.Column<bool>(nullable: false),
-                    LastModificationTime = table.Column<DateTime>(nullable: true),
-                    LastModifierUserId = table.Column<long>(nullable: true),
-                    PillarId = table.Column<int>(nullable: false),
-                    PriceLimit = table.Column<double>(nullable: true),
-                    StartPrice = table.Column<double>(nullable: false),
-                    StartTime = table.Column<DateTime>(nullable: true),
-                    StepPrice = table.Column<double>(nullable: false),
-                    Title = table.Column<string>(maxLength: 200, nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_AUC_Items_Completed", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_AUC_Items_Completed_ACU_Categories_CategoryId",
-                        column: x => x.CategoryId,
-                        principalTable: "ACU_Categories",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_AUC_Items_Completed_AUC_Pillars_PillarId",
-                        column: x => x.PillarId,
-                        principalTable: "AUC_Pillars",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "AUC_Items_Drafting",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(nullable: false),
-                    BiddingCount = table.Column<int>(nullable: false),
-                    CategoryId = table.Column<int>(nullable: false),
-                    Code = table.Column<string>(maxLength: 50, nullable: false),
-                    CreationTime = table.Column<DateTime>(nullable: false),
-                    CreatorUserId = table.Column<long>(nullable: true),
-                    Deadline = table.Column<DateTime>(nullable: false),
-                    DeleterUserId = table.Column<long>(nullable: true),
-                    DeletionTime = table.Column<DateTime>(nullable: true),
-                    Description = table.Column<string>(nullable: false),
-                    HighestBiddingPrice = table.Column<double>(nullable: false),
-                    IsDeleted = table.Column<bool>(nullable: false),
-                    LastModificationTime = table.Column<DateTime>(nullable: true),
-                    LastModifierUserId = table.Column<long>(nullable: true),
-                    PillarId = table.Column<int>(nullable: false),
-                    PriceLimit = table.Column<double>(nullable: true),
-                    StartPrice = table.Column<double>(nullable: false),
-                    StartTime = table.Column<DateTime>(nullable: true),
-                    StepPrice = table.Column<double>(nullable: false),
-                    Title = table.Column<string>(maxLength: 200, nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_AUC_Items_Drafting", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_AUC_Items_Drafting_ACU_Categories_CategoryId",
-                        column: x => x.CategoryId,
-                        principalTable: "ACU_Categories",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_AUC_Items_Drafting_AUC_Pillars_PillarId",
-                        column: x => x.PillarId,
-                        principalTable: "AUC_Pillars",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "AUC_Items_Terminated",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(nullable: false),
-                    BiddingCount = table.Column<int>(nullable: false),
-                    CategoryId = table.Column<int>(nullable: false),
-                    Code = table.Column<string>(maxLength: 50, nullable: false),
-                    CreationTime = table.Column<DateTime>(nullable: false),
-                    CreatorUserId = table.Column<long>(nullable: true),
-                    Deadline = table.Column<DateTime>(nullable: false),
-                    DeleterUserId = table.Column<long>(nullable: true),
-                    DeletionTime = table.Column<DateTime>(nullable: true),
-                    Description = table.Column<string>(nullable: false),
-                    HighestBiddingPrice = table.Column<double>(nullable: false),
-                    IsDeleted = table.Column<bool>(nullable: false),
-                    LastModificationTime = table.Column<DateTime>(nullable: true),
-                    LastModifierUserId = table.Column<long>(nullable: true),
-                    PillarId = table.Column<int>(nullable: false),
-                    PriceLimit = table.Column<double>(nullable: true),
-                    StartPrice = table.Column<double>(nullable: false),
-                    StartTime = table.Column<DateTime>(nullable: true),
-                    StepPrice = table.Column<double>(nullable: false),
-                    Title = table.Column<string>(maxLength: 200, nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_AUC_Items_Terminated", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_AUC_Items_Terminated_ACU_Categories_CategoryId",
-                        column: x => x.CategoryId,
-                        principalTable: "ACU_Categories",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_AUC_Items_Terminated_AUC_Pillars_PillarId",
-                        column: x => x.PillarId,
-                        principalTable: "AUC_Pillars",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "AUC_BiddingRecords",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(nullable: false),
-                    CreationTime = table.Column<DateTime>(nullable: false),
-                    CreatorUserId = table.Column<long>(nullable: true),
-                    ItemId = table.Column<Guid>(nullable: false),
-                    Price = table.Column<double>(nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_AUC_BiddingRecords", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_AUC_BiddingRecords_AUC_Items_Auctioning_ItemId",
-                        column: x => x.ItemId,
-                        principalTable: "AUC_Items_Auctioning",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -1632,11 +1564,6 @@ namespace Kuaiyipai.Migrations
                 columns: new[] { "TenantId", "UserId" });
 
             migrationBuilder.CreateIndex(
-                name: "IX_ACU_Categories_PillarId",
-                table: "ACU_Categories",
-                column: "PillarId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_AppBinaryObjects_TenantId",
                 table: "AppBinaryObjects",
                 column: "TenantId");
@@ -1695,86 +1622,6 @@ namespace Kuaiyipai.Migrations
                 name: "IX_AppSubscriptionPayments_Status_CreationTime",
                 table: "AppSubscriptionPayments",
                 columns: new[] { "Status", "CreationTime" });
-
-            migrationBuilder.CreateIndex(
-                name: "IX_AUC_Balance_UserId",
-                table: "AUC_Balance",
-                column: "UserId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_AUC_BalanceRecords_UserId",
-                table: "AUC_BalanceRecords",
-                column: "UserId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_AUC_BiddingRecords_ItemId",
-                table: "AUC_BiddingRecords",
-                column: "ItemId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_AUC_Items_Auctioning_CategoryId",
-                table: "AUC_Items_Auctioning",
-                column: "CategoryId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_AUC_Items_Auctioning_PillarId",
-                table: "AUC_Items_Auctioning",
-                column: "PillarId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_AUC_Items_Completed_CategoryId",
-                table: "AUC_Items_Completed",
-                column: "CategoryId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_AUC_Items_Completed_PillarId",
-                table: "AUC_Items_Completed",
-                column: "PillarId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_AUC_Items_Drafting_CategoryId",
-                table: "AUC_Items_Drafting",
-                column: "CategoryId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_AUC_Items_Drafting_PillarId",
-                table: "AUC_Items_Drafting",
-                column: "PillarId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_AUC_Items_Terminated_CategoryId",
-                table: "AUC_Items_Terminated",
-                column: "CategoryId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_AUC_Items_Terminated_PillarId",
-                table: "AUC_Items_Terminated",
-                column: "PillarId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_AUC_Orders_Completed_AddressId",
-                table: "AUC_Orders_Completed",
-                column: "AddressId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_AUC_Orders_WaitingForEvaluating_AddressId",
-                table: "AUC_Orders_WaitingForEvaluating",
-                column: "AddressId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_AUC_Orders_WaitingForPayment_AddressId",
-                table: "AUC_Orders_WaitingForPayment",
-                column: "AddressId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_AUC_Orders_WaitingForReceiving_AddressId",
-                table: "AUC_Orders_WaitingForReceiving",
-                column: "AddressId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_AUC_Orders_WaitingForSending_AddressId",
-                table: "AUC_Orders_WaitingForSending",
-                column: "AddressId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -1864,6 +1711,9 @@ namespace Kuaiyipai.Migrations
                 name: "AppSubscriptionPayments");
 
             migrationBuilder.DropTable(
+                name: "AUC_Addresses");
+
+            migrationBuilder.DropTable(
                 name: "AUC_Areas");
 
             migrationBuilder.DropTable(
@@ -1876,7 +1726,13 @@ namespace Kuaiyipai.Migrations
                 name: "AUC_BiddingRecords");
 
             migrationBuilder.DropTable(
+                name: "AUC_Categories");
+
+            migrationBuilder.DropTable(
                 name: "AUC_ItemPictures");
+
+            migrationBuilder.DropTable(
+                name: "AUC_Items_Auctioning");
 
             migrationBuilder.DropTable(
                 name: "AUC_Items_Completed");
@@ -1903,6 +1759,9 @@ namespace Kuaiyipai.Migrations
                 name: "AUC_Orders_WaitingForSending");
 
             migrationBuilder.DropTable(
+                name: "AUC_Pillars");
+
+            migrationBuilder.DropTable(
                 name: "AbpEntityChanges");
 
             migrationBuilder.DropTable(
@@ -1912,22 +1771,10 @@ namespace Kuaiyipai.Migrations
                 name: "AbpEditions");
 
             migrationBuilder.DropTable(
-                name: "AUC_Items_Auctioning");
-
-            migrationBuilder.DropTable(
-                name: "AUC_Addresses");
-
-            migrationBuilder.DropTable(
                 name: "AbpEntityChangeSets");
 
             migrationBuilder.DropTable(
                 name: "AbpUsers");
-
-            migrationBuilder.DropTable(
-                name: "ACU_Categories");
-
-            migrationBuilder.DropTable(
-                name: "AUC_Pillars");
         }
     }
 }

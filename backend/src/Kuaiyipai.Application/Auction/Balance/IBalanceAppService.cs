@@ -13,7 +13,7 @@ namespace Kuaiyipai.Auction.Balance
 
         Task<ChargeOutputDto> Charge(ChargeInputDto input);
 
-        Task<string> CompleteCharge();
+        //Task<string> CompleteCharge();
 
         Task Withdraw(WithdrawInputDto input);
     }

@@ -11,9 +11,6 @@ namespace Kuaiyipai.Auction.Entities
         [Required]
         public Guid ItemId { get; set; }
 
-        [ForeignKey("ItemId")]
-        public ItemAuctioning Item { get; set; }
-
         [Required]
         public double Price { get; set; }
     }

@@ -79,7 +79,8 @@ namespace Kuaiyipai.Auction.Order
             var pics = await _itemPicRepository.GetAll().Where(i => itemIdList.Contains(i.ItemId) && i.IsCover).Select(i => new
             {
                 i.ItemId,
-                Url = new Uri(new Uri(new Uri(_appConfiguration["App:ImageUrlPrefix"]), i.Path), i.FileName + i.Extension).ToString()
+                //Url = new Uri(new Uri(new Uri(_appConfiguration["App:ImageUrlPrefix"]), i.Path), i.FileName + i.Extension).ToString()
+                Url = _appConfiguration["App:ImageUrlPrefix"] + "/" + i.Path + "/" + i.FileName + i.Extension
             }).ToListAsync();
 
             var newList = new List<GetWaitingForPaymentOrdersOutputDto>();
@@ -139,7 +140,8 @@ namespace Kuaiyipai.Auction.Order
             var pics = await _itemPicRepository.GetAll().Where(i => itemIdList.Contains(i.ItemId) && i.IsCover).Select(i => new
             {
                 i.ItemId,
-                Url = new Uri(new Uri(new Uri(_appConfiguration["App:ImageUrlPrefix"]), i.Path), i.FileName + i.Extension).ToString()
+                //Url = new Uri(new Uri(new Uri(_appConfiguration["App:ImageUrlPrefix"]), i.Path), i.FileName + i.Extension).ToString()
+                Url = _appConfiguration["App:ImageUrlPrefix"] + "/" + i.Path + "/" + i.FileName + i.Extension
             }).ToListAsync();
 
             var newList = new List<GetWaitingForSendingOrdersOutputDto>();
@@ -199,7 +201,8 @@ namespace Kuaiyipai.Auction.Order
             var pics = await _itemPicRepository.GetAll().Where(i => itemIdList.Contains(i.ItemId) && i.IsCover).Select(i => new
             {
                 i.ItemId,
-                Url = new Uri(new Uri(new Uri(_appConfiguration["App:ImageUrlPrefix"]), i.Path), i.FileName + i.Extension).ToString()
+                //Url = new Uri(new Uri(new Uri(_appConfiguration["App:ImageUrlPrefix"]), i.Path), i.FileName + i.Extension).ToString()
+                Url = _appConfiguration["App:ImageUrlPrefix"] + "/" + i.Path + "/" + i.FileName + i.Extension
             }).ToListAsync();
 
             var newList = new List<GetWaitingForReceivingOrdersOutputDto>();
@@ -259,7 +262,8 @@ namespace Kuaiyipai.Auction.Order
             var pics = await _itemPicRepository.GetAll().Where(i => itemIdList.Contains(i.ItemId) && i.IsCover).Select(i => new
             {
                 i.ItemId,
-                Url = new Uri(new Uri(new Uri(_appConfiguration["App:ImageUrlPrefix"]), i.Path), i.FileName + i.Extension).ToString()
+                //Url = new Uri(new Uri(new Uri(_appConfiguration["App:ImageUrlPrefix"]), i.Path), i.FileName + i.Extension).ToString()
+                Url = _appConfiguration["App:ImageUrlPrefix"] + "/" + i.Path + "/" + i.FileName + i.Extension
             }).ToListAsync();
 
             var newList = new List<GetWaitingForEvaluatingOrdersOutputDto>();
@@ -319,7 +323,8 @@ namespace Kuaiyipai.Auction.Order
             var pics = await _itemPicRepository.GetAll().Where(i => itemIdList.Contains(i.ItemId) && i.IsCover).Select(i => new
             {
                 i.ItemId,
-                Url = new Uri(new Uri(new Uri(_appConfiguration["App:ImageUrlPrefix"]), i.Path), i.FileName + i.Extension).ToString()
+                //Url = new Uri(new Uri(new Uri(_appConfiguration["App:ImageUrlPrefix"]), i.Path), i.FileName + i.Extension).ToString()
+                Url = _appConfiguration["App:ImageUrlPrefix"] + "/" + i.Path + "/" + i.FileName + i.Extension
             }).ToListAsync();
 
             var newList = new List<GetCompletedOrdersOutputDto>();
@@ -379,7 +384,8 @@ namespace Kuaiyipai.Auction.Order
             var pics = await _itemPicRepository.GetAll().Where(i => itemIdList.Contains(i.ItemId) && i.IsCover).Select(i => new
             {
                 i.ItemId,
-                Url = new Uri(new Uri(new Uri(_appConfiguration["App:ImageUrlPrefix"]), i.Path), i.FileName + i.Extension).ToString()
+                //Url = new Uri(new Uri(new Uri(_appConfiguration["App:ImageUrlPrefix"]), i.Path), i.FileName + i.Extension).ToString()
+                Url = _appConfiguration["App:ImageUrlPrefix"] + "/" + i.Path + "/" + i.FileName + i.Extension
             }).ToListAsync();
 
             var newList = new List<GetWaitingForPaymentOrdersOutputDto>();
@@ -439,7 +445,8 @@ namespace Kuaiyipai.Auction.Order
             var pics = await _itemPicRepository.GetAll().Where(i => itemIdList.Contains(i.ItemId) && i.IsCover).Select(i => new
             {
                 i.ItemId,
-                Url = new Uri(new Uri(new Uri(_appConfiguration["App:ImageUrlPrefix"]), i.Path), i.FileName + i.Extension).ToString()
+                //Url = new Uri(new Uri(new Uri(_appConfiguration["App:ImageUrlPrefix"]), i.Path), i.FileName + i.Extension).ToString()
+                Url = _appConfiguration["App:ImageUrlPrefix"] + "/" + i.Path + "/" + i.FileName + i.Extension
             }).ToListAsync();
 
             var newList = new List<GetWaitingForSendingOrdersOutputDto>();
@@ -499,7 +506,8 @@ namespace Kuaiyipai.Auction.Order
             var pics = await _itemPicRepository.GetAll().Where(i => itemIdList.Contains(i.ItemId) && i.IsCover).Select(i => new
             {
                 i.ItemId,
-                Url = new Uri(new Uri(new Uri(_appConfiguration["App:ImageUrlPrefix"]), i.Path), i.FileName + i.Extension).ToString()
+                //Url = new Uri(new Uri(new Uri(_appConfiguration["App:ImageUrlPrefix"]), i.Path), i.FileName + i.Extension).ToString()
+                Url = _appConfiguration["App:ImageUrlPrefix"] + "/" + i.Path + "/" + i.FileName + i.Extension
             }).ToListAsync();
 
             var newList = new List<GetWaitingForReceivingOrdersOutputDto>();
@@ -559,7 +567,8 @@ namespace Kuaiyipai.Auction.Order
             var pics = await _itemPicRepository.GetAll().Where(i => itemIdList.Contains(i.ItemId) && i.IsCover).Select(i => new
             {
                 i.ItemId,
-                Url = new Uri(new Uri(new Uri(_appConfiguration["App:ImageUrlPrefix"]), i.Path), i.FileName + i.Extension).ToString()
+                //Url = new Uri(new Uri(new Uri(_appConfiguration["App:ImageUrlPrefix"]), i.Path), i.FileName + i.Extension).ToString()
+                Url = _appConfiguration["App:ImageUrlPrefix"] + "/" + i.Path + "/" + i.FileName + i.Extension
             }).ToListAsync();
 
             var newList = new List<GetWaitingForEvaluatingOrdersOutputDto>();
@@ -619,7 +628,8 @@ namespace Kuaiyipai.Auction.Order
             var pics = await _itemPicRepository.GetAll().Where(i => itemIdList.Contains(i.ItemId) && i.IsCover).Select(i => new
             {
                 i.ItemId,
-                Url = new Uri(new Uri(new Uri(_appConfiguration["App:ImageUrlPrefix"]), i.Path), i.FileName + i.Extension).ToString()
+                //Url = new Uri(new Uri(new Uri(_appConfiguration["App:ImageUrlPrefix"]), i.Path), i.FileName + i.Extension).ToString()
+                Url = _appConfiguration["App:ImageUrlPrefix"] + "/" + i.Path + "/" + i.FileName + i.Extension
             }).ToListAsync();
 
             var newList = new List<GetCompletedOrdersOutputDto>();
@@ -799,7 +809,8 @@ namespace Kuaiyipai.Auction.Order
             var itemPic = await _itemPicRepository.FirstOrDefaultAsync(i => i.ItemId == goodsId && i.IsCover);
             if (itemPic != null)
             {
-                order.GoodsPicture = new Uri(new Uri(new Uri(_appConfiguration["App:ImageUrlPrefix"]), itemPic.Path), itemPic.FileName + itemPic.Extension).ToString();
+                //order.GoodsPicture = new Uri(new Uri(new Uri(_appConfiguration["App:ImageUrlPrefix"]), itemPic.Path), itemPic.FileName + itemPic.Extension).ToString();
+                order.GoodsPicture = _appConfiguration["App:ImageUrlPrefix"] + "/" + itemPic.Path + "/" + itemPic.FileName + itemPic.Extension;
             }
             else
             {
