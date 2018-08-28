@@ -20,5 +20,7 @@ namespace Kuaiyipai.Auction.Item.Dto
         public string StartTime { get; set; }
 
         public string Deadline { get; set; }
+
+        public string CoverUrl { get; set; }
     }
 }

@@ -24,5 +24,7 @@ namespace Kuaiyipai.Auction.Item.Dto
         public int BiddingCount { get; set; }
 
         public double HighestBiddingPrice { get; set; }
+
+        public string CoverUrl { get; set; }
     }
 }
