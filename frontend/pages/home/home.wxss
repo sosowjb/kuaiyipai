@@ -1,7 +1,3 @@
-.homePage swiper {
-    height: 240px;
-}
-
 .homePage swiper image {
     width: 100%;
 }

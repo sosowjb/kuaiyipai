@@ -70,7 +70,7 @@
       <view class="flex-row option-content">
           <view class="flex-grow-1 flex-row">
               <view class="flex-grow-0 flex-y-center">
-                    <i class='icoFontSize15 option-icon iconfont icon-fm-balance fi-499bf7'/>
+                    <i class='icoFontSize15 option-icon iconfont icon-fm-balance fi-f46201'/>
               </view>
               <view class="flex-grow-1 flex-y-center">                    
                 可用余额 {{balance}} 元
@@ -85,7 +85,7 @@
       <view class="flex-row option-content">
           <view class="flex-grow-1 flex-row">
               <view class="flex-grow-0 flex-y-center">
-                    <i class='icoFontSize15 option-icon iconfont icon-fm-message fi-499bf7'/>
+                    <i class='icoFontSize15 option-icon iconfont icon-fm-message fi-f46201'/>
               </view>
               <view class="flex-grow-1 flex-y-center">                    
                 消息中心
@@ -103,7 +103,7 @@
       <view class="flex-row option-content">
           <view class="flex-grow-1 flex-row">
               <view class="flex-grow-0 flex-y-center">
-                    <i class='icoFontSize15 option-icon iconfont icon-fm-address fi-499bf7'/>   
+                    <i class='icoFontSize15 option-icon iconfont icon-fm-address fi-f46201'/>   
               </view>
               <view class="flex-grow-1 flex-y-center">                    
                 退货地址管理
@@ -118,7 +118,7 @@
       <view class="flex-row option-content">
           <view class="flex-grow-1 flex-row">
               <view class="flex-grow-0 flex-y-center">
-                  <i class='icoFontSize15 option-icon iconfont icon-fm-pd fi-499bf7'/>
+                  <i class='icoFontSize15 option-icon iconfont icon-fm-pd fi-f46201'/>
               </view>
               <view class="flex-grow-1 flex-y-center">                    
                 货架管理

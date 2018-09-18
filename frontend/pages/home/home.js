@@ -66,7 +66,7 @@ Page({
           let scrollH = wh;
 
           this.setData({
-            scrollH: scrollH-100,
+            scrollH: scrollH-48,
             imgWidth: imgWidth
           });
           //加载首组图片
@@ -178,7 +178,7 @@ Page({
         col1: col1,
         col2: col2
       };
-
+console.log(data);
       //当前这组图片已加载完毕，则清空图片临时加载区域的内容
       if (!loadingCount) {
         data.images = [];

@@ -146,6 +146,7 @@
     border-radius: 6rpx;
     box-sizing: border-box;
     margin:0 auto;
+    margin-bottom: 10px;
 }
 .btn-view-cell{
   padding:10px 15px;
