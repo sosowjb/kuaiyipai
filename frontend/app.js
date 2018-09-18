@@ -23,6 +23,7 @@ App({
     }
   },
   Logins: function (nickname, avatarlink,code,callback){
+    console.log(nickname);
     var that=this;
     wx.request({
       url: this.globalData.apiLink + '/api/TokenAuth/Authenticate',
@@ -36,6 +37,7 @@ App({
       dataType: 'json',
       responseType: 'text',
       success: function (res) {
+        console.log(res);
         if(res.data.success)
         {
             wx.showToast({
@@ -57,10 +59,13 @@ App({
             key: "userId",
             data: res.data.result.userId
           });
+          console.log(callback());
           typeof callback == "function" && callback()
         }
       },
-      fail: function (res) { },
+      fail: function (res) {
+        console.log(res);
+       },
       complete: function (res) { },
     })
   },
@@ -86,7 +91,10 @@ App({
   },
   globalData: {
     userInfo: null,
-    apiLink: "http://localhost:5000",//"http://39.104.135.205",//api链接
-    imageLink: "http://images.kypwp.com"//图片链接
+    apiLink: "https://api.kypwp.com", //api链接
+    imageLink: "https://api.kypwp.com/pic"//图片链接
+
+    //apiLink: "http://localhost:5000", //api链接
+    //imageLink: "http://images.kypwp.com/"//图片链接
   }
 })

@@ -21,7 +21,7 @@
     "pages/orderlist/index"
   ],
   "tabBar": {
-    "selectedColor": "#2F77F1",
+    "selectedColor": "#F43607",
     "list": [
       {
         "pagePath": "pages/home/home",
@@ -45,8 +45,8 @@
   },
   "window": {
     "backgroundTextStyle": "light",
-    "navigationBarBackgroundColor": "#fff",
+    "navigationBarBackgroundColor": "#F43607",
     "navigationBarTitleText": "快微拍",
-    "navigationBarTextStyle": "black"
+    "navigationBarTextStyle": "#F8F8F8"
   }
 }
