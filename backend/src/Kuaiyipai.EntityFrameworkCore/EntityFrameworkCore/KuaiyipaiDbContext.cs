@@ -67,6 +67,8 @@ namespace Kuaiyipai.EntityFrameworkCore
 
         public virtual DbSet<UserBiddingRecord> UserBidRecords { get; set; }
 
+        public virtual DbSet<SpecialActivity> SpecialActivities { get; set; }
+
 
         public KuaiyipaiDbContext(DbContextOptions<KuaiyipaiDbContext> options)
             : base(options)

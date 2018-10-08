@@ -22,5 +22,7 @@ namespace Kuaiyipai.Auction.Item.Dto
         public double? PriceEnd { get; set; }
 
         public string Title { get; set; }
+
+        public Guid? SpecialActivityId { get; set; }
     }
 }

@@ -33,10 +33,11 @@ namespace Kuaiyipai.Auction.Item
         private readonly IRepository<UserBiddingRecord, Guid> _biddingRepository;
         private readonly IRepository<Entities.Address, Guid> _addressRepository;
         private readonly IRepository<OrderWaitingForPayment, Guid> _orderRepository;
+        private readonly IRepository<Entities.SpecialActivity, Guid> _specialActivityRepository;
         private readonly IConfigurationRoot _appConfiguration;
         private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public ItemAppService(IHostingEnvironment env, IRepository<ItemDrafting, Guid> itemDraftingRepository, IRepository<ItemAuctioning, Guid> itemAuctioningRepository, IRepository<ItemCompleted, Guid> itemCompletedRepository, IRepository<ItemTerminated, Guid> itemTerminatedRepository, IRepository<Entities.Pillar> pillarRepository, IRepository<Entities.Category> categoryRepository, IRepository<ItemPic, Guid> itemPicRepository, IHttpContextAccessor httpContextAccessor, IRepository<User, long> userRepository, IRepository<UserBiddingRecord, Guid> biddingRepository, IRepository<Entities.Address, Guid> addressRepository, IRepository<OrderWaitingForPayment, Guid> orderRepository)
+        public ItemAppService(IHostingEnvironment env, IRepository<ItemDrafting, Guid> itemDraftingRepository, IRepository<ItemAuctioning, Guid> itemAuctioningRepository, IRepository<ItemCompleted, Guid> itemCompletedRepository, IRepository<ItemTerminated, Guid> itemTerminatedRepository, IRepository<Entities.Pillar> pillarRepository, IRepository<Entities.Category> categoryRepository, IRepository<ItemPic, Guid> itemPicRepository, IHttpContextAccessor httpContextAccessor, IRepository<User, long> userRepository, IRepository<UserBiddingRecord, Guid> biddingRepository, IRepository<Entities.Address, Guid> addressRepository, IRepository<OrderWaitingForPayment, Guid> orderRepository, IRepository<Entities.SpecialActivity, Guid> specialActivityRepository)
         {
             _itemDraftingRepository = itemDraftingRepository;
             _itemAuctioningRepository = itemAuctioningRepository;
@@ -51,6 +52,7 @@ namespace Kuaiyipai.Auction.Item
             _biddingRepository = biddingRepository;
             _addressRepository = addressRepository;
             _orderRepository = orderRepository;
+            _specialActivityRepository = specialActivityRepository;
         }
 
         public async Task<Guid> CreateItem(CreateItemInputDto input)
@@ -70,8 +72,18 @@ namespace Kuaiyipai.Auction.Item
                 Title = input.Title,
                 Description = input.Description,
                 BiddingCount = 0,
-                HighestBiddingPrice = 0
+                HighestBiddingPrice = 0,
+                InvitationCode = input.InvitationCode
             };
+
+            // 根据邀请码获取专场ID
+            var activity = await _specialActivityRepository.FirstOrDefaultAsync(s => s.InvitationCode == input.InvitationCode);
+            if (activity == null)
+            {
+                throw new UserFriendlyException("邀请码不存在");
+            }
+
+            item.SpecialActivityId = activity.Id;
 
             var itemId = await _itemDraftingRepository.InsertAndGetIdAsync(item);
 
@@ -90,9 +102,6 @@ namespace Kuaiyipai.Auction.Item
         [UnitOfWork]
         public async Task EditItem(EditItemInputDto input)
         {
-            var pillar = await _pillarRepository.GetAsync(input.PillarId);
-            var category = await _categoryRepository.GetAsync(input.CategoryId);
-
             var item = await _itemDraftingRepository.FirstOrDefaultAsync(input.Id);
             if (item != null)
             {
@@ -104,9 +113,19 @@ namespace Kuaiyipai.Auction.Item
                 item.Deadline = input.Deadline;
                 item.Title = input.Title;
                 item.Description = input.Description;
+                item.InvitationCode = input.InvitationCode;
+
+                // 根据邀请码获取专场ID
+                var activity = await _specialActivityRepository.FirstOrDefaultAsync(s => s.InvitationCode == input.InvitationCode);
+                if (activity == null)
+                {
+                    throw new UserFriendlyException("邀请码不存在");
+                }
+
+                item.SpecialActivityId = activity.Id;
             }
 
-          //  var itemId = await _itemDraftingRepository.InsertAndGetIdAsync(item);
+            //  var itemId = await _itemDraftingRepository.InsertAndGetIdAsync(item);
             var itemId = await _itemDraftingRepository.InsertOrUpdateAndGetIdAsync(item);
 
             await _itemPicRepository.DeleteAsync(p => p.ItemId == itemId);
@@ -301,7 +320,8 @@ namespace Kuaiyipai.Auction.Item
 
             var count = await query.CountAsync();
             var list = await query.PageBy(input)
-                .Join(itempicQuery, item => item.Id, itempic => itempic.ItemId, (item, itempic) => new {
+                .Join(itempicQuery, item => item.Id, itempic => itempic.ItemId, (item, itempic) => new
+                {
                     item.Id,
                     item.PillarId,
                     item.CategoryId,
@@ -358,7 +378,8 @@ namespace Kuaiyipai.Auction.Item
 
             var count = await query.CountAsync();
             var list = await query.PageBy(input)
-                .Join(itempicQuery,item=>item.Id, itempic => itempic.ItemId, (item,itempic)=> new {
+                .Join(itempicQuery, item => item.Id, itempic => itempic.ItemId, (item, itempic) => new
+                {
                     item.Id,
                     item.PillarId,
                     item.CategoryId,
@@ -419,7 +440,8 @@ namespace Kuaiyipai.Auction.Item
 
             var count = await query.CountAsync();
             var list = await query.PageBy(input)
-                .Join(itempicQuery, item => item.Id, itempic => itempic.ItemId, (item, itempic) => new {
+                .Join(itempicQuery, item => item.Id, itempic => itempic.ItemId, (item, itempic) => new
+                {
                     item.Id,
                     item.PillarId,
                     item.CategoryId,
@@ -480,7 +502,8 @@ namespace Kuaiyipai.Auction.Item
 
             var count = await query.CountAsync();
             var list = await query.PageBy(input)
-                .Join(itempicQuery, item => item.Id, itempic => itempic.ItemId, (item, itempic) => new {
+                .Join(itempicQuery, item => item.Id, itempic => itempic.ItemId, (item, itempic) => new
+                {
                     item.Id,
                     item.PillarId,
                     item.CategoryId,
@@ -751,6 +774,7 @@ namespace Kuaiyipai.Auction.Item
                     (!input.DeadlineEnd.HasValue || i.Deadline <= input.DeadlineEnd) &&
                     (!input.PriceStart.HasValue || i.StartPrice >= input.PriceStart) &&
                     (!input.PriceEnd.HasValue || i.StartPrice <= input.PriceEnd) &&
+                    (!input.SpecialActivityId.HasValue || i.SpecialActivityId == input.SpecialActivityId) &&
                     (string.IsNullOrEmpty(input.Title) || i.Title.Contains(input.Title)));
             var pillarQuery = _pillarRepository.GetAll();
             var categoryQuery = _categoryRepository.GetAll();
@@ -840,7 +864,7 @@ namespace Kuaiyipai.Auction.Item
                 IsCover = p.IsCover,
                 //Url = new Uri(new Uri(_appConfiguration["App:ImageUrlPrefix"]), Path.Combine(p.Path, p.FileName + p.Extension)).ToString()
                 Url = _appConfiguration["App:ImageUrlPrefix"] + "/" + p.Path + "/" + p.FileName + p.Extension
-        }).ToListAsync();
+            }).ToListAsync();
             return new ListResultDto<GetItemPicturesOutputDto>(list);
         }
 
@@ -905,7 +929,8 @@ namespace Kuaiyipai.Auction.Item
                     CurrentPrice = item.HighestBiddingPrice,
                     biddingCount = item.BiddingCount
                 })
-                .Join(pillarQuery, item => item.PillarId, pillar => pillar.Id, (item,pillar)=>new {
+                .Join(pillarQuery, item => item.PillarId, pillar => pillar.Id, (item, pillar) => new
+                {
                     item.Id,
                     item.PillarId,
                     item.CategoryId,
@@ -921,7 +946,8 @@ namespace Kuaiyipai.Auction.Item
                     item.CurrentPrice,
                     item.biddingCount
                 })
-                .Join(categoryQuery, item => item.CategoryId, category => category.Id, (item, category) => new GetAuctionItemsOutputDto {
+                .Join(categoryQuery, item => item.CategoryId, category => category.Id, (item, category) => new GetAuctionItemsOutputDto
+                {
                     Id = item.Id,
                     Pillar = item.Pillar,
                     Category = category.Name,

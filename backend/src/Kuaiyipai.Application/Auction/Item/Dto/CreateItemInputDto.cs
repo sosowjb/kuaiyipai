@@ -44,6 +44,8 @@ namespace Kuaiyipai.Auction.Item.Dto
 
         public List<CreateItemPicInputDto> PictureList { get; set; }
 
+        public string InvitationCode { get; set; }
+
         public CreateItemInputDto()
         {
             PictureList = new EditableList<CreateItemPicInputDto>();

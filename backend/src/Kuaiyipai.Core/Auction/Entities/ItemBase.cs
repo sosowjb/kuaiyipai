@@ -58,5 +58,9 @@ namespace Kuaiyipai.Auction.Entities
         public int BiddingCount { get; set; }
 
         public double HighestBiddingPrice { get; set; }
+
+        public string InvitationCode { get; set; }
+
+        public Guid? SpecialActivityId { get; set; }
     }
 }
