@@ -76,14 +76,17 @@ namespace Kuaiyipai.Auction.Item
                 InvitationCode = input.InvitationCode
             };
 
-            // 根据邀请码获取专场ID
-            var activity = await _specialActivityRepository.FirstOrDefaultAsync(s => s.InvitationCode == input.InvitationCode);
-            if (activity == null)
+            if (!input.InvitationCode.IsNullOrEmpty())
             {
-                throw new UserFriendlyException("邀请码不存在");
-            }
+                // 根据邀请码获取专场ID
+                var activity = await _specialActivityRepository.FirstOrDefaultAsync(s => s.InvitationCode == input.InvitationCode);
+                if (activity == null)
+                {
+                    throw new UserFriendlyException("邀请码不存在");
+                }
 
-            item.SpecialActivityId = activity.Id;
+                item.SpecialActivityId = activity.Id;
+            }
 
             var itemId = await _itemDraftingRepository.InsertAndGetIdAsync(item);
 
@@ -115,14 +118,17 @@ namespace Kuaiyipai.Auction.Item
                 item.Description = input.Description;
                 item.InvitationCode = input.InvitationCode;
 
-                // 根据邀请码获取专场ID
-                var activity = await _specialActivityRepository.FirstOrDefaultAsync(s => s.InvitationCode == input.InvitationCode);
-                if (activity == null)
+                if (!input.InvitationCode.IsNullOrEmpty())
                 {
-                    throw new UserFriendlyException("邀请码不存在");
-                }
+                    // 根据邀请码获取专场ID
+                    var activity = await _specialActivityRepository.FirstOrDefaultAsync(s => s.InvitationCode == input.InvitationCode);
+                    if (activity == null)
+                    {
+                        throw new UserFriendlyException("邀请码不存在");
+                    }
 
-                item.SpecialActivityId = activity.Id;
+                    item.SpecialActivityId = activity.Id;
+                }
             }
 
             //  var itemId = await _itemDraftingRepository.InsertAndGetIdAsync(item);
