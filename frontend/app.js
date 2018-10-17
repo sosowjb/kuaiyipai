@@ -91,10 +91,10 @@ App({
   },
   globalData: {
     userInfo: null,
-    apiLink: "https://api.kypwp.com", //api链接
-    imageLink: "https://api.kypwp.com/pic"//图片链接
+    //apiLink: "https://api.kypwp.com", //api链接
+    //imageLink: "https://api.kypwp.com/pic"//图片链接
 
-    //apiLink: "http://localhost:5000", //api链接
-    //imageLink: "http://images.kypwp.com/"//图片链接
+    apiLink: "http://api.kypwp.com", //api链接
+    imageLink: "http://images.kypwp.com/"//图片链接
   }
 })

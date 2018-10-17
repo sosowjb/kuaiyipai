@@ -1,0 +1,17 @@
+<view class='page'>
+<scroll-view scroll-top="{{scrollTop}}" scroll-y="true" style="height:{{scrollHeight}}px;"  class="list" bindscrolltolower="bindDownLoad" bindscrolltoupper="topLoad"  bindscroll="scroll">
+<view bindtap='openDetail'  class="item" wx:for="{{list}}" wx:key="id" data-text="{{item.id}}" data-conver="{{item.coverUrl}}">
+<view class='activity'>
+   <view class='noticebox'>
+      <image class='noticepic' src="{{item.coverUrl}}"></image>
+      <view class='noticetitle'>{{item.name}}</view>
+   </view>
+</view>
+ </view>
+</scroll-view>
+<view class="body-view">
+ <loading hidden="{{hidden}}" bindchange="loadingChange">
+            加载中...
+ </loading>
+</view>
+</view>

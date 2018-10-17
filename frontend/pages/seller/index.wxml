@@ -129,5 +129,19 @@
           </view>
       </view>
   </navigator>
-
+<!--<navigator class="option-item" url='/pages/myspecialactivity/index'>
+      <view class="flex-row option-content">
+          <view class="flex-grow-1 flex-row">
+              <view class="flex-grow-0 flex-y-center">
+               <image class='option-icon' style="width: 26px; height: 23px" src="/content/styles/ico/zhuan1.png"></image>
+              </view>
+              <view class="flex-grow-1 flex-y-center">                    
+                我的专场
+              </view>
+          </view>
+          <view class="flex-grow-0 flex-y-center">
+                <i class="iconfont icon-fm-arrowright" />
+          </view>
+      </view>
+  </navigator>-->
 </view>

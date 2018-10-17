@@ -1,0 +1,15 @@
+<view class='page'>
+<scroll-view scroll-top="{{scrollTop}}" scroll-y="true" style="height:{{scrollHeight}}px;"  class="list" bindscrolltolower="bindDownLoad" bindscrolltoupper="topLoad"  bindscroll="scroll">
+<view class='activity'>
+   <navigator>
+   <view class='noticebox'>
+      <image class='noticepic' src="http://images.kypwp.com//goods/swiper-1.jpg"></image>
+      <view class='noticetitle'>我的专场我做主，没人捧场就吃土</view>
+   </view>
+   </navigator>
+</view>
+</scroll-view>
+</view>
+  <view class='btn-view-cell'>
+    <button class='btn-dongjie address-add' type='primary' size='default' bindtap="addAddress">添加我的专场</button>
+  </view>

@@ -95,6 +95,14 @@
         </view>
         </view>
       </view>
+       <view class="weui-cell">
+         <view class="weui-cell__hd">
+          <view class="weui-label">邀请码</view>
+        </view>
+        <view class="weui-cell__bd">
+             <input name="yqm" class="weui-input" placeholder="请输入专场邀请码" type="text" value='{{formdata.yqm}}' confirm-type="next"  />
+        </view>
+      </view>
     </view>
       <view class="weui-cell">
         <view class="weui-cell__bd">

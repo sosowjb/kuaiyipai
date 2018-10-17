@@ -1,0 +1,24 @@
+.activity {
+	padding: 10px;
+	background: #fff;
+}
+.noticebox {
+	margin-bottom: 10px;
+	position: relative;
+}.noticepic {
+  height:150px;
+	display: block;
+	width: 100%;
+	margin: 0 auto
+}.noticetitle {
+	width: 100%;
+	padding: 5px;
+	box-sizing: border-box;
+	background: rgba(77, 77, 77, .5);
+	color: #fff;
+	font-size: 13px;
+	line-height: 1.8;
+	position: absolute;
+	left: 0;
+	bottom: 0px;
+}
