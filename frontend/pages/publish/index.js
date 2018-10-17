@@ -204,6 +204,7 @@ that.setData({
     })
   },
   formSubmit: function (e) {
+    console.log(e.detail.value.yqm);
   /*  console.log(this.data.pictureList);
    console.log(this.data.getPillars[this.data.pillarsIndex]);
    console.log(this.data.getPillars[this.data.pillarsIndex].categories[this.data.categoriesIndex]);*/
@@ -246,7 +247,7 @@ that.setData({
 
     wx.showLoading();
     var url = app.globalData.apiLink + '/api/services/app/Item/CreateItem'
-    console.log(this.data.pictureList);
+
     if(that.data.id)
     {
       url = app.globalData.apiLink + '/api/services/app/Item/EditItem'
@@ -264,7 +265,8 @@ that.setData({
         deadline: this.data.date + " " + this.data.time,
         description: this.data.formdata.description,
         pictureList: this.data.pictureList,
-        id:that.data.id
+        id:that.data.id,
+        invitationCode: e.detail.value.yqm
        },
       header: { 'Abp.TenantId': '1', 'Content-Type': 'application/json', 'Authorization':"Bearer "+wx.getStorageSync("accessToken") },
       method: 'POST',
@@ -273,9 +275,7 @@ that.setData({
       success: function (res) {
        // console.log(res);
         wx.hideLoading();
-        wx.navigateTo({
-          url: "/pages/container/index",
-        })
+        wx.navigateBack();
       }
       });
   },

@@ -98,7 +98,7 @@ Page({
   },
   GetBiddings:function(id){
     var that=this;
-    console.log(that.data.goodsid);
+   // console.log(that.data.goodsid);
   wx.request({
     url: app.globalData.apiLink + '/api/services/app/Bidding/GetBiddings?ItemId=' + id + '&SkipCount=0&MaxResultCount=5&Sorting=Price DESC',
     header: { 'Abp.TenantId': '1', 'Content-Type': 'application/json' },

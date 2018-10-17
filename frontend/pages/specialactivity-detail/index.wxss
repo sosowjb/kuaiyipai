@@ -1,0 +1,77 @@
+.homePage swiper image {
+    width: 100%;
+}
+
+.column {
+    width: 50%;
+    display: inline-block;
+    vertical-align: top;
+}
+
+ image {
+    width: 99%;
+    margin: 1px;
+}
+
+.info {
+    padding: 0 5px 5px 5px;
+}
+
+ .info .label {
+    font-size: 12px;
+    margin-right: 5px;
+    padding: 3px;
+    border-radius: 3px;
+}
+
+.info .label.hot {
+    background-color: red;
+    color: white;
+}
+
+ .info .label.deadline {
+    background-color: orange;
+    color: white;
+}
+
+ .info .label.secondhand {
+    background-color: lightskyblue;
+    color: white;
+}
+
+ .info .title {
+    font-size: 14px;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    overflow: hidden;
+    margin-bottom: 5px;
+}
+
+ .info .bids {
+    font-size: 12px;
+    color: grey;
+    padding-top: 5px;
+}
+
+.info .price {
+    color: red;
+    font-weight: bold;
+    text-align: right;
+}
+.img_item {
+  width: 47%;
+  margin: 1%;
+  display: inline-block;
+  vertical-align: top;
+/*border: 1px #bbb solid;*/
+}
+.left{
+  float: left;
+}
+.noticepic {
+  height:150px;
+	display: block;
+	width: 100%;
+	margin: 0 auto
+}

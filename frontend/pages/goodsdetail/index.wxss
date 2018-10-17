@@ -42,7 +42,7 @@ flex-direction: column;
     color: #fff;
     font-size: 20px;
     text-align: right;
-    background-color: #169ADA;
+    background-color: #F43607;
     overflow: hidden;
 
 }

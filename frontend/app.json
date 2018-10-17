@@ -1,5 +1,6 @@
 {
   "pages": [
+    "pages/specialactivity/index",
     "pages/home/home",
     "pages/container/index",
     "pages/charge/index",
@@ -18,14 +19,23 @@
     "pages/setting/index",
     "pages/select-address/index",
     "pages/address-add/index",
-    "pages/orderlist/index"
+    "pages/orderlist/index",
+    "pages/specialactivity-add/index",
+    "pages/specialactivity-detail/index",
+    "pages/myspecialactivity/index"
   ],
   "tabBar": {
     "selectedColor": "#F43607",
     "list": [
       {
+        "pagePath": "pages/specialactivity/index",
+        "text": "专场",
+        "iconPath": "/content/styles/ico/zhuan2.png",
+        "selectedIconPath": "/content/styles/ico/zhuan1.png"
+      },
+      {
         "pagePath": "pages/home/home",
-        "text": "首页",
+        "text": "市场",
         "iconPath": "content/styles/ico/home2.png",
         "selectedIconPath": "content/styles/ico/home1.png"
       },
@@ -35,6 +45,7 @@
         "iconPath": "/content/styles/ico/fenlei2.png",
         "selectedIconPath": "/content/styles/ico/fenlei1.png"
       },
+     
       {
         "pagePath": "pages/my/index",
         "text": "我的",
