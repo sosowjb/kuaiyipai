@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Abp.Application.Services.Dto;
 using Abp.Domain.Repositories;
 using Abp.Linq.Extensions;
+using Abp.UI;
 using Castle.Core.Internal;
 using Kuaiyipai.Auction.SpecialActivity.Dto;
 using Microsoft.EntityFrameworkCore;
@@ -20,7 +21,7 @@ namespace Kuaiyipai.Auction.SpecialActivity
             _specialActivityRepository = specialActivityRepository;
         }
 
-        public async Task<PagedResultDto<GetSpecialActivitiesOutputDto>> GetSpecialActivities(GetSpecialActivitiesInputDto input)
+        public async Task<PagedResultDto<GetSpecialActivityOutputDto>> GetSpecialActivities(GetSpecialActivitiesInputDto input)
         {
             var query = _specialActivityRepository.GetAll();
 
@@ -30,7 +31,7 @@ namespace Kuaiyipai.Auction.SpecialActivity
             }
 
             var count = await query.CountAsync();
-            var list = await query.PageBy(input).Select(s => new GetSpecialActivitiesOutputDto
+            var list = await query.PageBy(input).Select(s => new GetSpecialActivityOutputDto
             {
                 Id = s.Id,
                 InvitationCode = s.InvitationCode,
@@ -41,7 +42,27 @@ namespace Kuaiyipai.Auction.SpecialActivity
                 CoverUrl = s.CoverUrl
             }).ToListAsync();
 
-            return new PagedResultDto<GetSpecialActivitiesOutputDto>(count, list);
+            return new PagedResultDto<GetSpecialActivityOutputDto>(count, list);
+        }
+
+        public async Task<GetSpecialActivityOutputDto> GetSpecialActivity(Guid id)
+        {
+            var act = await _specialActivityRepository.FirstOrDefaultAsync(id);
+            if (act == null)
+            {
+                throw new UserFriendlyException("专场不存在");
+            }
+
+            return new GetSpecialActivityOutputDto
+            {
+                Id = act.Id,
+                InvitationCode = act.InvitationCode,
+                Name = act.Name,
+                Remarks = act.Remarks,
+                StartTime = act.StartTime,
+                EndTime = act.EndTime,
+                CoverUrl = act.CoverUrl
+            };
         }
     }
 }

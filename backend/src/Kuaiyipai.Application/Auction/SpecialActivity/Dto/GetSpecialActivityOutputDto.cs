@@ -3,7 +3,7 @@ using Abp.Application.Services.Dto;
 
 namespace Kuaiyipai.Auction.SpecialActivity.Dto
 {
-    public class GetSpecialActivitiesOutputDto : EntityDto<Guid>
+    public class GetSpecialActivityOutputDto : EntityDto<Guid>
     {
         public string InvitationCode { get; set; }
 
