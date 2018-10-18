@@ -33,6 +33,12 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Reference Include="aliyun-net-sdk-core">
+      <HintPath>..\..\..\..\dysms_net\net\api_demo\aliyun-net-sdk-core.dll</HintPath>
+    </Reference>
+    <Reference Include="aliyun-net-sdk-dysmsapi">
+      <HintPath>..\..\..\..\dysms_net\net\api_demo\aliyun-net-sdk-dysmsapi.dll</HintPath>
+    </Reference>
     <Reference Include="System.Transactions" />
   </ItemGroup>
 

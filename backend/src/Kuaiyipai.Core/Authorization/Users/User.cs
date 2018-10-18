@@ -78,5 +78,7 @@ namespace Kuaiyipai.Authorization.Users
         public string NickName { get; set; }
 
         public string AvatarLink { get; set; }
+
+        public string Captcha { get; set; }
     }
 }
