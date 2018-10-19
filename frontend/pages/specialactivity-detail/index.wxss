@@ -75,3 +75,43 @@
 	width: 100%;
 	margin: 0 auto
 }
+.user-info .avatar2{
+  
+    width: 130rpx;
+    height: 130rpx;
+    border-radius: 99999rpx;
+    border: 5rpx solid #fff;
+    position:absolute;
+top:110px;
+right:10px;
+
+}
+.shuoshuo{
+      color: white;
+padding-left: 5px;
+    margin-left:15px;
+    font-size: 16px;
+    margin-top: 20px;
+      background-color: #12B7F5;
+  border-bottom-color:#12B7F5;/*为了给after伪元素自动继承*/
+    border-radius: 6px;
+    width: 70%;
+    margin-bottom: 20px;
+}
+.shuoshuo.label{
+  margin:0 auto;
+  width: 100%
+}
+.message2::after {
+  content: '';
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  right: 90px;
+  top: 160px;
+  border-width: 0 0 10px 10px;
+  border-style: solid;
+  border-left-color: transparent;
+  border-bottom-color:inherit;
+  border-bottom-right-radius: 60px;
+} 

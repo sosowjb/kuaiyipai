@@ -1,8 +1,14 @@
 <!--pages/specialactivity-detail/index.wxml-->
-<view>
-<view>
-  <image class='noticepic' src="{{coverPic}}"></image>
+<view class="user-info flex-row">
+  <image class='noticepic user-info-bg' src="{{coverPic}}"></image>
+  <!--<view class="flex-grow-1 flex-y-center flex-row">
+       <view class="flex-grow-0">
+          <image wx:if="{{userInfo && userInfo.avatar}}" class="avatar2" src="{{userInfo.avatar}}"/>
+          <image wx:if="{{!userInfo && !userInfo.avatar}}" class="avatar2" src="{{imageLink}}/application/User/default.jpg"/>
+        </view>
+    </view>-->
 </view>
+<!--<view class='shuoshuo message2'><label>{{shuoshuo}}</label></view>-->
     <view style="display:none">
   <image wx:for="{{images}}" wx:key="id" id="{{item.id}}" src="{{item.coverPic}}" bindload="onImageLoad"></image>
 </view>
@@ -34,4 +40,3 @@
     </view>
   </view>
 </scroll-view>
-</view>

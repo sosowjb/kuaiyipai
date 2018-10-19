@@ -10,6 +10,8 @@ Page({
    */
   data: {
     said:'',
+    coverPic:'',
+    shuoshuo:'',
      imageLink: app.globalData.imageLink,
     inputShowed: false,
     inputVal: "",
@@ -31,9 +33,30 @@ Page({
    // console.log(options.id);
     console.log(options);
     that.setData({
-      said: options.id,
-      coverPic: options.converpic
+      said: options.id     
     });
+
+    wx.request({
+      url: app.globalData.apiLink + '/api/services/app/SpecialActivity/GetSpecialActivity?id=' + options.id,
+      header: { 'Abp.TenantId': '1', 'Content-Type': 'application/json' },
+      method: 'GET',
+      dataType: 'json',
+      responseType: 'text',
+      success: function (res) {
+        console.log(res);
+        if (res.data.success) {
+          that.setData({
+            shuoshuo: res.data.result.name,
+            coverPic: options.converpic
+          });
+         
+        }
+      }
+    })
+
+
+
+
     wx.getSystemInfo({
       success: (res) => {
         let ww = res.windowWidth;

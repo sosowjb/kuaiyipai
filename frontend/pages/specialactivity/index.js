@@ -9,7 +9,7 @@ var unlearn = 0;
 // 请求数据
 var loadMore = function (that) {
   var skincount = (page - 1) * page_size;
-  var cpage = page;
+  var cpage = page_size;
   that.setData({
     hidden: false
   });
@@ -18,13 +18,17 @@ var loadMore = function (that) {
     success: function (res) {
       console.log(res.data.result.items);
       var list = that.data.list;
+      if (res.data.result.items.length>0)
+      {
+        page++;
+      }
       for (var i = 0; i < res.data.result.items.length; i++) {
        list.push(res.data.result.items[i]);
       }
       that.setData({
         list: list
       });
-      page++;
+      
       that.setData({
         hidden: true
       });
@@ -64,7 +68,7 @@ Page({
   },
   topLoad: function (event) {
     //   该方法绑定了页面滑动到顶部的事件，然后做上拉刷新
-    page = 0;
+    page = 1;
     this.setData({
       list: [],
       scrollTop: 0
