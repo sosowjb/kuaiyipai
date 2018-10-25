@@ -194,7 +194,7 @@ Page({
         },
         method: 'POST',
         data: {
-          accept: acceptVal
+          phoneNum: acceptVal
         },
         success: function (res) {
           console.log(res)
