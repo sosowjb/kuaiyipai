@@ -179,7 +179,7 @@ Page({
     var mobile = /^(13[0-9]|15[0-9]|17[0-9]|18[0-9]|19[0-9])\d{8}$/;
     // 校验手机或邮箱
     if (!mobile.test(acceptVal)) {
-      app.showModal("请填写正确的手机号码或邮箱");
+      app.showModal("请填写正确的手机号码");
     } else {
       this.setData({
         button_reqIdentifyCode: '发送中'
@@ -194,7 +194,7 @@ Page({
         },
         method: 'POST',
         data: {
-          accept: this.data.acceptVal
+          accept: acceptVal
         },
         success: function (res) {
           console.log(res)
@@ -262,9 +262,8 @@ Page({
        if(res.data.success)
        {
          that.setData({
-           Deliveryhidden: false
-         }); 
-         
+           Deliveryhidden: true
+         });
        }
        else
        {
